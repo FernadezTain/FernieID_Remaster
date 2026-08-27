@@ -209,13 +209,13 @@ body{
 .loader{color:var(--muted);font-size:.85rem;padding:1rem 0;}
 
 .game-card{display:flex;align-items:center;gap:.9rem;padding:1rem 1.1rem;border-radius:16px;background:var(--field);border:1px solid var(--field-border);}
-.game-ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
+.game-ico{width:42px;height:42px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
 .game-ico .cico{transform:scale(1.6);}
 .game-name{font-weight:700;font-size:.9rem;}
 .game-profiles{font-size:.78rem;color:var(--muted);margin-top:2px;}
 
 .item-card{display:flex;align-items:center;gap:.8rem;padding:.85rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);}
-.item-ico{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
+.item-ico{width:34px;height:34px;border-radius:9px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
 .item-ico .cico{transform:scale(1.25);}
 
 .token-box{display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:var(--field);border:1px dashed var(--field-border);border-radius:14px;font-family:monospace;font-size:1.15rem;font-weight:700;letter-spacing:2px;justify-content:center;}
@@ -252,7 +252,7 @@ body{
 .ticket-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);cursor:pointer;transition:border-color .15s;margin-bottom:.6rem;}
 .ticket-row:last-child{margin-bottom:0;}
 .ticket-row:hover{border-color:#d8c3af;}
-.ticket-row-ico{width:36px;height:36px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
+.ticket-row-ico{width:36px;height:36px;border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
 .ticket-row-main{flex:1;min-width:0;}
 .ticket-row-title{font-weight:700;font-size:.86rem;}
 .ticket-row-meta{font-size:.76rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -263,7 +263,7 @@ body{
 .key-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.7rem;}
 .key-card-name{font-weight:700;font-size:.92rem;}
 .key-card-app{font-size:.76rem;color:var(--muted);margin-top:1px;}
-.key-value-box{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:#fff;border:1px solid var(--field-border);border-radius:10px;font-family:monospace;font-size:.78rem;color:var(--ink);margin-bottom:.7rem;overflow:hidden;}
+.key-value-box{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:var(--card);border:1px solid var(--field-border);border-radius:10px;font-family:monospace;font-size:.78rem;color:var(--ink);margin-bottom:.7rem;overflow:hidden;}
 .key-value-box span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .key-copy-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;font-size:.7rem;font-weight:700;}
 .key-copy-btn:hover{color:var(--ink);}
@@ -1212,14 +1212,15 @@ async function loadAdmin(){
     }
 
     if(users.success){
-      $('adminUsersBody').innerHTML = `<table class="admin-table"><thead><tr>
+      $('adminUsersBody').innerHTML = `<div class="panel-sub" style="margin-bottom:.6rem;">Всего: ${users.users.length}</div>
+        <div style="max-height:520px;overflow-y:auto;"><table class="admin-table"><thead><tr>
         <th>Логин</th><th>Роль</th><th>Баланс</th><th>Telegram</th></tr></thead><tbody>` +
-        users.users.slice(0,50).map(u => `<tr>
+        users.users.map(u => `<tr>
           <td>${escapeHtml(u.username)}</td>
           <td>${u.role}</td>
           <td>${u.balance ?? '—'}</td>
           <td>${u.telegram_id ? icon('check') : '—'}</td>
-        </tr>`).join('') + `</tbody></table>`;
+        </tr>`).join('') + `</tbody></table></div>`;
     } else {
       $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${users.error||''}</div></div>`;
     }
