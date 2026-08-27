@@ -56,7 +56,7 @@ body{
 .field-input-wrap{position:relative;}
 .field-input{width:100%;padding:13px 16px;background:var(--field);border:1px solid var(--field-border);border-radius:var(--radius-field);font-family:'Inter',sans-serif;font-size:.92rem;color:var(--ink);outline:none;transition:border-color .18s, box-shadow .18s, background .18s;}
 .field-input::placeholder{color:#b6ac9f;}
-.field-input:focus{border-color:#d8c3af;background:#fbf6ef;box-shadow:0 0 0 3px rgba(216,195,175,0.28);}
+.field-input:focus{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));background:var(--field);box-shadow:0 0 0 3px color-mix(in srgb, var(--ink) 16%, transparent);}
 .field-input[type="password"]{padding-right:44px;}
 .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--muted);border-radius:8px;transition:color .15s, background .15s;-webkit-tap-highlight-color:transparent;}
 .eye-btn:hover{color:var(--ink);background:rgba(0,0,0,0.04);}
@@ -196,7 +196,7 @@ body{
 .btn-dark{background:var(--ink);color:var(--ink-contrast);}
 .btn-dark:hover{opacity:.9;}
 .btn-outline{background:none;border:1px solid var(--field-border);color:var(--ink);}
-.btn-outline:hover{border-color:#d8c3af;background:var(--field);}
+.btn-outline:hover{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));background:var(--field);}
 .btn-danger{background:none;border:1px solid #f3d3d1;color:var(--red);}
 .btn-danger:hover{background:#fbeceb;}
 .btn-sm{padding:8px 14px;font-size:.76rem;}
@@ -221,7 +221,7 @@ body{
 .token-box{display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:var(--field);border:1px dashed var(--field-border);border-radius:14px;font-family:monospace;font-size:1.15rem;font-weight:700;letter-spacing:2px;justify-content:center;}
 
 .ticket-chip{display:inline-flex;align-items:center;padding:6px 13px;border-radius:100px;background:var(--field);border:1px solid var(--field-border);font-size:.78rem;font-weight:700;cursor:pointer;color:var(--ink);transition:border-color .15s, background .15s;}
-.ticket-chip:hover{border-color:#d8c3af;background:#fbf6ef;}
+.ticket-chip:hover{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));background:var(--field);}
 
 .timeline{display:flex;flex-direction:column;}
 .timeline-item{position:relative;padding-left:20px;padding-bottom:1rem;}
@@ -233,7 +233,7 @@ body{
 .timeline-text{font-size:.85rem;font-weight:600;}
 .timeline-actions{display:flex;gap:.4rem;margin-top:.35rem;}
 .timeline-mini-btn{font-size:.68rem;font-weight:700;padding:4px 9px;border-radius:8px;border:1px solid var(--field-border);background:var(--field);color:var(--ink);cursor:pointer;}
-.timeline-mini-btn:hover{border-color:#d8c3af;}
+.timeline-mini-btn:hover{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));}
 .timeline-mini-btn.danger{color:var(--red);border-color:#f3d3d1;}
 .timeline-mini-btn.danger:hover{background:#fbeceb;}
 
@@ -251,7 +251,7 @@ body{
 /* --- ticket list card --- */
 .ticket-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);cursor:pointer;transition:border-color .15s;margin-bottom:.6rem;}
 .ticket-row:last-child{margin-bottom:0;}
-.ticket-row:hover{border-color:#d8c3af;}
+.ticket-row:hover{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));}
 .ticket-row-ico{width:36px;height:36px;border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
 .ticket-row-main{flex:1;min-width:0;}
 .ticket-row-title{font-weight:700;font-size:.86rem;}
@@ -270,7 +270,7 @@ body{
 .key-show-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;font-size:.7rem;font-weight:700;}
 .key-show-btn:hover{color:var(--ink);}
 .key-list-card{padding:1rem 1.2rem;border-radius:16px;background:var(--field);border:1px solid var(--field-border);margin-bottom:.7rem;cursor:pointer;transition:border-color .15s;}
-.key-list-card:hover{border-color:#d8c3af;}
+.key-list-card:hover{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));}
 .key-list-card:last-child{margin-bottom:0;}
 
 /* ---------- профиль: баннер / аватар / темы ---------- */
