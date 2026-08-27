@@ -260,6 +260,11 @@ body{
 .key-value-box span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .key-copy-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;font-size:.7rem;font-weight:700;}
 .key-copy-btn:hover{color:var(--ink);}
+.key-show-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;font-size:.7rem;font-weight:700;}
+.key-show-btn:hover{color:var(--ink);}
+.key-list-card{padding:1rem 1.2rem;border-radius:16px;background:var(--field);border:1px solid var(--field-border);margin-bottom:.7rem;cursor:pointer;transition:border-color .15s;}
+.key-list-card:hover{border-color:#d8c3af;}
+.key-list-card:last-child{margin-bottom:0;}
 .key-stats{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:.7rem;}
 .key-stat{font-size:.74rem;color:var(--muted);}
 .key-stat b{color:var(--ink);font-weight:700;}
@@ -529,12 +534,16 @@ body{
 
       <!-- API-КЛЮЧИ -->
       <div class="dash-section" id="section-apikeys">
-        <div class="panel">
+        <div class="panel" id="apiKeysListPanel">
           <div class="panel-head">
             <div><div class="panel-title"><i class="cico cico-key ic"></i>API-ключи</div><div class="panel-sub">Ключи для сторонних интеграций с твоим аккаунтом</div></div>
             <button class="btn btn-dark btn-sm" id="createKeyBtn">+ Новый ключ</button>
           </div>
           <div id="apiKeysBody" class="loader">Загрузка…</div>
+        </div>
+        <div class="panel" id="apiKeyDetailPanel" style="display:none;">
+          <div class="detail-back" id="apiKeyDetailBack">← Назад к ключам</div>
+          <div id="apiKeyDetailBody"></div>
         </div>
       </div>
 
@@ -1244,8 +1253,16 @@ function openMyTicketDetail(num){
    API-КЛЮЧИ — полноценный функционал
    ══════════════════════════════════════════ */
 let apiKeysCache = [];
+let apiKeyDetailShown = false; // показан ли сейчас полный ключ на странице деталей
+
+function maskKey(key){
+  if(!key) return '—';
+  return key.length > 16 ? key.slice(0,8) + '••••••••••••••••' + key.slice(-4) : '••••••••••';
+}
 
 async function loadApiKeys(){
+  $('apiKeyDetailPanel').style.display = 'none';
+  $('apiKeysListPanel').style.display = '';
   $('apiKeysBody').innerHTML = `<div class="loader">Загрузка…</div>`;
   try{
     const res = await fetch(`${API}/api/apikeys/${currentUser.id}`);
@@ -1261,6 +1278,8 @@ async function loadApiKeys(){
   }
 }
 
+// Простой список ключей — значение ключа всегда замаскировано.
+// Полный ключ достаётся только из apiKeysCache в момент клика (никогда не лежит в разметке).
 function renderApiKeys(){
   if(!apiKeysCache.length){
     $('apiKeysBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('key')}</div><div class="title">Ключей пока нет</div><div class="desc">Создай первый API-ключ для интеграции сторонних сервисов с твоим аккаунтом.</div></div>`;
@@ -1268,8 +1287,7 @@ function renderApiKeys(){
   }
   $('apiKeysBody').innerHTML = apiKeysCache.map(k => {
     const statusPill = k.status === 'active' ? `<span class="pill pill-green">Активен</span>` : `<span class="pill pill-red">Отключён</span>`;
-    const lastUsed = k.last_used_at ? new Date(k.last_used_at).toLocaleString('ru-RU', { timeZone:'Europe/Moscow' }) : 'ещё не использовался';
-    return `<div class="key-card" data-id="${k.id}">
+    return `<div class="key-list-card" data-open="${k.id}">
       <div class="key-card-top">
         <div>
           <div class="key-card-name">${escapeHtml(k.name)}</div>
@@ -1277,34 +1295,79 @@ function renderApiKeys(){
         </div>
         ${statusPill}
       </div>
-      <div class="key-value-box"><span id="keyval-${k.id}">${escapeHtml(k.key)}</span><button class="key-copy-btn" data-copy="${k.id}">Копировать</button></div>
-      <div class="key-stats">
-        <div class="key-stat">Запросов всего: <b>${k.requests_total ?? 0}</b></div>
-        <div class="key-stat">Сегодня: <b>${k.requests_today ?? 0}</b></div>
-        <div class="key-stat">Последний запрос: <b>${lastUsed}</b></div>
-      </div>
-      <div class="key-actions">
-        <button class="btn btn-outline btn-sm" data-edit="${k.id}">Редактировать</button>
-        <button class="btn btn-outline btn-sm" data-logs="${k.id}">Логи</button>
-        <button class="btn btn-danger btn-sm" data-delete="${k.id}">Удалить</button>
-      </div>
+      <div class="key-value-box"><span>${maskKey(k.key)}</span><button class="key-copy-btn" data-copy="${k.id}">Копировать</button></div>
     </div>`;
   }).join('');
 
   $('apiKeysBody').querySelectorAll('[data-copy]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.copy;
-      const val = $('keyval-'+id).textContent;
-      navigator.clipboard?.writeText(val).then(() => {
-        btn.textContent = 'Скопировано';
-        setTimeout(() => btn.textContent = 'Копировать', 1400);
-      }).catch(() => {});
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      copyApiKeyValue(btn.dataset.copy, btn);
     });
   });
-  $('apiKeysBody').querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => openEditKeyModal(btn.dataset.edit)));
-  $('apiKeysBody').querySelectorAll('[data-logs]').forEach(btn => btn.addEventListener('click', () => openKeyLogsModal(btn.dataset.logs)));
-  $('apiKeysBody').querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => deleteApiKey(btn.dataset.delete)));
+  $('apiKeysBody').querySelectorAll('[data-open]').forEach(card => {
+    card.addEventListener('click', () => openApiKeyDetail(card.dataset.open));
+  });
 }
+
+// Копирует ключ из кэша в памяти — раскрывать его в HTML/атрибутах не нужно.
+function copyApiKeyValue(keyId, btn){
+  const k = apiKeysCache.find(x => String(x.id) === String(keyId));
+  if(!k) return;
+  navigator.clipboard?.writeText(k.key).then(() => {
+    if(!btn) return;
+    const old = btn.textContent;
+    btn.textContent = 'Скопировано';
+    setTimeout(() => btn.textContent = old, 1400);
+  }).catch(() => {});
+}
+
+// Полная страница по клику на ключ ("полное меню")
+function openApiKeyDetail(keyId){
+  const k = apiKeysCache.find(x => String(x.id) === String(keyId));
+  if(!k) return;
+  apiKeyDetailShown = false;
+  $('apiKeysListPanel').style.display = 'none';
+  $('apiKeyDetailPanel').style.display = '';
+  renderApiKeyDetailBody(k);
+  $('apiKeyDetailPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function renderApiKeyDetailBody(k){
+  const statusPill = k.status === 'active' ? `<span class="pill pill-green">Активен</span>` : `<span class="pill pill-red">Отключён</span>`;
+  const lastUsed = k.last_used_at ? new Date(k.last_used_at).toLocaleString('ru-RU', { timeZone:'Europe/Moscow' }) : 'ещё не использовался';
+  $('apiKeyDetailBody').innerHTML = `
+    <div class="key-card-top" style="margin-bottom:1rem;">
+      <div>
+        <div class="key-card-name" style="font-size:1.05rem;">${escapeHtml(k.name)}</div>
+        <div class="key-card-app">${escapeHtml(k.app_name || 'Без привязанного приложения')} · ${escapeHtml(k.type || 'other')}</div>
+      </div>
+      ${statusPill}
+    </div>
+    <div class="key-value-box"><span id="keyDetailVal">${maskKey(k.key)}</span><button class="key-show-btn" id="keyDetailShowBtn">Показать</button><button class="key-copy-btn" id="keyDetailCopyBtn">Копировать</button></div>
+    <div class="key-stats">
+      <div class="key-stat">Запросов всего: <b>${k.requests_total ?? 0}</b></div>
+      <div class="key-stat">Сегодня: <b>${k.requests_today ?? 0}</b></div>
+      <div class="key-stat">Последний запрос: <b>${lastUsed}</b></div>
+    </div>
+    <div class="key-actions">
+      <button class="btn btn-outline btn-sm" id="keyDetailEditBtn">Редактировать</button>
+      <button class="btn btn-outline btn-sm" id="keyDetailLogsBtn">Логи</button>
+      <button class="btn btn-danger btn-sm" id="keyDetailDeleteBtn">Удалить</button>
+    </div>`;
+
+  $('keyDetailShowBtn').onclick = () => {
+    apiKeyDetailShown = !apiKeyDetailShown;
+    $('keyDetailVal').textContent = apiKeyDetailShown ? k.key : maskKey(k.key);
+    $('keyDetailShowBtn').textContent = apiKeyDetailShown ? 'Скрыть' : 'Показать';
+  };
+  $('keyDetailCopyBtn').onclick = () => copyApiKeyValue(k.id, $('keyDetailCopyBtn'));
+  $('keyDetailEditBtn').onclick = () => openEditKeyModal(k.id);
+  $('keyDetailLogsBtn').onclick = () => openKeyLogsModal(k.id);
+  $('keyDetailDeleteBtn').onclick = () => deleteApiKey(k.id);
+}
+
+$('apiKeyDetailBack').onclick = () => { loadApiKeys(); };
 
 $('createKeyBtn').onclick = () => {
   openModal(`
