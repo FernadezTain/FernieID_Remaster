@@ -92,16 +92,60 @@ body{
 
 .nav-group{display:flex;flex-direction:column;gap:.35rem;}
 .nav-group-label{font-size:.65rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:0 .5rem;margin:.4rem 0 .1rem;}
-.nav-block{display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem;border-radius:16px;background:var(--card);border:1px solid var(--line);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--ink);transition:background .16s, border-color .16s, transform .1s;}
+.nav-block{display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem;border-radius:16px;background:var(--card);border:1px solid var(--line);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--ink);transition:background .16s, border-color .16s, transform .38s cubic-bezier(.22,1,.36,1);will-change:transform;}
 .nav-block:hover{border-color:#e2d3bc;}
-.nav-block:active{transform:scale(.99);}
 .nav-block.active{background:var(--ink);color:#fff;border-color:var(--ink);}
-.nav-block .nav-ico{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.nav-block .nav-ico{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .nav-block .nav-badge{margin-left:auto;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,0.06);color:var(--muted);}
 .nav-block.active .nav-badge{background:rgba(255,255,255,0.18);color:#fff;}
 
+/* ---- CSS-иконки (без эмодзи) ---- */
+.cico{width:16px;height:16px;position:relative;flex-shrink:0;display:inline-block;color:inherit;}
+.cico::before,.cico::after{content:'';position:absolute;box-sizing:border-box;}
+
+.cico-home::before{left:1px;top:0;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:6px solid currentColor;}
+.cico-home::after{left:3px;top:5px;width:10px;height:9px;background:currentColor;border-radius:0 0 2px 2px;}
+
+.cico-spark::before{left:7px;top:0;width:2px;height:16px;background:currentColor;border-radius:2px;}
+.cico-spark::after{left:0;top:7px;width:16px;height:2px;background:currentColor;border-radius:2px;}
+
+.cico-bars::before{left:2px;bottom:0;width:4px;height:9px;background:currentColor;border-radius:1px;}
+.cico-bars::after{left:9px;bottom:0;width:4px;height:14px;background:currentColor;border-radius:1px;}
+
+.cico-joystick::before{left:2px;bottom:0;width:12px;height:5px;background:currentColor;border-radius:3px;}
+.cico-joystick::after{left:6px;top:1px;width:4px;height:9px;background:currentColor;border-radius:2px 2px 0 0;box-shadow:0 -3px 0 -1px currentColor;}
+
+.cico-cards::before{left:0;top:2px;width:11px;height:13px;border:2px solid currentColor;border-radius:3px;background:var(--card);}
+.cico-cards::after{left:5px;top:0;width:11px;height:13px;border:2px solid currentColor;border-radius:3px;background:var(--card);}
+
+.cico-shield{background:currentColor;clip-path:polygon(50% 0%,100% 20%,100% 55%,50% 100%,0% 55%,0% 20%);}
+
+.cico-key::before{left:0;top:2px;width:8px;height:8px;border:2px solid currentColor;border-radius:50%;}
+.cico-key::after{left:6px;top:6px;width:10px;height:2px;background:currentColor;box-shadow:2px 2px 0 0 currentColor;}
+
+.cico-crown{background:currentColor;clip-path:polygon(0% 100%,0% 42%,25% 65%,50% 22%,75% 65%,100% 42%,100% 100%);}
+
+.cico-logout::before{left:0;top:3px;width:9px;height:10px;border:2px solid currentColor;border-right:none;border-radius:4px 0 0 4px;}
+.cico-logout::after{left:4px;top:7px;width:11px;height:2px;background:currentColor;}
+
+.cico-warn{background:currentColor;clip-path:polygon(50% 5%,95% 92%,5% 92%);}
+.cico-warn::before{left:47%;top:38%;width:2px;height:5px;background:var(--card);}
+.cico-warn::after{left:47%;top:70%;width:2px;height:2px;border-radius:50%;background:var(--card);}
+
+.cico-link::before{left:0;top:5px;width:8px;height:8px;border:2px solid currentColor;border-radius:50%;}
+.cico-link::after{left:7px;top:5px;width:8px;height:8px;border:2px solid currentColor;border-radius:50%;}
+
+.cico-check::before{left:1px;top:8px;width:2px;height:6px;background:currentColor;transform:rotate(45deg);border-radius:1px;}
+.cico-check::after{left:4px;top:3px;width:2px;height:11px;background:currentColor;transform:rotate(-45deg);border-radius:1px;}
+
 .logout-block{margin-top:.25rem;color:var(--red);}
 .logout-block:hover{border-color:#f0c6c2;}
+
+/* инлайн-иконка рядом с текстом (заголовки, статусы) */
+.ic{display:inline-block;vertical-align:-3px;margin-right:7px;}
+
+/* крупная иконка для пустых состояний */
+.empty-box .emoji-ico{width:16px;height:16px;margin:0 auto .7rem;transform:scale(1.9);color:var(--muted);}
 
 /* --- content --- */
 .content{flex:1;min-width:0;}
@@ -110,7 +154,7 @@ body{
 
 .panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.6rem 1.75rem;}
 .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;gap:1rem;flex-wrap:wrap;}
-.panel-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.3px;}
+.panel-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.3px;display:flex;align-items:center;}
 .panel-sub{color:var(--muted);font-size:.85rem;margin-top:2px;}
 .pill{font-size:.66rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 11px;border-radius:100px;background:var(--field);border:1px solid var(--field-border);color:#8a7a63;}
 .pill-green{background:#e9f6ec;border-color:#cfe9d5;color:var(--green);}
@@ -122,13 +166,14 @@ body{
 @media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr;}}
 
 .stat-box{background:var(--field);border:1px solid var(--field-border);border-radius:16px;padding:1rem 1.1rem;}
+.stat-box .stat-label{display:flex;align-items:center;}
 .stat-label{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:.35rem;}
 .stat-value{font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;}
 
 .row-line{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;border-bottom:1px solid var(--line);gap:1rem;}
 .row-line:last-child{border-bottom:none;}
 .row-label{font-size:.85rem;color:var(--muted);}
-.row-value{font-size:.88rem;font-weight:600;text-align:right;}
+.row-value{font-size:.88rem;font-weight:600;text-align:right;display:flex;align-items:center;justify-content:flex-end;}
 
 .btn{padding:11px 18px;border-radius:100px;border:none;font-family:'Inter',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;transition:opacity .15s, transform .1s;}
 .btn:active{transform:scale(.98);}
@@ -141,19 +186,20 @@ body{
 .btn:disabled{opacity:.5;cursor:default;}
 
 .empty-box{text-align:center;padding:2.4rem 1rem;color:var(--muted);}
-.empty-box .emoji{font-size:1.8rem;margin-bottom:.6rem;}
 .empty-box .title{font-weight:700;color:var(--ink);margin-bottom:.3rem;font-size:.95rem;}
 .empty-box .desc{font-size:.83rem;line-height:1.5;}
 
 .loader{color:var(--muted);font-size:.85rem;padding:1rem 0;}
 
 .game-card{display:flex;align-items:center;gap:.9rem;padding:1rem 1.1rem;border-radius:16px;background:var(--field);border:1px solid var(--field-border);}
-.game-ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.game-ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
+.game-ico .cico{transform:scale(1.6);}
 .game-name{font-weight:700;font-size:.9rem;}
 .game-profiles{font-size:.78rem;color:var(--muted);margin-top:2px;}
 
 .item-card{display:flex;align-items:center;gap:.8rem;padding:.85rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);}
-.item-ico{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.item-ico{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
+.item-ico .cico{transform:scale(1.25);}
 
 .token-box{display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:var(--field);border:1px dashed var(--field-border);border-radius:14px;font-family:monospace;font-size:1.15rem;font-weight:700;letter-spacing:2px;justify-content:center;}
 
@@ -259,15 +305,15 @@ body{
 
       <div class="nav-group">
         <div class="nav-group-label">Меню</div>
-        <div class="nav-block active" data-section="overview"><span class="nav-ico">🏠</span>Главная</div>
-        <div class="nav-block" data-section="subscription"><span class="nav-ico">✨</span>Подписка<span class="nav-badge" id="subBadge">Fernie+</span></div>
-        <div class="nav-block" data-section="stats"><span class="nav-ico">🎮</span>Статистика</div>
-        <div class="nav-block" data-section="thirdparty"><span class="nav-ico">🕹️</span>Сторонние игры</div>
-        <div class="nav-block" data-section="collection"><span class="nav-ico">🃏</span>Коллекция</div>
-        <div class="nav-block" data-section="security"><span class="nav-ico">🛡️</span>Безопасность</div>
-        <div class="nav-block" data-section="apikeys"><span class="nav-ico">🔑</span>API-ключи</div>
-        <div class="nav-block" data-section="admin" id="adminNavBlock" style="display:none;"><span class="nav-ico">👑</span>Админ-панель</div>
-        <div class="nav-block logout-block" id="logoutBlock"><span class="nav-ico">↩</span>Выйти</div>
+        <div class="nav-block active" data-section="overview"><span class="nav-ico"><i class="cico cico-home"></i></span>Главная</div>
+        <div class="nav-block" data-section="subscription"><span class="nav-ico"><i class="cico cico-spark"></i></span>Подписка<span class="nav-badge" id="subBadge">Fernie+</span></div>
+        <div class="nav-block" data-section="stats"><span class="nav-ico"><i class="cico cico-bars"></i></span>Статистика</div>
+        <div class="nav-block" data-section="thirdparty"><span class="nav-ico"><i class="cico cico-joystick"></i></span>Сторонние игры</div>
+        <div class="nav-block" data-section="collection"><span class="nav-ico"><i class="cico cico-cards"></i></span>Коллекция</div>
+        <div class="nav-block" data-section="security"><span class="nav-ico"><i class="cico cico-shield"></i></span>Безопасность</div>
+        <div class="nav-block" data-section="apikeys"><span class="nav-ico"><i class="cico cico-key"></i></span>API-ключи</div>
+        <div class="nav-block" data-section="admin" id="adminNavBlock" style="display:none;"><span class="nav-ico"><i class="cico cico-crown"></i></span>Админ-панель</div>
+        <div class="nav-block logout-block" id="logoutBlock"><span class="nav-ico"><i class="cico cico-logout"></i></span>Выйти</div>
       </div>
     </aside>
 
@@ -277,7 +323,7 @@ body{
       <div class="dash-section active" id="section-overview">
         <div class="panel">
           <div class="panel-head">
-            <div><div class="panel-title">С возвращением, <span id="ovUsername">—</span></div><div class="panel-sub">Обзор твоего аккаунта FernieID</div></div>
+            <div><div class="panel-title"><i class="cico cico-home ic"></i>С возвращением, <span id="ovUsername">—</span></div><div class="panel-sub">Обзор твоего аккаунта FernieID</div></div>
             <div class="pill" id="ovRolePill">Пользователь</div>
           </div>
           <div class="grid3">
@@ -290,8 +336,8 @@ body{
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Быстрые разделы</div></div>
           <div class="grid2">
-            <div class="stat-box" style="cursor:pointer;" data-goto="subscription"><div class="stat-label">✨ Fernie+ / Pro</div><div class="row-value" style="font-size:.85rem;font-weight:500;color:var(--muted);">Посмотреть статус подписки</div></div>
-            <div class="stat-box" style="cursor:pointer;" data-goto="security"><div class="stat-label">🛡️ Безопасность</div><div class="row-value" style="font-size:.85rem;font-weight:500;color:var(--muted);">Telegram и защита аккаунта</div></div>
+            <div class="stat-box" style="cursor:pointer;" data-goto="subscription"><div class="stat-label"><i class="cico cico-spark ic"></i>Fernie+ / Pro</div><div class="row-value" style="font-size:.85rem;font-weight:500;color:var(--muted);justify-content:flex-start;">Посмотреть статус подписки</div></div>
+            <div class="stat-box" style="cursor:pointer;" data-goto="security"><div class="stat-label"><i class="cico cico-shield ic"></i>Безопасность</div><div class="row-value" style="font-size:.85rem;font-weight:500;color:var(--muted);justify-content:flex-start;">Telegram и защита аккаунта</div></div>
           </div>
         </div>
       </div>
@@ -299,11 +345,11 @@ body{
       <!-- ПОДПИСКА -->
       <div class="dash-section" id="section-subscription">
         <div class="panel">
-          <div class="panel-head"><div><div class="panel-title">✨ Fernie+</div><div class="panel-sub">Базовая подписка FernieID</div></div><div class="pill" id="fpPill">—</div></div>
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-spark ic"></i>Fernie+</div><div class="panel-sub">Базовая подписка FernieID</div></div><div class="pill" id="fpPill">—</div></div>
           <div id="fpBody" class="loader">Загрузка…</div>
         </div>
         <div class="panel">
-          <div class="panel-head"><div><div class="panel-title">👑 Fernie Pro</div><div class="panel-sub">Расширенный уровень подписки</div></div><div class="pill" id="proPill">—</div></div>
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-crown ic"></i>Fernie Pro</div><div class="panel-sub">Расширенный уровень подписки</div></div><div class="pill" id="proPill">—</div></div>
           <div id="proBody" class="loader">Загрузка…</div>
         </div>
       </div>
@@ -311,9 +357,9 @@ body{
       <!-- СТАТИСТИКА -->
       <div class="dash-section" id="section-stats">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title">🎮 Игровая статистика</div></div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-bars ic"></i>Игровая статистика</div></div>
           <div class="empty-box">
-            <div class="emoji">📊</div>
+            <div class="emoji-ico"><i class="cico cico-bars"></i></div>
             <div class="title">Раздел в разработке</div>
             <div class="desc">История сессий и детальная статистика появится здесь на новом сайте чуть позже.</div>
           </div>
@@ -323,7 +369,7 @@ body{
       <!-- СТОРОННИЕ ИГРЫ -->
       <div class="dash-section" id="section-thirdparty">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title">🕹️ Сторонние игры</div><div class="panel-sub" id="tpSub">Аккаунты, привязанные к FernieID</div></div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-joystick ic"></i>Сторонние игры</div><div class="panel-sub" id="tpSub">Аккаунты, привязанные к FernieID</div></div>
           <div id="tpBody" class="loader">Загрузка…</div>
         </div>
       </div>
@@ -331,7 +377,7 @@ body{
       <!-- КОЛЛЕКЦИЯ -->
       <div class="dash-section" id="section-collection">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title">🃏 Коллекция</div><div class="panel-sub">Предметы и карты в твоём инвентаре</div></div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-cards ic"></i>Коллекция</div><div class="panel-sub">Предметы и карты в твоём инвентаре</div></div>
           <div id="invBody" class="loader">Загрузка…</div>
         </div>
       </div>
@@ -339,7 +385,7 @@ body{
       <!-- БЕЗОПАСНОСТЬ -->
       <div class="dash-section" id="section-security">
         <div class="panel">
-          <div class="panel-head"><div><div class="panel-title">🛡️ Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div></div><div class="pill" id="secTgPill">—</div></div>
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-shield ic"></i>Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div></div><div class="pill" id="secTgPill">—</div></div>
           <div id="secTgBody" class="loader">Загрузка…</div>
         </div>
       </div>
@@ -347,9 +393,9 @@ body{
       <!-- API-КЛЮЧИ -->
       <div class="dash-section" id="section-apikeys">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title">🔑 API-ключи</div></div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-key ic"></i>API-ключи</div></div>
           <div class="empty-box">
-            <div class="emoji">🔑</div>
+            <div class="emoji-ico"><i class="cico cico-key"></i></div>
             <div class="title">Раздел в разработке</div>
             <div class="desc">Управление ключами для сторонних интеграций перенесём сюда на следующем этапе.</div>
           </div>
@@ -359,7 +405,7 @@ body{
       <!-- АДМИН -->
       <div class="dash-section" id="section-admin">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title">👑 Статистика проекта</div></div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-crown ic"></i>Статистика проекта</div></div>
           <div id="adminStatsBody" class="loader">Загрузка…</div>
         </div>
         <div class="panel">
@@ -393,6 +439,11 @@ const $ = id => document.getElementById(id);
 const STORE_KEY = 'fid_session';
 
 let currentUser = null; // {id, username, role, telegramLinked, telegram_id}
+
+/* ---------- icon helper ---------- */
+function icon(name, cls){
+  return `<i class="cico cico-${name}${cls ? ' '+cls : ''}"></i>`;
+}
 
 /* ---------- helpers ---------- */
 function toggleVis(inputId){
@@ -464,7 +515,7 @@ $('regSubmit').onclick = async () => {
     const data = await res.json();
     if(data.success){
       msg.style.color = 'var(--green)';
-      msg.textContent = '✓ Аккаунт создан, входим…';
+      msg.textContent = 'Аккаунт создан, входим…';
       const loginRes = await fetch(`${API}/api/login`, {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ username, password })
@@ -514,7 +565,28 @@ function switchSection(name){
   document.querySelectorAll('.dash-section').forEach(s=>s.classList.remove('active'));
   const target = $('section-'+name);
   if(target) target.classList.add('active');
+  updateNavCascade(name);
   loadSectionData(name);
+}
+
+/* ---------- цепочка: боковые блоки сдвигаются "стрелкой" к активному пункту ---------- */
+function updateNavCascade(activeSection){
+  const all = Array.from(document.querySelectorAll('.sidebar .nav-block'));
+  const visible = all.filter(b => getComputedStyle(b).display !== 'none');
+  const activeIndex = visible.findIndex(b => b.dataset.section === activeSection);
+
+  const PEAK = 16;   // максимальный сдвиг у активного пункта (px)
+  const STEP = 6;    // на сколько уменьшается сдвиг с каждым шагом от активного
+
+  visible.forEach((b, i) => {
+    if(activeIndex === -1){
+      b.style.transform = '';
+      return;
+    }
+    const dist = Math.abs(i - activeIndex);
+    const shift = Math.max(0, PEAK - dist * STEP);
+    b.style.transform = shift ? `translateX(${shift}px)` : '';
+  });
 }
 
 /* ---------- boot / verify session ---------- */
@@ -551,11 +623,11 @@ function renderProfile(){
   $('ovUsername').textContent = currentUser.username;
   $('ovId').textContent = currentUser.id;
   $('ovRolePill').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
-  $('ovTgStatus').textContent = currentUser.telegramLinked ? '✅ Привязан' : '— Нет';
+  $('ovTgStatus').innerHTML = currentUser.telegramLinked ? icon('check','ic')+'Привязан' : '— Нет';
   $('pfUsername').textContent = currentUser.username;
   $('pfId').textContent = currentUser.id;
   $('pfRole').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
-  $('pfTg').textContent = currentUser.telegramLinked ? '✅ Привязан' : 'Не привязан';
+  $('pfTg').innerHTML = currentUser.telegramLinked ? icon('check','ic')+'Привязан' : 'Не привязан';
   $('adminNavBlock').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
 }
 
@@ -593,11 +665,11 @@ async function loadSubscription(){
       $('fpPill').className = 'pill ' + (fp.active ? 'pill-green' : '');
       $('fpPill').textContent = fp.active ? 'Активна' : 'Не активна';
       $('fpBody').innerHTML = fp.active
-        ? `<div class="row-line"><div class="row-label">Статус</div><div class="row-value">✅ Активна</div></div>`
-        : `<div class="empty-box"><div class="emoji">✨</div><div class="title">Fernie+ не активирован</div><div class="desc">Оформи подписку через Telegram-бота, чтобы получить доступ к дополнительным возможностям.</div></div>`;
+        ? `<div class="row-line"><div class="row-label">Статус</div><div class="row-value">${icon('check','ic')}Активна</div></div>`
+        : `<div class="empty-box"><div class="emoji-ico">${icon('spark')}</div><div class="title">Fernie+ не активирован</div><div class="desc">Оформи подписку через Telegram-бота, чтобы получить доступ к дополнительным возможностям.</div></div>`;
     } else {
       $('fpPill').textContent = '—';
-      $('fpBody').innerHTML = `<div class="empty-box"><div class="emoji">🔗</div><div class="title">Нужен привязанный Telegram</div><div class="desc">${fp.error || 'Привяжи Telegram в разделе «Безопасность», чтобы видеть статус подписки.'}</div></div>`;
+      $('fpBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('link')}</div><div class="title">Нужен привязанный Telegram</div><div class="desc">${fp.error || 'Привяжи Telegram в разделе «Безопасность», чтобы видеть статус подписки.'}</div></div>`;
     }
 
     if(pro.success){
@@ -605,13 +677,13 @@ async function loadSubscription(){
       $('proPill').textContent = pro.active ? 'Активна' : 'Не активна';
       $('proBody').innerHTML = pro.active
         ? `<div class="row-line"><div class="row-label">Тариф</div><div class="row-value">${pro.plan || 'Pro'}</div></div>`
-        : `<div class="empty-box"><div class="emoji">👑</div><div class="title">Fernie Pro не активирован</div><div class="desc">Более высокий уровень подписки со своими бонусами.</div></div>`;
+        : `<div class="empty-box"><div class="emoji-ico">${icon('crown')}</div><div class="title">Fernie Pro не активирован</div><div class="desc">Более высокий уровень подписки со своими бонусами.</div></div>`;
     } else {
       $('proPill').textContent = '—';
-      $('proBody').innerHTML = `<div class="empty-box"><div class="emoji">🔗</div><div class="title">Нужен привязанный Telegram</div><div class="desc">${pro.error || 'Привяжи Telegram, чтобы проверить статус Pro.'}</div></div>`;
+      $('proBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('link')}</div><div class="title">Нужен привязанный Telegram</div><div class="desc">${pro.error || 'Привяжи Telegram, чтобы проверить статус Pro.'}</div></div>`;
     }
   } catch(e){
-    $('fpBody').innerHTML = $('proBody').innerHTML = `<div class="empty-box"><div class="emoji">⚠️</div><div class="title">Не удалось загрузить</div><div class="desc">Попробуй обновить страницу.</div></div>`;
+    $('fpBody').innerHTML = $('proBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div><div class="desc">Попробуй обновить страницу.</div></div>`;
   }
 }
 
@@ -622,19 +694,19 @@ async function loadThirdParty(){
     const data = await res.json();
     const games = data.games || [];
     if(!games.length){
-      $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji">🕹️</div><div class="title">Пока ничего не привязано</div><div class="desc">Здесь появятся игровые аккаунты, связанные с твоим FernieID.</div></div>`;
+      $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('joystick')}</div><div class="title">Пока ничего не привязано</div><div class="desc">Здесь появятся игровые аккаунты, связанные с твоим FernieID.</div></div>`;
       return;
     }
     $('tpBody').innerHTML = games.map(g => `
       <div class="game-card" style="margin-bottom:.7rem;">
-        <div class="game-ico">${g.icon || '🎮'}</div>
+        <div class="game-ico">${icon('joystick')}</div>
         <div>
           <div class="game-name">${escapeHtml(g.name)}</div>
           <div class="game-profiles">${(g.profiles||[]).map(escapeHtml).join(', ') || 'Без профилей'}</div>
         </div>
       </div>`).join('');
   } catch(e){
-    $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji">⚠️</div><div class="title">Не удалось загрузить</div></div>`;
+    $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div></div>`;
   }
 }
 
@@ -645,16 +717,16 @@ async function loadInventory(){
     const data = await res.json();
     const items = data.items || [];
     if(!items.length){
-      $('invBody').innerHTML = `<div class="empty-box"><div class="emoji">🃏</div><div class="title">Коллекция пуста</div><div class="desc">Открывай кейсы и получай предметы — они появятся здесь.</div></div>`;
+      $('invBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('cards')}</div><div class="title">Коллекция пуста</div><div class="desc">Открывай кейсы и получай предметы — они появятся здесь.</div></div>`;
       return;
     }
     $('invBody').innerHTML = `<div class="grid2">` + items.map(it => `
       <div class="item-card">
-        <div class="item-ico">🃏</div>
+        <div class="item-ico">${icon('cards')}</div>
         <div><div class="game-name">${escapeHtml(it.name || it.item_name || 'Предмет')}</div></div>
       </div>`).join('') + `</div>`;
   } catch(e){
-    $('invBody').innerHTML = `<div class="empty-box"><div class="emoji">⚠️</div><div class="title">Не удалось загрузить</div></div>`;
+    $('invBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div></div>`;
   }
 }
 
@@ -686,7 +758,7 @@ async function loadSecurity(){
   } else {
     $('secTgBody').innerHTML = `
       <div class="empty-box" style="padding:1rem 0;">
-        <div class="emoji">🔗</div>
+        <div class="emoji-ico">${icon('link')}</div>
         <div class="title">Telegram не привязан</div>
         <div class="desc">Сгенерируй код и отправь его боту, чтобы включить 2FA и уведомления о входах.</div>
       </div>
@@ -741,7 +813,7 @@ async function loadAdmin(){
           <td>${escapeHtml(u.username)}</td>
           <td>${u.role}</td>
           <td>${u.balance ?? '—'}</td>
-          <td>${u.telegram_id ? '✅' : '—'}</td>
+          <td>${u.telegram_id ? icon('check') : '—'}</td>
         </tr>`).join('') + `</tbody></table>`;
     } else {
       $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${users.error||''}</div></div>`;
