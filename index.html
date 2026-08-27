@@ -141,6 +141,12 @@ body{
 .cico-check::before{left:1px;top:8px;width:2px;height:6px;background:currentColor;transform:rotate(45deg);border-radius:1px;}
 .cico-check::after{left:4px;top:3px;width:2px;height:11px;background:currentColor;transform:rotate(-45deg);border-radius:1px;}
 
+.cico-mail::before{left:0;top:2px;width:16px;height:11px;border:2px solid currentColor;border-radius:2px;background:var(--card);}
+.cico-mail::after{left:2px;top:3px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid currentColor;}
+
+.cico-doc::before{left:2px;top:0;width:12px;height:16px;border:2px solid currentColor;border-radius:2px;background:var(--card);}
+.cico-doc::after{left:5px;top:5px;width:6px;height:2px;background:currentColor;box-shadow:0 4px 0 0 currentColor, 0 8px 0 0 currentColor;}
+
 /* инлайн-иконка рядом с текстом (заголовки, статусы) */
 .ic{display:inline-block;vertical-align:-3px;margin-right:7px;}
 
@@ -202,6 +208,18 @@ body{
 .item-ico .cico{transform:scale(1.25);}
 
 .token-box{display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:var(--field);border:1px dashed var(--field-border);border-radius:14px;font-family:monospace;font-size:1.15rem;font-weight:700;letter-spacing:2px;justify-content:center;}
+
+.ticket-chip{display:inline-flex;align-items:center;padding:6px 13px;border-radius:100px;background:var(--field);border:1px solid var(--field-border);font-size:.78rem;font-weight:700;cursor:pointer;color:var(--ink);transition:border-color .15s, background .15s;}
+.ticket-chip:hover{border-color:#d8c3af;background:#fbf6ef;}
+
+.timeline{display:flex;flex-direction:column;}
+.timeline-item{position:relative;padding-left:20px;padding-bottom:1rem;}
+.timeline-item:last-child{padding-bottom:0;}
+.timeline-item::before{content:'';position:absolute;left:2px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--ink);}
+.timeline-item::after{content:'';position:absolute;left:5.5px;top:12px;bottom:-2px;width:2px;background:var(--line);}
+.timeline-item:last-child::after{display:none;}
+.timeline-date{font-size:.72rem;color:var(--muted);margin-bottom:2px;}
+.timeline-text{font-size:.85rem;font-weight:600;}
 
 .admin-table{width:100%;border-collapse:collapse;font-size:.84rem;}
 .admin-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:.6rem .5rem;border-bottom:1px solid var(--line);}
@@ -319,6 +337,8 @@ body{
         <div class="nav-block" data-section="thirdparty"><span class="nav-ico"><i class="cico cico-joystick"></i></span>Сторонние игры</div>
         <div class="nav-block" data-section="collection"><span class="nav-ico"><i class="cico cico-cards"></i></span>Коллекция</div>
         <div class="nav-block" data-section="security"><span class="nav-ico"><i class="cico cico-shield"></i></span>Безопасность</div>
+        <div class="nav-block" data-section="tickets"><span class="nav-ico"><i class="cico cico-mail"></i></span>Обращения</div>
+        <div class="nav-block" data-section="adminapply"><span class="nav-ico"><i class="cico cico-doc"></i></span>Заявки на Администратора</div>
         <div class="nav-block" data-section="apikeys"><span class="nav-ico"><i class="cico cico-key"></i></span>API-ключи</div>
         <div class="nav-block" data-section="admin" id="adminNavBlock" style="display:none;"><span class="nav-ico"><i class="cico cico-crown"></i></span>Админ-панель</div>
       </div>
@@ -394,6 +414,38 @@ body{
         <div class="panel">
           <div class="panel-head"><div><div class="panel-title"><i class="cico cico-shield ic"></i>Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div></div><div class="pill" id="secTgPill">—</div></div>
           <div id="secTgBody" class="loader">Загрузка…</div>
+        </div>
+      </div>
+
+      <!-- ОБРАЩЕНИЯ -->
+      <div class="dash-section" id="section-tickets">
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-mail ic"></i>Новое обращение</div><div class="panel-sub">Опиши проблему или вопрос — ответим в Telegram</div></div></div>
+          <div id="ticketCreateBody" class="loader">Загрузка…</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-mail ic"></i>Проверить обращение</div><div class="panel-sub">Введи номер вида TK-00001</div></div>
+          <div class="field" style="margin-bottom:1rem;">
+            <div style="display:flex;gap:.6rem;">
+              <input class="field-input" id="ticketLookupInput" type="text" placeholder="TK-00001" style="flex:1;">
+              <button class="btn btn-dark" id="ticketLookupBtn" style="flex-shrink:0;">Проверить</button>
+            </div>
+          </div>
+          <div id="myTicketsChips" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem;"></div>
+          <div id="ticketResult"></div>
+        </div>
+      </div>
+
+      <!-- ЗАЯВКИ НА АДМИНИСТРАТОРА -->
+      <div class="dash-section" id="section-adminapply">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-doc ic"></i>Заявки на Администратора</div></div>
+          <div class="empty-box">
+            <div class="emoji-ico"><i class="cico cico-doc"></i></div>
+            <div class="title">Раздел в разработке</div>
+            <div class="desc">Форма подачи заявки на позицию администратора появится здесь, как только приём заявок будет реализован на сервере.</div>
+          </div>
         </div>
       </div>
 
@@ -660,6 +712,7 @@ async function loadSectionData(name){
   if(name === 'thirdparty') return loadThirdParty();
   if(name === 'collection') return loadInventory();
   if(name === 'security') return loadSecurity();
+  if(name === 'tickets') return loadTickets();
   if(name === 'admin' && currentUser.role === 'admin') return loadAdmin();
 }
 
@@ -802,6 +855,144 @@ async function loadSecurity(){
     };
   }
 }
+
+/* ---------- обращения (support tickets) ---------- */
+const TICKET_TYPES = {
+  bug: 'Баг / Ошибка',
+  suggest: 'Предложение',
+  question: 'Вопрос',
+  complaint: 'Жалоба',
+  refund: 'Возврат средств',
+  account_deletion: 'Удаление данных аккаунта',
+  other: 'Другое'
+};
+const TICKETS_STORE_KEY = 'fid_my_tickets';
+
+function loadTickets(){
+  renderTicketForm();
+  renderMyTicketsChips();
+}
+
+function renderTicketForm(){
+  const body = $('ticketCreateBody');
+  if(!currentUser.telegram_id){
+    body.innerHTML = `<div class="empty-box" style="padding:1.2rem 0;">
+      <div class="emoji-ico">${icon('link')}</div>
+      <div class="title">Нужен привязанный Telegram</div>
+      <div class="desc">Привяжи Telegram в разделе «Безопасность» — туда придёт номер обращения и все ответы по нему.</div>
+    </div>`;
+    return;
+  }
+  body.innerHTML = `
+    <div class="field">
+      <label class="field-label" for="ticketType">Тип обращения</label>
+      <select class="field-input" id="ticketType">
+        ${Object.entries(TICKET_TYPES).map(([k,v]) => `<option value="${k}">${escapeHtml(v)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:.6rem;">
+      <label class="field-label" for="ticketDesc">Описание</label>
+      <textarea class="field-input" id="ticketDesc" rows="4" placeholder="Опиши подробнее, что случилось или что предлагаешь..." style="resize:vertical;min-height:96px;font-family:inherit;"></textarea>
+    </div>
+    <button class="submit-btn" id="ticketSubmitBtn" style="border-radius:100px;">Отправить обращение →</button>
+    <div class="form-msg" id="ticketCreateMsg" style="margin:.75rem 0 0;text-align:left;"></div>`;
+  $('ticketSubmitBtn').onclick = submitTicket;
+}
+
+async function submitTicket(){
+  const type = $('ticketType').value;
+  const description = $('ticketDesc').value.trim();
+  const msg = $('ticketCreateMsg');
+  msg.style.color = 'var(--red)'; msg.innerHTML = '';
+  if(!description){ msg.textContent = 'Опиши свой вопрос или проблему'; return; }
+
+  const btn = $('ticketSubmitBtn');
+  setBtnLoading(btn, true, 'Отправить обращение →');
+  try{
+    const res = await fetch(`${API}/api/tickets/create`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ nick: currentUser.username, telegram_id: currentUser.telegram_id, type, description })
+    });
+    const data = await res.json();
+    if(data.success){
+      saveMyTicket(data.ticketNum);
+      msg.style.color = 'var(--green)';
+      msg.innerHTML = icon('check','ic') + `Обращение <b>${data.ticketNum}</b> создано — следи за статусом в Telegram`;
+      $('ticketDesc').value = '';
+      renderMyTicketsChips();
+    } else {
+      msg.innerHTML = data.error || 'Не удалось создать обращение';
+    }
+  } catch(e){
+    msg.innerHTML = 'Ошибка соединения с сервером';
+  } finally {
+    setBtnLoading(btn, false, 'Отправить обращение →');
+  }
+}
+
+function getMyTickets(){
+  try{
+    const all = JSON.parse(localStorage.getItem(TICKETS_STORE_KEY) || '{}');
+    return all[currentUser.id] || [];
+  } catch(e){ return []; }
+}
+function saveMyTicket(num){
+  let all = {};
+  try{ all = JSON.parse(localStorage.getItem(TICKETS_STORE_KEY) || '{}'); } catch(e){}
+  const list = (all[currentUser.id] || []).filter(t => t !== num);
+  list.unshift(num);
+  all[currentUser.id] = list.slice(0, 20);
+  localStorage.setItem(TICKETS_STORE_KEY, JSON.stringify(all));
+}
+
+function renderMyTicketsChips(){
+  const wrap = $('myTicketsChips');
+  const list = getMyTickets();
+  if(!list.length){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = list.map(num => `<span class="ticket-chip" data-num="${escapeHtml(num)}">${escapeHtml(num)}</span>`).join('');
+  wrap.querySelectorAll('.ticket-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      $('ticketLookupInput').value = chip.dataset.num;
+      lookupTicket(chip.dataset.num);
+    });
+  });
+}
+
+async function lookupTicket(num){
+  const box = $('ticketResult');
+  box.innerHTML = `<div class="loader">Загрузка…</div>`;
+  try{
+    const res = await fetch(`${API}/api/tickets/${encodeURIComponent(num)}`);
+    const data = await res.json();
+    if(!data.success){
+      box.innerHTML = `<div class="empty-box" style="padding:1.6rem 0;"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не найдено</div><div class="desc">${data.error || 'Проверь номер обращения'}</div></div>`;
+      return;
+    }
+    const t = data.ticket;
+    const pillClass = t.status === 'Закрыто' ? 'pill-green' : (t.status === 'В работе' ? 'pill-amber' : 'pill-red');
+    const history = (t.history || []).map(h => `
+      <div class="timeline-item">
+        <div class="timeline-date">${escapeHtml(h.date)}</div>
+        <div class="timeline-text">${escapeHtml(h.status)}</div>
+      </div>`).join('');
+    box.innerHTML = `
+      <div class="row-line"><div class="row-label">Номер</div><div class="row-value">${escapeHtml(t.num)}</div></div>
+      <div class="row-line"><div class="row-label">Тип</div><div class="row-value">${escapeHtml(t.type)}</div></div>
+      <div class="row-line"><div class="row-label">Статус</div><div class="row-value"><span class="pill ${pillClass}">${escapeHtml(t.status)}</span></div></div>
+      <div class="row-line"><div class="row-label">Создано</div><div class="row-value">${escapeHtml(t.created)}</div></div>
+      ${t.description ? `<div class="row-line"><div class="row-label">Описание</div><div class="row-value" style="display:block;text-align:left;max-width:62%;font-weight:500;">${escapeHtml(t.description)}</div></div>` : ''}
+      <div style="margin-top:1.2rem;"><div class="timeline">${history || '<div style="color:var(--muted);font-size:.83rem;">История пуста</div>'}</div></div>`;
+  } catch(e){
+    box.innerHTML = `<div class="empty-box" style="padding:1.6rem 0;"><div class="emoji-ico">${icon('warn')}</div><div class="title">Ошибка соединения</div></div>`;
+  }
+}
+
+$('ticketLookupBtn').onclick = () => {
+  const num = $('ticketLookupInput').value.trim();
+  if(!num) return;
+  lookupTicket(num);
+};
+$('ticketLookupInput').addEventListener('keydown', e => { if(e.key === 'Enter') $('ticketLookupBtn').click(); });
 
 async function loadAdmin(){
   if(loaded.admin) return; loaded.admin = true;
