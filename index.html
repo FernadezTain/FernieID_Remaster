@@ -17,6 +17,9 @@
   --blob-pink:#e9a49e;
   --blob-sage:#cddac2;
   --red:#e2564f;
+  --green:#3f9d5b;
+  --amber:#c98a2b;
+  --line:#efe6da;
   --radius-card:28px;
   --radius-field:14px;
 }
@@ -27,148 +30,141 @@ body{
   font-family:'Inter',sans-serif;
   background:var(--bg);
   color:var(--ink);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:2rem 1.25rem;
-  position:relative;
-  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
 }
 
-/* декоративные пятна фона, как на референсе */
+/* декоративные пятна фона */
 .blob{position:fixed;border-radius:50%;filter:blur(2px);opacity:.9;z-index:0;pointer-events:none;}
 .blob-pink{width:340px;height:340px;background:var(--blob-pink);top:-140px;right:-110px;}
 .blob-sage{width:260px;height:260px;background:var(--blob-sage);bottom:-120px;left:-90px;}
 
-.auth-wrap{
-  position:relative;z-index:1;
-  width:100%;max-width:420px;
-}
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:flex;}
 
-.auth-card{
-  background:var(--card);
-  border-radius:var(--radius-card);
-  padding:2.75rem 2.5rem;
-  box-shadow:0 30px 60px -20px rgba(60,40,20,0.18);
-  animation:fadeUp .45s ease both;
-}
+/* ============ AUTH ============ */
+#auth-page{min-height:100vh;align-items:center;justify-content:center;padding:2rem 1.25rem;width:100%;}
+.auth-wrap{width:100%;max-width:420px;}
+.auth-card{background:var(--card);border-radius:var(--radius-card);padding:2.75rem 2.5rem;box-shadow:0 30px 60px -20px rgba(60,40,20,0.18);animation:fadeUp .45s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-
-.auth-title{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:1.9rem;
-  letter-spacing:-.5px;
-  margin-bottom:.6rem;
-}
-
-.auth-subtitle{
-  color:var(--muted);
-  font-size:.94rem;
-  line-height:1.5;
-  margin-bottom:1.9rem;
-}
-
+.auth-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.9rem;letter-spacing:-.5px;margin-bottom:.6rem;}
+.auth-subtitle{color:var(--muted);font-size:.94rem;line-height:1.5;margin-bottom:1.9rem;}
 .field{margin-bottom:1.15rem;}
-.field-label{
-  display:block;
-  font-size:.68rem;
-  font-weight:700;
-  letter-spacing:1.1px;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:.45rem;
-}
+.field-label{display:block;font-size:.68rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem;}
 .field-input-wrap{position:relative;}
-.field-input{
-  width:100%;
-  padding:13px 16px;
-  background:var(--field);
-  border:1px solid var(--field-border);
-  border-radius:var(--radius-field);
-  font-family:'Inter',sans-serif;
-  font-size:.92rem;
-  color:var(--ink);
-  outline:none;
-  transition:border-color .18s, box-shadow .18s, background .18s;
-}
+.field-input{width:100%;padding:13px 16px;background:var(--field);border:1px solid var(--field-border);border-radius:var(--radius-field);font-family:'Inter',sans-serif;font-size:.92rem;color:var(--ink);outline:none;transition:border-color .18s, box-shadow .18s, background .18s;}
 .field-input::placeholder{color:#b6ac9f;}
-.field-input:focus{
-  border-color:#d8c3af;
-  background:#fbf6ef;
-  box-shadow:0 0 0 3px rgba(216,195,175,0.28);
-}
+.field-input:focus{border-color:#d8c3af;background:#fbf6ef;box-shadow:0 0 0 3px rgba(216,195,175,0.28);}
 .field-input[type="password"]{padding-right:44px;}
-
-.eye-btn{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  background:none;border:none;cursor:pointer;color:var(--muted);
-  border-radius:8px;transition:color .15s, background .15s;
-  -webkit-tap-highlight-color:transparent;
-}
+.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--muted);border-radius:8px;transition:color .15s, background .15s;-webkit-tap-highlight-color:transparent;}
 .eye-btn:hover{color:var(--ink);background:rgba(0,0,0,0.04);}
-
-.forgot-row{
-  display:flex;justify-content:flex-end;
-  margin-top:-.55rem;margin-bottom:1.35rem;
-}
-.forgot-link{
-  font-size:.78rem;
-  color:var(--muted);
-  text-decoration:none;
-  font-weight:500;
-  transition:color .18s;
-}
+.forgot-row{display:flex;justify-content:flex-end;margin-top:-.55rem;margin-bottom:1.35rem;}
+.forgot-link{font-size:.78rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .18s;}
 .forgot-link:hover{color:var(--ink);text-decoration:underline;}
-
-.form-msg{
-  font-size:.8rem;
-  color:var(--red);
-  min-height:1.1rem;
-  margin:-.4rem 0 .8rem;
-}
-
-.submit-btn{
-  width:100%;
-  padding:15px;
-  background:var(--ink);
-  color:#fff;
-  border:none;
-  border-radius:999px;
-  font-family:'Inter',sans-serif;
-  font-size:.94rem;
-  font-weight:700;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:transform .15s, opacity .15s, background .15s;
-}
+.form-msg{font-size:.8rem;color:var(--red);min-height:1.1rem;margin:-.4rem 0 .8rem;}
+.submit-btn{width:100%;padding:15px;background:var(--ink);color:#fff;border:none;border-radius:999px;font-family:'Inter',sans-serif;font-size:.94rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s, opacity .15s, background .15s;}
 .submit-btn:hover{opacity:.92;}
 .submit-btn:active{transform:scale(.98);}
 .submit-btn:disabled{opacity:.55;cursor:default;transform:none;}
-
-.switch-row{
-  text-align:center;
-  margin-top:1.6rem;
-  font-size:.86rem;
-  color:var(--muted);
-}
-.switch-link{
-  color:var(--ink);
-  font-weight:700;
-  text-decoration:none;
-  cursor:pointer;
-}
+.switch-row{text-align:center;margin-top:1.6rem;font-size:.86rem;color:var(--muted);}
+.switch-link{color:var(--ink);font-weight:700;text-decoration:none;cursor:pointer;}
 .switch-link:hover{text-decoration:underline;}
-
 .form-section{display:none;flex-direction:column;animation:fadeUp .3s ease both;}
 .form-section.active{display:flex;}
+@media(max-width:420px){.auth-card{padding:2.1rem 1.5rem;border-radius:22px;}.auth-title{font-size:1.6rem;}}
 
-@media(max-width:420px){
-  .auth-card{padding:2.1rem 1.5rem;border-radius:22px;}
-  .auth-title{font-size:1.6rem;}
+/* ============ DASHBOARD ============ */
+#dash-page{min-height:100vh;width:100%;align-items:flex-start;justify-content:center;padding:1.75rem 1.5rem;gap:1.5rem;}
+.dash-shell{width:100%;max-width:1180px;display:flex;gap:1.5rem;align-items:flex-start;}
+
+/* --- sidebar --- */
+.sidebar{width:250px;flex-shrink:0;display:flex;flex-direction:column;gap:1.25rem;position:sticky;top:1.75rem;}
+.brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:-.3px;padding:0 .35rem;display:flex;align-items:center;gap:8px;}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:var(--ink);}
+
+.profile-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:.85rem .95rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:box-shadow .18s, transform .15s;box-shadow:0 8px 20px -14px rgba(60,40,20,.35);}
+.profile-card:hover{box-shadow:0 14px 26px -14px rgba(60,40,20,.4);}
+.profile-card:active{transform:scale(.99);}
+.profile-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#e9a49e,#e4bfa0);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1.05rem;flex-shrink:0;}
+.profile-meta{min-width:0;}
+.profile-name{font-weight:700;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.profile-sub{font-size:.76rem;color:var(--muted);margin-top:1px;}
+
+.nav-group{display:flex;flex-direction:column;gap:.35rem;}
+.nav-group-label{font-size:.65rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:0 .5rem;margin:.4rem 0 .1rem;}
+.nav-block{display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem;border-radius:16px;background:var(--card);border:1px solid var(--line);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--ink);transition:background .16s, border-color .16s, transform .1s;}
+.nav-block:hover{border-color:#e2d3bc;}
+.nav-block:active{transform:scale(.99);}
+.nav-block.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.nav-block .nav-ico{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.nav-block .nav-badge{margin-left:auto;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,0.06);color:var(--muted);}
+.nav-block.active .nav-badge{background:rgba(255,255,255,0.18);color:#fff;}
+
+.logout-block{margin-top:.25rem;color:var(--red);}
+.logout-block:hover{border-color:#f0c6c2;}
+
+/* --- content --- */
+.content{flex:1;min-width:0;}
+.dash-section{display:none;flex-direction:column;gap:1.1rem;animation:fadeUp .25s ease both;}
+.dash-section.active{display:flex;}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.6rem 1.75rem;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;gap:1rem;flex-wrap:wrap;}
+.panel-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.3px;}
+.panel-sub{color:var(--muted);font-size:.85rem;margin-top:2px;}
+.pill{font-size:.66rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 11px;border-radius:100px;background:var(--field);border:1px solid var(--field-border);color:#8a7a63;}
+.pill-green{background:#e9f6ec;border-color:#cfe9d5;color:var(--green);}
+.pill-red{background:#fbeceb;border-color:#f3d3d1;color:var(--red);}
+.pill-amber{background:#fbf1e0;border-color:#f0deb6;color:var(--amber);}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+.stat-box{background:var(--field);border:1px solid var(--field-border);border-radius:16px;padding:1rem 1.1rem;}
+.stat-label{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:.35rem;}
+.stat-value{font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;}
+
+.row-line{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;border-bottom:1px solid var(--line);gap:1rem;}
+.row-line:last-child{border-bottom:none;}
+.row-label{font-size:.85rem;color:var(--muted);}
+.row-value{font-size:.88rem;font-weight:600;text-align:right;}
+
+.btn{padding:11px 18px;border-radius:100px;border:none;font-family:'Inter',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;transition:opacity .15s, transform .1s;}
+.btn:active{transform:scale(.98);}
+.btn-dark{background:var(--ink);color:#fff;}
+.btn-dark:hover{opacity:.9;}
+.btn-outline{background:none;border:1px solid var(--field-border);color:var(--ink);}
+.btn-outline:hover{border-color:#d8c3af;background:var(--field);}
+.btn-danger{background:none;border:1px solid #f3d3d1;color:var(--red);}
+.btn-danger:hover{background:#fbeceb;}
+.btn:disabled{opacity:.5;cursor:default;}
+
+.empty-box{text-align:center;padding:2.4rem 1rem;color:var(--muted);}
+.empty-box .emoji{font-size:1.8rem;margin-bottom:.6rem;}
+.empty-box .title{font-weight:700;color:var(--ink);margin-bottom:.3rem;font-size:.95rem;}
+.empty-box .desc{font-size:.83rem;line-height:1.5;}
+
+.loader{color:var(--muted);font-size:.85rem;padding:1rem 0;}
+
+.game-card{display:flex;align-items:center;gap:.9rem;padding:1rem 1.1rem;border-radius:16px;background:var(--field);border:1px solid var(--field-border);}
+.game-ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.game-name{font-weight:700;font-size:.9rem;}
+.game-profiles{font-size:.78rem;color:var(--muted);margin-top:2px;}
+
+.item-card{display:flex;align-items:center;gap:.8rem;padding:.85rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);}
+.item-ico{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+
+.token-box{display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:var(--field);border:1px dashed var(--field-border);border-radius:14px;font-family:monospace;font-size:1.15rem;font-weight:700;letter-spacing:2px;justify-content:center;}
+
+.admin-table{width:100%;border-collapse:collapse;font-size:.84rem;}
+.admin-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:.6rem .5rem;border-bottom:1px solid var(--line);}
+.admin-table td{padding:.65rem .5rem;border-bottom:1px solid var(--line);}
+.admin-table tr:last-child td{border-bottom:none;}
+
+@media(max-width:900px){
+  .dash-shell{flex-direction:column;}
+  .sidebar{width:100%;position:relative;top:0;}
 }
 </style>
 </head>
@@ -177,106 +173,245 @@ body{
 <div class="blob blob-pink"></div>
 <div class="blob blob-sage"></div>
 
-<div class="auth-wrap">
-  <div class="auth-card">
+<!-- ============ AUTH ============ -->
+<div id="auth-page" class="page active">
+  <div class="auth-wrap">
+    <div class="auth-card">
 
-    <!-- ВХОД -->
-    <div class="form-section active" id="section-login">
-      <h1 class="auth-title">С возвращением</h1>
-      <p class="auth-subtitle">Рады снова вас видеть. Войдите, чтобы продолжить.</p>
+      <div class="form-section active" id="section-login">
+        <h1 class="auth-title">С возвращением</h1>
+        <p class="auth-subtitle">Рады снова вас видеть. Войдите, чтобы продолжить.</p>
 
-      <div class="field">
-        <label class="field-label" for="loginUsername">Логин</label>
-        <div class="field-input-wrap">
-          <input class="field-input" type="text" id="loginUsername" placeholder="Введите логин" autocomplete="username">
+        <div class="field">
+          <label class="field-label" for="loginUsername">Логин</label>
+          <div class="field-input-wrap">
+            <input class="field-input" type="text" id="loginUsername" placeholder="Введите логин" autocomplete="username">
+          </div>
         </div>
-      </div>
 
-      <div class="field" style="margin-bottom:.5rem;">
-        <label class="field-label" for="loginPassword">Пароль</label>
-        <div class="field-input-wrap">
-          <input class="field-input" type="password" id="loginPassword" placeholder="Введите пароль" autocomplete="current-password">
-          <button type="button" class="eye-btn" onclick="toggleVis('loginPassword', this)" tabindex="-1">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+        <div class="field" style="margin-bottom:.5rem;">
+          <label class="field-label" for="loginPassword">Пароль</label>
+          <div class="field-input-wrap">
+            <input class="field-input" type="password" id="loginPassword" placeholder="Введите пароль" autocomplete="current-password">
+            <button type="button" class="eye-btn" onclick="toggleVis('loginPassword', this)" tabindex="-1">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
+
+        <div class="forgot-row"><a href="password.html" class="forgot-link">Забыли пароль?</a></div>
+
+        <div class="form-msg" id="loginMsg"></div>
+        <button class="submit-btn" id="loginSubmit">Войти в аккаунт →</button>
+        <div class="switch-row">Ещё нет аккаунта? <a class="switch-link" id="go-register">Создать его</a></div>
       </div>
 
-      <div class="forgot-row">
-        <a href="password.html" class="forgot-link">Забыли пароль?</a>
+      <div class="form-section" id="section-register">
+        <h1 class="auth-title">Создать аккаунт</h1>
+        <p class="auth-subtitle">Зарегистрируйтесь, чтобы получить доступ к личному кабинету.</p>
+
+        <div class="field">
+          <label class="field-label" for="regUsername">Логин</label>
+          <div class="field-input-wrap"><input class="field-input" type="text" id="regUsername" placeholder="Придумайте логин" autocomplete="username"></div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="regPassword">Пароль</label>
+          <div class="field-input-wrap">
+            <input class="field-input" type="password" id="regPassword" placeholder="Придумайте пароль" autocomplete="new-password">
+            <button type="button" class="eye-btn" onclick="toggleVis('regPassword', this)" tabindex="-1">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="regPassword2">Повторите пароль</label>
+          <div class="field-input-wrap">
+            <input class="field-input" type="password" id="regPassword2" placeholder="Повторите пароль" autocomplete="new-password">
+            <button type="button" class="eye-btn" onclick="toggleVis('regPassword2', this)" tabindex="-1">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-msg" id="regMsg"></div>
+        <button class="submit-btn" id="regSubmit">Создать аккаунт →</button>
+        <div class="switch-row">Уже есть аккаунт? <a class="switch-link" id="go-login">Войти</a></div>
       </div>
 
-      <div class="form-msg" id="loginMsg"></div>
-
-      <button class="submit-btn" id="loginSubmit">Войти в аккаунт →</button>
-
-      <div class="switch-row">Ещё нет аккаунта? <a class="switch-link" id="go-register">Создать его</a></div>
     </div>
+  </div>
+</div>
 
-    <!-- РЕГИСТРАЦИЯ -->
-    <div class="form-section" id="section-register">
-      <h1 class="auth-title">Создать аккаунт</h1>
-      <p class="auth-subtitle">Зарегистрируйтесь, чтобы получить доступ к личному кабинету.</p>
+<!-- ============ DASHBOARD ============ -->
+<div id="dash-page" class="page">
+  <div class="dash-shell">
 
-      <div class="field">
-        <label class="field-label" for="regUsername">Логин</label>
-        <div class="field-input-wrap">
-          <input class="field-input" type="text" id="regUsername" placeholder="Придумайте логин" autocomplete="username">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-dot"></span>FernieID</div>
+
+      <div class="profile-card" id="profileCardBtn">
+        <div class="profile-avatar" id="profileAvatar">F</div>
+        <div class="profile-meta">
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-sub">FernieID аккаунт</div>
         </div>
       </div>
 
-      <div class="field">
-        <label class="field-label" for="regPassword">Пароль</label>
-        <div class="field-input-wrap">
-          <input class="field-input" type="password" id="regPassword" placeholder="Придумайте пароль" autocomplete="new-password">
-          <button type="button" class="eye-btn" onclick="toggleVis('regPassword', this)" tabindex="-1">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+      <div class="nav-group">
+        <div class="nav-group-label">Меню</div>
+        <div class="nav-block active" data-section="overview"><span class="nav-ico">🏠</span>Главная</div>
+        <div class="nav-block" data-section="subscription"><span class="nav-ico">✨</span>Подписка<span class="nav-badge" id="subBadge">Fernie+</span></div>
+        <div class="nav-block" data-section="stats"><span class="nav-ico">🎮</span>Статистика</div>
+        <div class="nav-block" data-section="thirdparty"><span class="nav-ico">🕹️</span>Сторонние игры</div>
+        <div class="nav-block" data-section="collection"><span class="nav-ico">🃏</span>Коллекция</div>
+        <div class="nav-block" data-section="security"><span class="nav-ico">🛡️</span>Безопасность</div>
+        <div class="nav-block" data-section="apikeys"><span class="nav-ico">🔑</span>API-ключи</div>
+        <div class="nav-block" data-section="admin" id="adminNavBlock" style="display:none;"><span class="nav-ico">👑</span>Админ-панель</div>
+        <div class="nav-block logout-block" id="logoutBlock"><span class="nav-ico">↩</span>Выйти</div>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <!-- ГЛАВНАЯ -->
+      <div class="dash-section active" id="section-overview">
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">С возвращением, <span id="ovUsername">—</span></div><div class="panel-sub">Обзор твоего аккаунта FernieID</div></div>
+            <div class="pill" id="ovRolePill">Пользователь</div>
+          </div>
+          <div class="grid3">
+            <div class="stat-box"><div class="stat-label">ID аккаунта</div><div class="stat-value" id="ovId" style="font-size:1rem;">—</div></div>
+            <div class="stat-box"><div class="stat-label">Баланс</div><div class="stat-value" id="ovBalance">—</div></div>
+            <div class="stat-box"><div class="stat-label">Telegram</div><div class="stat-value" id="ovTgStatus" style="font-size:1rem;">—</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Быстрые разделы</div></div>
+          <div class="grid2">
+            <div class="stat-box" style="cursor:pointer;" data-goto="subscription"><div class="stat-label">✨ Fernie+ / Pro</div><div class="row-value" style="font-size:.85rem;font-weight:500;color:var(--muted);">Посмотреть статус подписки</div></div>
+            <div class="stat-box" style="cursor:pointer;" data-goto="security"><div class="stat-label">🛡️ Безопасность</div><div class="row-value" style="font-size:.85rem;font-weight:500;color:var(--muted);">Telegram и защита аккаунта</div></div>
+          </div>
         </div>
       </div>
 
-      <div class="field">
-        <label class="field-label" for="regPassword2">Повторите пароль</label>
-        <div class="field-input-wrap">
-          <input class="field-input" type="password" id="regPassword2" placeholder="Повторите пароль" autocomplete="new-password">
-          <button type="button" class="eye-btn" onclick="toggleVis('regPassword2', this)" tabindex="-1">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+      <!-- ПОДПИСКА -->
+      <div class="dash-section" id="section-subscription">
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title">✨ Fernie+</div><div class="panel-sub">Базовая подписка FernieID</div></div><div class="pill" id="fpPill">—</div></div>
+          <div id="fpBody" class="loader">Загрузка…</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title">👑 Fernie Pro</div><div class="panel-sub">Расширенный уровень подписки</div></div><div class="pill" id="proPill">—</div></div>
+          <div id="proBody" class="loader">Загрузка…</div>
         </div>
       </div>
 
-      <div class="form-msg" id="regMsg"></div>
+      <!-- СТАТИСТИКА -->
+      <div class="dash-section" id="section-stats">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">🎮 Игровая статистика</div></div>
+          <div class="empty-box">
+            <div class="emoji">📊</div>
+            <div class="title">Раздел в разработке</div>
+            <div class="desc">История сессий и детальная статистика появится здесь на новом сайте чуть позже.</div>
+          </div>
+        </div>
+      </div>
 
-      <button class="submit-btn" id="regSubmit">Создать аккаунт →</button>
+      <!-- СТОРОННИЕ ИГРЫ -->
+      <div class="dash-section" id="section-thirdparty">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">🕹️ Сторонние игры</div><div class="panel-sub" id="tpSub">Аккаунты, привязанные к FernieID</div></div>
+          <div id="tpBody" class="loader">Загрузка…</div>
+        </div>
+      </div>
 
-      <div class="switch-row">Уже есть аккаунт? <a class="switch-link" id="go-login">Войти</a></div>
-    </div>
+      <!-- КОЛЛЕКЦИЯ -->
+      <div class="dash-section" id="section-collection">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">🃏 Коллекция</div><div class="panel-sub">Предметы и карты в твоём инвентаре</div></div>
+          <div id="invBody" class="loader">Загрузка…</div>
+        </div>
+      </div>
 
+      <!-- БЕЗОПАСНОСТЬ -->
+      <div class="dash-section" id="section-security">
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title">🛡️ Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div></div><div class="pill" id="secTgPill">—</div></div>
+          <div id="secTgBody" class="loader">Загрузка…</div>
+        </div>
+      </div>
+
+      <!-- API-КЛЮЧИ -->
+      <div class="dash-section" id="section-apikeys">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">🔑 API-ключи</div></div>
+          <div class="empty-box">
+            <div class="emoji">🔑</div>
+            <div class="title">Раздел в разработке</div>
+            <div class="desc">Управление ключами для сторонних интеграций перенесём сюда на следующем этапе.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- АДМИН -->
+      <div class="dash-section" id="section-admin">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">👑 Статистика проекта</div></div>
+          <div id="adminStatsBody" class="loader">Загрузка…</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Пользователи</div></div>
+          <div id="adminUsersBody" class="loader">Загрузка…</div>
+        </div>
+      </div>
+
+      <!-- ПРОФИЛЬ -->
+      <div class="dash-section" id="section-profile">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Управление профилем</div></div>
+          <div class="row-line"><div class="row-label">Логин</div><div class="row-value" id="pfUsername">—</div></div>
+          <div class="row-line"><div class="row-label">ID аккаунта</div><div class="row-value" id="pfId">—</div></div>
+          <div class="row-line"><div class="row-label">Роль</div><div class="row-value" id="pfRole">—</div></div>
+          <div class="row-line"><div class="row-label">Telegram</div><div class="row-value" id="pfTg">—</div></div>
+          <div style="margin-top:1.2rem;display:flex;gap:.6rem;flex-wrap:wrap;">
+            <button class="btn btn-outline" disabled>Сменить пароль (скоро)</button>
+            <button class="btn btn-danger" id="pfLogoutBtn">Выйти из аккаунта</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
 </div>
 
 <script>
 const API = 'https://ferniex-id.vercel.app';
 const $ = id => document.getElementById(id);
+const STORE_KEY = 'fid_session';
 
-function toggleVis(inputId, btn){
+let currentUser = null; // {id, username, role, telegramLinked, telegram_id}
+
+/* ---------- helpers ---------- */
+function toggleVis(inputId){
   const inp = $(inputId);
-  const show = inp.type === 'password';
-  inp.type = show ? 'text' : 'password';
+  inp.type = inp.type === 'password' ? 'text' : 'password';
 }
-
+function setBtnLoading(btn, loading, defaultText){
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Подождите…' : defaultText;
+}
 function showSection(name){
   $('section-login').classList.toggle('active', name==='login');
   $('section-register').classList.toggle('active', name==='register');
   $('loginMsg').textContent=''; $('regMsg').textContent='';
 }
+
+/* ---------- auth: login / register ---------- */
 $('go-register').onclick = () => showSection('register');
 $('go-login').onclick = () => showSection('login');
-
-function setBtnLoading(btn, loading, defaultText){
-  btn.disabled = loading;
-  btn.textContent = loading ? 'Подождите…' : defaultText;
-}
 
 $('loginSubmit').onclick = async () => {
   const username = $('loginUsername').value.trim();
@@ -288,15 +423,13 @@ $('loginSubmit').onclick = async () => {
   setBtnLoading($('loginSubmit'), true, 'Войти в аккаунт →');
   try{
     const res = await fetch(`${API}/api/login`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
-    if(data.success){
-      msg.style.color = '#3f9d5b';
-      msg.textContent = '✓ Вход выполнен';
-      // тут позже будет редирект в личный кабинет
+    if(data.success && data.userId){
+      localStorage.setItem(STORE_KEY, JSON.stringify({ userId: data.userId, username }));
+      await bootDashboard();
     } else {
       msg.style.color = 'var(--red)';
       msg.textContent = data.error || 'Неверный логин или пароль';
@@ -316,8 +449,7 @@ $('regSubmit').onclick = async () => {
   const password = $('regPassword').value;
   const password2 = $('regPassword2').value;
   const msg = $('regMsg');
-  msg.style.color = 'var(--red)';
-  msg.textContent = '';
+  msg.style.color = 'var(--red)'; msg.textContent = '';
 
   if(!username || !password || !password2){ msg.textContent = 'Заполните все поля'; return; }
   if(password !== password2){ msg.textContent = 'Пароли не совпадают'; return; }
@@ -326,15 +458,24 @@ $('regSubmit').onclick = async () => {
   setBtnLoading($('regSubmit'), true, 'Создать аккаунт →');
   try{
     const res = await fetch(`${API}/api/register`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
     if(data.success){
-      msg.style.color = '#3f9d5b';
-      msg.textContent = '✓ Аккаунт создан, теперь войдите';
-      setTimeout(() => { showSection('login'); $('loginUsername').value = username; }, 900);
+      msg.style.color = 'var(--green)';
+      msg.textContent = '✓ Аккаунт создан, входим…';
+      const loginRes = await fetch(`${API}/api/login`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ username, password })
+      });
+      const loginData = await loginRes.json();
+      if(loginData.success && loginData.userId){
+        localStorage.setItem(STORE_KEY, JSON.stringify({ userId: loginData.userId, username }));
+        await bootDashboard();
+      } else {
+        showSection('login'); $('loginUsername').value = username;
+      }
     } else {
       msg.style.color = 'var(--red)';
       msg.textContent = data.error || 'Ошибка регистрации';
@@ -347,6 +488,278 @@ $('regSubmit').onclick = async () => {
   }
 };
 $('regPassword2').addEventListener('keydown', e => { if(e.key==='Enter') $('regSubmit').click(); });
+
+/* ---------- logout ---------- */
+function logout(){
+  localStorage.removeItem(STORE_KEY);
+  currentUser = null;
+  $('dash-page').classList.remove('active');
+  $('auth-page').classList.add('active');
+  showSection('login');
+}
+$('logoutBlock').onclick = logout;
+$('pfLogoutBtn').onclick = logout;
+
+/* ---------- dashboard nav ---------- */
+document.querySelectorAll('.nav-block[data-section]').forEach(el=>{
+  el.addEventListener('click', ()=> switchSection(el.dataset.section));
+});
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  el.addEventListener('click', ()=> switchSection(el.dataset.goto));
+});
+$('profileCardBtn').onclick = () => switchSection('profile');
+
+function switchSection(name){
+  document.querySelectorAll('.nav-block[data-section]').forEach(n=>n.classList.toggle('active', n.dataset.section===name));
+  document.querySelectorAll('.dash-section').forEach(s=>s.classList.remove('active'));
+  const target = $('section-'+name);
+  if(target) target.classList.add('active');
+  loadSectionData(name);
+}
+
+/* ---------- boot / verify session ---------- */
+async function bootDashboard(){
+  const raw = localStorage.getItem(STORE_KEY);
+  if(!raw) return logout();
+  const { userId, username } = JSON.parse(raw);
+
+  try{
+    const res = await fetch(`${API}/api/verify-token`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId, username })
+    });
+    const data = await res.json();
+    if(!data.success) return logout();
+
+    currentUser = {
+      id: data.userId, username: data.username, role: data.role,
+      telegramLinked: data.telegramLinked, telegram_id: data.telegram_id
+    };
+
+    renderProfile();
+    $('auth-page').classList.remove('active');
+    $('dash-page').classList.add('active');
+    switchSection('overview');
+  } catch(e){
+    logout();
+  }
+}
+
+function renderProfile(){
+  $('profileAvatar').textContent = (currentUser.username||'?')[0].toUpperCase();
+  $('profileName').textContent = currentUser.username;
+  $('ovUsername').textContent = currentUser.username;
+  $('ovId').textContent = currentUser.id;
+  $('ovRolePill').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
+  $('ovTgStatus').textContent = currentUser.telegramLinked ? '✅ Привязан' : '— Нет';
+  $('pfUsername').textContent = currentUser.username;
+  $('pfId').textContent = currentUser.id;
+  $('pfRole').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
+  $('pfTg').textContent = currentUser.telegramLinked ? '✅ Привязан' : 'Не привязан';
+  $('adminNavBlock').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
+}
+
+/* ---------- section data loaders ---------- */
+const loaded = {};
+async function loadSectionData(name){
+  if(!currentUser) return;
+  if(name === 'overview') return loadBalance();
+  if(name === 'subscription') return loadSubscription();
+  if(name === 'thirdparty') return loadThirdParty();
+  if(name === 'collection') return loadInventory();
+  if(name === 'security') return loadSecurity();
+  if(name === 'admin' && currentUser.role === 'admin') return loadAdmin();
+}
+
+async function loadBalance(){
+  try{
+    const res = await fetch(`${API}/api/balance/${currentUser.id}`);
+    const data = await res.json();
+    $('ovBalance').textContent = (data.balance ?? '—');
+  } catch(e){ $('ovBalance').textContent = '—'; }
+}
+
+async function loadSubscription(){
+  if(loaded.subscription) return; loaded.subscription = true;
+  try{
+    const [fpRes, proRes] = await Promise.all([
+      fetch(`${API}/api/fernieplus/${currentUser.id}`),
+      fetch(`${API}/api/fernieplus/pro/${currentUser.id}`)
+    ]);
+    const fp = await fpRes.json();
+    const pro = await proRes.json();
+
+    if(fp.success){
+      $('fpPill').className = 'pill ' + (fp.active ? 'pill-green' : '');
+      $('fpPill').textContent = fp.active ? 'Активна' : 'Не активна';
+      $('fpBody').innerHTML = fp.active
+        ? `<div class="row-line"><div class="row-label">Статус</div><div class="row-value">✅ Активна</div></div>`
+        : `<div class="empty-box"><div class="emoji">✨</div><div class="title">Fernie+ не активирован</div><div class="desc">Оформи подписку через Telegram-бота, чтобы получить доступ к дополнительным возможностям.</div></div>`;
+    } else {
+      $('fpPill').textContent = '—';
+      $('fpBody').innerHTML = `<div class="empty-box"><div class="emoji">🔗</div><div class="title">Нужен привязанный Telegram</div><div class="desc">${fp.error || 'Привяжи Telegram в разделе «Безопасность», чтобы видеть статус подписки.'}</div></div>`;
+    }
+
+    if(pro.success){
+      $('proPill').className = 'pill ' + (pro.active ? 'pill-green' : '');
+      $('proPill').textContent = pro.active ? 'Активна' : 'Не активна';
+      $('proBody').innerHTML = pro.active
+        ? `<div class="row-line"><div class="row-label">Тариф</div><div class="row-value">${pro.plan || 'Pro'}</div></div>`
+        : `<div class="empty-box"><div class="emoji">👑</div><div class="title">Fernie Pro не активирован</div><div class="desc">Более высокий уровень подписки со своими бонусами.</div></div>`;
+    } else {
+      $('proPill').textContent = '—';
+      $('proBody').innerHTML = `<div class="empty-box"><div class="emoji">🔗</div><div class="title">Нужен привязанный Telegram</div><div class="desc">${pro.error || 'Привяжи Telegram, чтобы проверить статус Pro.'}</div></div>`;
+    }
+  } catch(e){
+    $('fpBody').innerHTML = $('proBody').innerHTML = `<div class="empty-box"><div class="emoji">⚠️</div><div class="title">Не удалось загрузить</div><div class="desc">Попробуй обновить страницу.</div></div>`;
+  }
+}
+
+async function loadThirdParty(){
+  if(loaded.thirdparty) return; loaded.thirdparty = true;
+  try{
+    const res = await fetch(`${API}/api/third-party-games/${currentUser.id}`);
+    const data = await res.json();
+    const games = data.games || [];
+    if(!games.length){
+      $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji">🕹️</div><div class="title">Пока ничего не привязано</div><div class="desc">Здесь появятся игровые аккаунты, связанные с твоим FernieID.</div></div>`;
+      return;
+    }
+    $('tpBody').innerHTML = games.map(g => `
+      <div class="game-card" style="margin-bottom:.7rem;">
+        <div class="game-ico">${g.icon || '🎮'}</div>
+        <div>
+          <div class="game-name">${escapeHtml(g.name)}</div>
+          <div class="game-profiles">${(g.profiles||[]).map(escapeHtml).join(', ') || 'Без профилей'}</div>
+        </div>
+      </div>`).join('');
+  } catch(e){
+    $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji">⚠️</div><div class="title">Не удалось загрузить</div></div>`;
+  }
+}
+
+async function loadInventory(){
+  if(loaded.collection) return; loaded.collection = true;
+  try{
+    const res = await fetch(`${API}/api/inventory/${currentUser.id}`);
+    const data = await res.json();
+    const items = data.items || [];
+    if(!items.length){
+      $('invBody').innerHTML = `<div class="empty-box"><div class="emoji">🃏</div><div class="title">Коллекция пуста</div><div class="desc">Открывай кейсы и получай предметы — они появятся здесь.</div></div>`;
+      return;
+    }
+    $('invBody').innerHTML = `<div class="grid2">` + items.map(it => `
+      <div class="item-card">
+        <div class="item-ico">🃏</div>
+        <div><div class="game-name">${escapeHtml(it.name || it.item_name || 'Предмет')}</div></div>
+      </div>`).join('') + `</div>`;
+  } catch(e){
+    $('invBody').innerHTML = `<div class="empty-box"><div class="emoji">⚠️</div><div class="title">Не удалось загрузить</div></div>`;
+  }
+}
+
+async function loadSecurity(){
+  const linked = currentUser.telegramLinked;
+  $('secTgPill').className = 'pill ' + (linked ? 'pill-green' : 'pill-amber');
+  $('secTgPill').textContent = linked ? 'Привязан' : 'Не привязан';
+
+  if(linked){
+    $('secTgBody').innerHTML = `
+      <div class="row-line"><div class="row-label">Telegram ID</div><div class="row-value">${currentUser.telegram_id}</div></div>
+      <div style="margin-top:1rem;"><button class="btn btn-danger" id="unlinkTgBtn">Отвязать Telegram</button></div>`;
+    $('unlinkTgBtn').onclick = async () => {
+      if(!confirm('Точно отвязать Telegram от аккаунта?')) return;
+      const btn = $('unlinkTgBtn'); setBtnLoading(btn, true, 'Отвязать Telegram');
+      try{
+        const res = await fetch(`${API}/api/telegram/unlink`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ userId: currentUser.id })
+        });
+        const data = await res.json();
+        if(data.success){
+          currentUser.telegramLinked = false; currentUser.telegram_id = null;
+          renderProfile(); loadSecurity();
+        } else { alert(data.error || 'Не удалось отвязать'); }
+      } catch(e){ alert('Ошибка соединения'); }
+      finally{ setBtnLoading(btn, false, 'Отвязать Telegram'); }
+    };
+  } else {
+    $('secTgBody').innerHTML = `
+      <div class="empty-box" style="padding:1rem 0;">
+        <div class="emoji">🔗</div>
+        <div class="title">Telegram не привязан</div>
+        <div class="desc">Сгенерируй код и отправь его боту, чтобы включить 2FA и уведомления о входах.</div>
+      </div>
+      <button class="btn btn-dark" id="genTokenBtn">Сгенерировать код привязки</button>
+      <div id="tokenResult" style="margin-top:1rem;"></div>`;
+    $('genTokenBtn').onclick = async () => {
+      const btn = $('genTokenBtn'); setBtnLoading(btn, true, 'Сгенерировать код привязки');
+      try{
+        const res = await fetch(`${API}/api/telegram/generate-token`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ userId: currentUser.id })
+        });
+        const data = await res.json();
+        if(data.success){
+          $('tokenResult').innerHTML = `
+            <div class="token-box">${data.token}</div>
+            <p style="font-size:.8rem;color:var(--muted);margin-top:.7rem;">Отправь этот код нашему Telegram-боту командой привязки, чтобы завершить процесс.</p>`;
+        } else { alert(data.error || 'Не удалось получить код'); }
+      } catch(e){ alert('Ошибка соединения'); }
+      finally{ setBtnLoading(btn, false, 'Сгенерировать код привязки'); }
+    };
+  }
+}
+
+async function loadAdmin(){
+  if(loaded.admin) return; loaded.admin = true;
+  try{
+    const [statsRes, usersRes] = await Promise.all([
+      fetch(`${API}/api/admin/stats?adminId=${currentUser.id}`),
+      fetch(`${API}/api/admin/users?adminId=${currentUser.id}`)
+    ]);
+    const stats = await statsRes.json();
+    const users = await usersRes.json();
+
+    if(stats.success){
+      $('adminStatsBody').innerHTML = `<div class="grid3">
+        <div class="stat-box"><div class="stat-label">Всего пользователей</div><div class="stat-value">${stats.total_users}</div></div>
+        <div class="stat-box"><div class="stat-label">Новых сегодня</div><div class="stat-value">${stats.new_today}</div></div>
+        <div class="stat-box"><div class="stat-label">С Telegram</div><div class="stat-value">${stats.tg_linked}</div></div>
+        <div class="stat-box"><div class="stat-label">Админов</div><div class="stat-value">${stats.admin_count}</div></div>
+        <div class="stat-box"><div class="stat-label">Сессий всего</div><div class="stat-value">${stats.total_sessions}</div></div>
+        <div class="stat-box"><div class="stat-label">Сессий сегодня</div><div class="stat-value">${stats.sessions_today}</div></div>
+      </div>`;
+    } else {
+      $('adminStatsBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${stats.error||''}</div></div>`;
+    }
+
+    if(users.success){
+      $('adminUsersBody').innerHTML = `<table class="admin-table"><thead><tr>
+        <th>Логин</th><th>Роль</th><th>Баланс</th><th>Telegram</th></tr></thead><tbody>` +
+        users.users.slice(0,50).map(u => `<tr>
+          <td>${escapeHtml(u.username)}</td>
+          <td>${u.role}</td>
+          <td>${u.balance ?? '—'}</td>
+          <td>${u.telegram_id ? '✅' : '—'}</td>
+        </tr>`).join('') + `</tbody></table>`;
+    } else {
+      $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${users.error||''}</div></div>`;
+    }
+  } catch(e){
+    $('adminStatsBody').innerHTML = $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Ошибка загрузки</div></div>`;
+  }
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------- init ---------- */
+(function init(){
+  const raw = localStorage.getItem(STORE_KEY);
+  if(raw) bootDashboard();
+})();
 </script>
 </body>
 </html>
