@@ -71,6 +71,9 @@ body{
 .switch-link:hover{text-decoration:underline;}
 .form-section{display:none;flex-direction:column;animation:fadeUp .3s ease both;}
 .form-section.active{display:flex;}
+.autologin-box{text-align:center;padding:.5rem 0 .25rem;}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--field-border);border-top-color:var(--ink);margin:0 auto 1.4rem;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 @media(max-width:420px){.auth-card{padding:2.1rem 1.5rem;border-radius:22px;}.auth-title{font-size:1.6rem;}}
 
 /* ============ DASHBOARD ============ */
@@ -137,9 +140,6 @@ body{
 
 .cico-check::before{left:1px;top:8px;width:2px;height:6px;background:currentColor;transform:rotate(45deg);border-radius:1px;}
 .cico-check::after{left:4px;top:3px;width:2px;height:11px;background:currentColor;transform:rotate(-45deg);border-radius:1px;}
-
-.logout-block{margin-top:.25rem;color:var(--red);}
-.logout-block:hover{border-color:#f0c6c2;}
 
 /* инлайн-иконка рядом с текстом (заголовки, статусы) */
 .ic{display:inline-block;vertical-align:-3px;margin-right:7px;}
@@ -223,6 +223,14 @@ body{
 <div id="auth-page" class="page active">
   <div class="auth-wrap">
     <div class="auth-card">
+
+      <div class="form-section" id="section-autologin">
+        <div class="autologin-box">
+          <div class="spinner"></div>
+          <h1 class="auth-title" style="font-size:1.55rem;">С возвращением, <span id="autoUsername">—</span></h1>
+          <p class="auth-subtitle" style="margin-bottom:0;">Уже входим в аккаунт, подождите пожалуйста…</p>
+        </div>
+      </div>
 
       <div class="form-section active" id="section-login">
         <h1 class="auth-title">С возвращением</h1>
@@ -313,7 +321,6 @@ body{
         <div class="nav-block" data-section="security"><span class="nav-ico"><i class="cico cico-shield"></i></span>Безопасность</div>
         <div class="nav-block" data-section="apikeys"><span class="nav-ico"><i class="cico cico-key"></i></span>API-ключи</div>
         <div class="nav-block" data-section="admin" id="adminNavBlock" style="display:none;"><span class="nav-ico"><i class="cico cico-crown"></i></span>Админ-панель</div>
-        <div class="nav-block logout-block" id="logoutBlock"><span class="nav-ico"><i class="cico cico-logout"></i></span>Выйти</div>
       </div>
     </aside>
 
@@ -457,6 +464,7 @@ function setBtnLoading(btn, loading, defaultText){
 function showSection(name){
   $('section-login').classList.toggle('active', name==='login');
   $('section-register').classList.toggle('active', name==='register');
+  $('section-autologin').classList.toggle('active', name==='autologin');
   $('loginMsg').textContent=''; $('regMsg').textContent='';
 }
 
@@ -548,7 +556,6 @@ function logout(){
   $('auth-page').classList.add('active');
   showSection('login');
 }
-$('logoutBlock').onclick = logout;
 $('pfLogoutBtn').onclick = logout;
 
 /* ---------- dashboard nav ---------- */
@@ -560,34 +567,47 @@ document.querySelectorAll('[data-goto]').forEach(el=>{
 });
 $('profileCardBtn').onclick = () => switchSection('profile');
 
+let activeNavSection = null;
+
 function switchSection(name){
   document.querySelectorAll('.nav-block[data-section]').forEach(n=>n.classList.toggle('active', n.dataset.section===name));
   document.querySelectorAll('.dash-section').forEach(s=>s.classList.remove('active'));
   const target = $('section-'+name);
   if(target) target.classList.add('active');
+  activeNavSection = name;
   updateNavCascade(name);
   loadSectionData(name);
 }
 
-/* ---------- цепочка: боковые блоки сдвигаются "стрелкой" к активному пункту ---------- */
-function updateNavCascade(activeSection){
+/* ---------- цепочка: боковые блоки сдвигаются "стрелкой" к активному/наведённому пункту ---------- */
+function updateNavCascade(focusSection){
   const all = Array.from(document.querySelectorAll('.sidebar .nav-block'));
   const visible = all.filter(b => getComputedStyle(b).display !== 'none');
-  const activeIndex = visible.findIndex(b => b.dataset.section === activeSection);
+  const focusIndex = visible.findIndex(b => b.dataset.section === focusSection);
 
-  const PEAK = 16;   // максимальный сдвиг у активного пункта (px)
-  const STEP = 6;    // на сколько уменьшается сдвиг с каждым шагом от активного
+  const PEAK = 16;   // максимальный сдвиг у активного/наведённого пункта (px)
+  const STEP = 6;    // на сколько уменьшается сдвиг с каждым шагом от него
 
   visible.forEach((b, i) => {
-    if(activeIndex === -1){
+    if(focusIndex === -1){
       b.style.transform = '';
       return;
     }
-    const dist = Math.abs(i - activeIndex);
+    const dist = Math.abs(i - focusIndex);
     const shift = Math.max(0, PEAK - dist * STEP);
     b.style.transform = shift ? `translateX(${shift}px)` : '';
   });
 }
+
+/* при наведении на любой пункт меню — временно подсвечиваем цепочку под курсором,
+   при уходе курсора — возвращаем цепочку к реально открытому разделу */
+function attachNavHoverCascade(){
+  document.querySelectorAll('.sidebar .nav-block[data-section]').forEach(b => {
+    b.addEventListener('mouseenter', () => updateNavCascade(b.dataset.section));
+    b.addEventListener('mouseleave', () => updateNavCascade(activeNavSection));
+  });
+}
+attachNavHoverCascade();
 
 /* ---------- boot / verify session ---------- */
 async function bootDashboard(){
@@ -830,7 +850,14 @@ function escapeHtml(s){
 /* ---------- init ---------- */
 (function init(){
   const raw = localStorage.getItem(STORE_KEY);
-  if(raw) bootDashboard();
+  if(raw){
+    try{
+      const { username } = JSON.parse(raw);
+      $('autoUsername').textContent = username || '—';
+    } catch(e){}
+    showSection('autologin');
+    bootDashboard();
+  }
 })();
 </script>
 </body>
