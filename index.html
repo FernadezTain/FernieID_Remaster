@@ -1315,7 +1315,7 @@ function startTgTimerAndPoll(deadline, endpoint){
       if(d.status === 'linked'){
         clearTgFlow();
         currentUser.telegramLinked = true; currentUser.telegram_id = d.telegram_id;
-        localStorage.setItem('fernieid_session', JSON.stringify(currentUser));
+        localStorage.setItem(STORE_KEY, JSON.stringify(currentUser));
         showTgLinkResult(true, d.telegram_id);
       } else if(d.status === 'expired' || d.status === 'declined'){
         clearTgFlow();
