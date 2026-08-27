@@ -98,6 +98,7 @@ body{
 .nav-block{display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem;border-radius:16px;background:var(--card);border:1px solid var(--line);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--ink);transition:background .16s, border-color .16s, transform .38s cubic-bezier(.22,1,.36,1);will-change:transform;}
 .nav-block:hover{border-color:#e2d3bc;}
 .nav-block.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.nav-block.sub{padding:.6rem .85rem .6rem 1.5rem;font-size:.8rem;}
 .nav-block .nav-ico{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .nav-block .nav-badge{margin-left:auto;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,0.06);color:var(--muted);}
 .nav-block.active .nav-badge{background:rgba(255,255,255,0.18);color:#fff;}
@@ -147,6 +148,9 @@ body{
 .cico-doc::before{left:2px;top:0;width:12px;height:16px;border:2px solid currentColor;border-radius:2px;background:var(--card);}
 .cico-doc::after{left:5px;top:5px;width:6px;height:2px;background:currentColor;box-shadow:0 4px 0 0 currentColor, 0 8px 0 0 currentColor;}
 
+.cico-list::before{left:0;top:2px;width:3px;height:3px;border-radius:50%;background:currentColor;box-shadow:0 5px 0 0 currentColor, 0 10px 0 0 currentColor;}
+.cico-list::after{left:6px;top:1px;width:10px;height:2px;background:currentColor;box-shadow:0 5px 0 0 currentColor, 0 10px 0 0 currentColor;}
+
 /* инлайн-иконка рядом с текстом (заголовки, статусы) */
 .ic{display:inline-block;vertical-align:-3px;margin-right:7px;}
 
@@ -189,6 +193,7 @@ body{
 .btn-outline:hover{border-color:#d8c3af;background:var(--field);}
 .btn-danger{background:none;border:1px solid #f3d3d1;color:var(--red);}
 .btn-danger:hover{background:#fbeceb;}
+.btn-sm{padding:8px 14px;font-size:.76rem;}
 .btn:disabled{opacity:.5;cursor:default;}
 
 .empty-box{text-align:center;padding:2.4rem 1rem;color:var(--muted);}
@@ -220,11 +225,62 @@ body{
 .timeline-item:last-child::after{display:none;}
 .timeline-date{font-size:.72rem;color:var(--muted);margin-bottom:2px;}
 .timeline-text{font-size:.85rem;font-weight:600;}
+.timeline-actions{display:flex;gap:.4rem;margin-top:.35rem;}
+.timeline-mini-btn{font-size:.68rem;font-weight:700;padding:4px 9px;border-radius:8px;border:1px solid var(--field-border);background:var(--field);color:var(--ink);cursor:pointer;}
+.timeline-mini-btn:hover{border-color:#d8c3af;}
+.timeline-mini-btn.danger{color:var(--red);border-color:#f3d3d1;}
+.timeline-mini-btn.danger:hover{background:#fbeceb;}
 
 .admin-table{width:100%;border-collapse:collapse;font-size:.84rem;}
 .admin-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:.6rem .5rem;border-bottom:1px solid var(--line);}
 .admin-table td{padding:.65rem .5rem;border-bottom:1px solid var(--line);}
 .admin-table tr:last-child td{border-bottom:none;}
+
+/* --- tabs --- */
+.tabs{display:flex;gap:.4rem;background:var(--field);border:1px solid var(--field-border);padding:4px;border-radius:100px;margin-bottom:1.1rem;width:fit-content;}
+.tab-btn{padding:8px 16px;border-radius:100px;border:none;background:none;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;color:var(--muted);cursor:pointer;transition:background .15s, color .15s;}
+.tab-btn.active{background:var(--ink);color:#fff;}
+
+/* --- ticket list card --- */
+.ticket-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);cursor:pointer;transition:border-color .15s;margin-bottom:.6rem;}
+.ticket-row:last-child{margin-bottom:0;}
+.ticket-row:hover{border-color:#d8c3af;}
+.ticket-row-ico{width:36px;height:36px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);}
+.ticket-row-main{flex:1;min-width:0;}
+.ticket-row-title{font-weight:700;font-size:.86rem;}
+.ticket-row-meta{font-size:.76rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* --- api key card --- */
+.key-card{padding:1.1rem 1.2rem;border-radius:16px;background:var(--field);border:1px solid var(--field-border);margin-bottom:.8rem;}
+.key-card:last-child{margin-bottom:0;}
+.key-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.7rem;}
+.key-card-name{font-weight:700;font-size:.92rem;}
+.key-card-app{font-size:.76rem;color:var(--muted);margin-top:1px;}
+.key-value-box{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:#fff;border:1px solid var(--field-border);border-radius:10px;font-family:monospace;font-size:.78rem;color:var(--ink);margin-bottom:.7rem;overflow:hidden;}
+.key-value-box span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.key-copy-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;font-size:.7rem;font-weight:700;}
+.key-copy-btn:hover{color:var(--ink);}
+.key-stats{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:.7rem;}
+.key-stat{font-size:.74rem;color:var(--muted);}
+.key-stat b{color:var(--ink);font-weight:700;}
+.key-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
+
+/* --- modal --- */
+.modal-overlay{position:fixed;inset:0;background:rgba(24,20,16,0.42);z-index:50;display:none;align-items:center;justify-content:center;padding:1.25rem;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--card);border-radius:24px;padding:1.9rem 1.8rem;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 30px 60px -20px rgba(60,40,20,0.3);animation:fadeUp .25s ease both;}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:1.1rem;}
+.modal-actions{display:flex;gap:.6rem;margin-top:1.1rem;}
+.modal-actions .btn{flex:1;}
+
+/* --- ticket detail (admin) --- */
+.detail-back{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:1rem;}
+.detail-back:hover{color:var(--ink);}
+.status-btn-row{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0;}
+.status-btn{flex:1;min-width:130px;padding:11px;border-radius:12px;border:1px solid var(--field-border);background:var(--field);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;color:var(--ink);cursor:pointer;transition:all .15s;}
+.status-btn.st-open.is-active{background:#fbf1e0;border-color:#f0deb6;color:var(--amber);}
+.status-btn.st-progress.is-active{background:#e9f2fb;border-color:#c9dff3;color:#2f6fa8;}
+.status-btn.st-closed.is-active{background:#e9f6ec;border-color:#cfe9d5;color:var(--green);}
 
 @media(max-width:900px){
   .dash-shell{flex-direction:column;}
@@ -338,9 +394,20 @@ body{
         <div class="nav-block" data-section="collection"><span class="nav-ico"><i class="cico cico-cards"></i></span>Коллекция</div>
         <div class="nav-block" data-section="security"><span class="nav-ico"><i class="cico cico-shield"></i></span>Безопасность</div>
         <div class="nav-block" data-section="tickets"><span class="nav-ico"><i class="cico cico-mail"></i></span>Обращения</div>
+        <div class="nav-block sub" data-section="mytickets"><span class="nav-ico"><i class="cico cico-list"></i></span>Мои обращения</div>
         <div class="nav-block" data-section="adminapply"><span class="nav-ico"><i class="cico cico-doc"></i></span>Заявки на Администратора</div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Для разработчиков</div>
         <div class="nav-block" data-section="apikeys"><span class="nav-ico"><i class="cico cico-key"></i></span>API-ключи</div>
-        <div class="nav-block" data-section="admin" id="adminNavBlock" style="display:none;"><span class="nav-ico"><i class="cico cico-crown"></i></span>Админ-панель</div>
+      </div>
+
+      <div class="nav-group" id="adminNavGroup" style="display:none;">
+        <div class="nav-group-label">Для администрации</div>
+        <div class="nav-block" data-section="admin" id="adminNavBlock"><span class="nav-ico"><i class="cico cico-crown"></i></span>Админ-панель</div>
+        <div class="nav-block" data-section="admintickets"><span class="nav-ico"><i class="cico cico-mail"></i></span>Обращения<span class="nav-badge" id="adminTicketsBadge">0</span></div>
+        <div class="nav-block" data-section="adminapplies"><span class="nav-ico"><i class="cico cico-doc"></i></span>Заявки на Адм</div>
       </div>
     </aside>
 
@@ -417,7 +484,7 @@ body{
         </div>
       </div>
 
-      <!-- ОБРАЩЕНИЯ -->
+      <!-- ОБРАЩЕНИЯ (создание + проверка по номеру, для всех) -->
       <div class="dash-section" id="section-tickets">
         <div class="panel">
           <div class="panel-head"><div><div class="panel-title"><i class="cico cico-mail ic"></i>Новое обращение</div><div class="panel-sub">Опиши проблему или вопрос — ответим в Telegram</div></div></div>
@@ -425,7 +492,7 @@ body{
         </div>
 
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="cico cico-mail ic"></i>Проверить обращение</div><div class="panel-sub">Введи номер вида TK-00001</div></div>
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-mail ic"></i>Проверить обращение</div><div class="panel-sub">Введи номер вида TK-00001</div></div></div>
           <div class="field" style="margin-bottom:1rem;">
             <div style="display:flex;gap:.6rem;">
               <input class="field-input" id="ticketLookupInput" type="text" placeholder="TK-00001" style="flex:1;">
@@ -437,27 +504,37 @@ body{
         </div>
       </div>
 
-      <!-- ЗАЯВКИ НА АДМИНИСТРАТОРА -->
-      <div class="dash-section" id="section-adminapply">
+      <!-- МОИ ОБРАЩЕНИЯ (для всех, статус, Активные/Закрытые) -->
+      <div class="dash-section" id="section-mytickets">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="cico cico-doc ic"></i>Заявки на Администратора</div></div>
-          <div class="empty-box">
-            <div class="emoji-ico"><i class="cico cico-doc"></i></div>
-            <div class="title">Раздел в разработке</div>
-            <div class="desc">Форма подачи заявки на позицию администратора появится здесь, как только приём заявок будет реализован на сервере.</div>
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-list ic"></i>Мои обращения</div><div class="panel-sub">Статус твоих обращений в поддержку</div></div></div>
+          <div class="tabs">
+            <button class="tab-btn active" data-mytab="active">Активные</button>
+            <button class="tab-btn" data-mytab="closed">Закрытые</button>
           </div>
+          <div id="myTicketsListBody" class="loader">Загрузка…</div>
+        </div>
+        <div class="panel" id="myTicketDetailPanel" style="display:none;">
+          <div class="detail-back" id="myTicketDetailBack">← Назад к списку</div>
+          <div id="myTicketDetailBody"></div>
+        </div>
+      </div>
+
+      <!-- ЗАЯВКИ НА АДМИНИСТРАТОРА (для всех — подать заявку) -->
+      <div class="dash-section" id="section-adminapply">
+        <div class="panel" id="adminApplyPanel">
+          <div id="adminApplyContent"></div>
         </div>
       </div>
 
       <!-- API-КЛЮЧИ -->
       <div class="dash-section" id="section-apikeys">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="cico cico-key ic"></i>API-ключи</div></div>
-          <div class="empty-box">
-            <div class="emoji-ico"><i class="cico cico-key"></i></div>
-            <div class="title">Раздел в разработке</div>
-            <div class="desc">Управление ключами для сторонних интеграций перенесём сюда на следующем этапе.</div>
+          <div class="panel-head">
+            <div><div class="panel-title"><i class="cico cico-key ic"></i>API-ключи</div><div class="panel-sub">Ключи для сторонних интеграций с твоим аккаунтом</div></div>
+            <button class="btn btn-dark btn-sm" id="createKeyBtn">+ Новый ключ</button>
           </div>
+          <div id="apiKeysBody" class="loader">Загрузка…</div>
         </div>
       </div>
 
@@ -470,6 +547,34 @@ body{
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Пользователи</div></div>
           <div id="adminUsersBody" class="loader">Загрузка…</div>
+        </div>
+      </div>
+
+      <!-- АДМИН: ОБРАЩЕНИЯ (полноценное рассмотрение) -->
+      <div class="dash-section" id="section-admintickets">
+        <div class="panel" id="adminTicketsListPanel">
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-mail ic"></i>Обращения</div><div class="panel-sub">Рассмотрение обращений пользователей</div></div></div>
+          <div class="tabs">
+            <button class="tab-btn active" data-admtab="active">Активные</button>
+            <button class="tab-btn" data-admtab="closed">Закрытые</button>
+          </div>
+          <div id="adminTicketsListBody" class="loader">Загрузка…</div>
+        </div>
+        <div class="panel" id="adminTicketDetailPanel" style="display:none;">
+          <div class="detail-back" id="adminTicketDetailBack">← Назад к списку</div>
+          <div id="adminTicketDetailBody"></div>
+        </div>
+      </div>
+
+      <!-- АДМИН: ЗАЯВКИ НА АДМИНИСТРАТОРА (рассмотрение) -->
+      <div class="dash-section" id="section-adminapplies">
+        <div class="panel" id="adminAppliesListPanel">
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-doc ic"></i>Заявки на Администратора</div><div class="panel-sub">Рассмотрение заявок кандидатов</div></div></div>
+          <div id="adminAppliesListBody" class="loader">Загрузка…</div>
+        </div>
+        <div class="panel" id="adminApplyDetailPanel" style="display:none;">
+          <div class="detail-back" id="adminApplyDetailBack">← Назад к списку</div>
+          <div id="adminApplyDetailBody"></div>
         </div>
       </div>
 
@@ -490,6 +595,11 @@ body{
 
     </main>
   </div>
+</div>
+
+<!-- модалка для API ключей / меток обращений -->
+<div class="modal-overlay" id="genericModal">
+  <div class="modal-box" id="genericModalBox"></div>
 </div>
 
 <script>
@@ -519,6 +629,18 @@ function showSection(name){
   $('section-autologin').classList.toggle('active', name==='autologin');
   $('loginMsg').textContent=''; $('regMsg').textContent='';
 }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function closeModal(){
+  $('genericModal').classList.remove('active');
+  $('genericModalBox').innerHTML = '';
+}
+function openModal(html){
+  $('genericModalBox').innerHTML = html;
+  $('genericModal').classList.add('active');
+}
+$('genericModal').addEventListener('click', e => { if(e.target === $('genericModal')) closeModal(); });
 
 /* ---------- auth: login / register ---------- */
 $('go-register').onclick = () => showSection('register');
@@ -700,7 +822,7 @@ function renderProfile(){
   $('pfId').textContent = currentUser.id;
   $('pfRole').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
   $('pfTg').innerHTML = currentUser.telegramLinked ? icon('check','ic')+'Привязан' : 'Не привязан';
-  $('adminNavBlock').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
+  $('adminNavGroup').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
 }
 
 /* ---------- section data loaders ---------- */
@@ -713,7 +835,12 @@ async function loadSectionData(name){
   if(name === 'collection') return loadInventory();
   if(name === 'security') return loadSecurity();
   if(name === 'tickets') return loadTickets();
+  if(name === 'mytickets') return loadMyTickets();
+  if(name === 'adminapply') return loadAdminApplyPage();
+  if(name === 'apikeys') return loadApiKeys();
   if(name === 'admin' && currentUser.role === 'admin') return loadAdmin();
+  if(name === 'admintickets' && currentUser.role === 'admin') return loadAdminTicketsList();
+  if(name === 'adminapplies' && currentUser.role === 'admin') return loadAdminAppliesList();
 }
 
 async function loadBalance(){
@@ -856,7 +983,49 @@ async function loadSecurity(){
   }
 }
 
-/* ---------- обращения (support tickets) ---------- */
+async function loadAdmin(){
+  if(loaded.admin) return; loaded.admin = true;
+  try{
+    const [statsRes, usersRes] = await Promise.all([
+      fetch(`${API}/api/admin/stats?adminId=${currentUser.id}`),
+      fetch(`${API}/api/admin/users?adminId=${currentUser.id}`)
+    ]);
+    const stats = await statsRes.json();
+    const users = await usersRes.json();
+
+    if(stats.success){
+      $('adminStatsBody').innerHTML = `<div class="grid3">
+        <div class="stat-box"><div class="stat-label">Всего пользователей</div><div class="stat-value">${stats.total_users}</div></div>
+        <div class="stat-box"><div class="stat-label">Новых сегодня</div><div class="stat-value">${stats.new_today}</div></div>
+        <div class="stat-box"><div class="stat-label">С Telegram</div><div class="stat-value">${stats.tg_linked}</div></div>
+        <div class="stat-box"><div class="stat-label">Админов</div><div class="stat-value">${stats.admin_count}</div></div>
+        <div class="stat-box"><div class="stat-label">Сессий всего</div><div class="stat-value">${stats.total_sessions}</div></div>
+        <div class="stat-box"><div class="stat-label">Сессий сегодня</div><div class="stat-value">${stats.sessions_today}</div></div>
+      </div>`;
+    } else {
+      $('adminStatsBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${stats.error||''}</div></div>`;
+    }
+
+    if(users.success){
+      $('adminUsersBody').innerHTML = `<table class="admin-table"><thead><tr>
+        <th>Логин</th><th>Роль</th><th>Баланс</th><th>Telegram</th></tr></thead><tbody>` +
+        users.users.slice(0,50).map(u => `<tr>
+          <td>${escapeHtml(u.username)}</td>
+          <td>${u.role}</td>
+          <td>${u.balance ?? '—'}</td>
+          <td>${u.telegram_id ? icon('check') : '—'}</td>
+        </tr>`).join('') + `</tbody></table>`;
+    } else {
+      $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${users.error||''}</div></div>`;
+    }
+  } catch(e){
+    $('adminStatsBody').innerHTML = $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Ошибка загрузки</div></div>`;
+  }
+}
+
+/* ══════════════════════════════════════════
+   ОБРАЩЕНИЯ (создание + проверка по номеру) — для всех
+   ══════════════════════════════════════════ */
 const TICKET_TYPES = {
   bug: 'Баг / Ошибка',
   suggest: 'Предложение',
@@ -941,7 +1110,7 @@ function saveMyTicket(num){
   try{ all = JSON.parse(localStorage.getItem(TICKETS_STORE_KEY) || '{}'); } catch(e){}
   const list = (all[currentUser.id] || []).filter(t => t !== num);
   list.unshift(num);
-  all[currentUser.id] = list.slice(0, 20);
+  all[currentUser.id] = list.slice(0, 30);
   localStorage.setItem(TICKETS_STORE_KEY, JSON.stringify(all));
 }
 
@@ -958,6 +1127,22 @@ function renderMyTicketsChips(){
   });
 }
 
+function renderTicketDetailHtml(t){
+  const pillClass = t.status === 'Закрыто' ? 'pill-green' : (t.status === 'В работе' ? 'pill-amber' : 'pill-red');
+  const history = (t.history || []).map(h => `
+    <div class="timeline-item">
+      <div class="timeline-date">${escapeHtml(h.date)}</div>
+      <div class="timeline-text">${escapeHtml(h.status)}</div>
+    </div>`).join('');
+  return `
+    <div class="row-line"><div class="row-label">Номер</div><div class="row-value">${escapeHtml(t.num)}</div></div>
+    <div class="row-line"><div class="row-label">Тип</div><div class="row-value">${escapeHtml(t.type)}</div></div>
+    <div class="row-line"><div class="row-label">Статус</div><div class="row-value"><span class="pill ${pillClass}">${escapeHtml(t.status)}</span></div></div>
+    <div class="row-line"><div class="row-label">Создано</div><div class="row-value">${escapeHtml(t.created)}</div></div>
+    ${t.description ? `<div class="row-line"><div class="row-label">Описание</div><div class="row-value" style="display:block;text-align:left;max-width:62%;font-weight:500;">${escapeHtml(t.description)}</div></div>` : ''}
+    <div style="margin-top:1.2rem;"><div class="timeline">${history || '<div style="color:var(--muted);font-size:.83rem;">История пуста</div>'}</div></div>`;
+}
+
 async function lookupTicket(num){
   const box = $('ticketResult');
   box.innerHTML = `<div class="loader">Загрузка…</div>`;
@@ -968,20 +1153,7 @@ async function lookupTicket(num){
       box.innerHTML = `<div class="empty-box" style="padding:1.6rem 0;"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не найдено</div><div class="desc">${data.error || 'Проверь номер обращения'}</div></div>`;
       return;
     }
-    const t = data.ticket;
-    const pillClass = t.status === 'Закрыто' ? 'pill-green' : (t.status === 'В работе' ? 'pill-amber' : 'pill-red');
-    const history = (t.history || []).map(h => `
-      <div class="timeline-item">
-        <div class="timeline-date">${escapeHtml(h.date)}</div>
-        <div class="timeline-text">${escapeHtml(h.status)}</div>
-      </div>`).join('');
-    box.innerHTML = `
-      <div class="row-line"><div class="row-label">Номер</div><div class="row-value">${escapeHtml(t.num)}</div></div>
-      <div class="row-line"><div class="row-label">Тип</div><div class="row-value">${escapeHtml(t.type)}</div></div>
-      <div class="row-line"><div class="row-label">Статус</div><div class="row-value"><span class="pill ${pillClass}">${escapeHtml(t.status)}</span></div></div>
-      <div class="row-line"><div class="row-label">Создано</div><div class="row-value">${escapeHtml(t.created)}</div></div>
-      ${t.description ? `<div class="row-line"><div class="row-label">Описание</div><div class="row-value" style="display:block;text-align:left;max-width:62%;font-weight:500;">${escapeHtml(t.description)}</div></div>` : ''}
-      <div style="margin-top:1.2rem;"><div class="timeline">${history || '<div style="color:var(--muted);font-size:.83rem;">История пуста</div>'}</div></div>`;
+    box.innerHTML = renderTicketDetailHtml(data.ticket);
   } catch(e){
     box.innerHTML = `<div class="empty-box" style="padding:1.6rem 0;"><div class="emoji-ico">${icon('warn')}</div><div class="title">Ошибка соединения</div></div>`;
   }
@@ -994,48 +1166,757 @@ $('ticketLookupBtn').onclick = () => {
 };
 $('ticketLookupInput').addEventListener('keydown', e => { if(e.key === 'Enter') $('ticketLookupBtn').click(); });
 
-async function loadAdmin(){
-  if(loaded.admin) return; loaded.admin = true;
+/* ══════════════════════════════════════════
+   МОИ ОБРАЩЕНИЯ — для всех, статус, Активные / Закрытые
+   ══════════════════════════════════════════ */
+let myTicketsTab = 'active';
+let myTicketsCache = null;
+
+document.querySelectorAll('#section-mytickets .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#section-mytickets .tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    myTicketsTab = btn.dataset.mytab;
+    renderMyTicketsList();
+  });
+});
+$('myTicketDetailBack').addEventListener('click', () => {
+  $('myTicketDetailPanel').style.display = 'none';
+  $('myTicketsListBody').parentElement.style.display = '';
+});
+
+async function loadMyTickets(){
+  $('myTicketDetailPanel').style.display = 'none';
+  const nums = getMyTickets();
+  if(!nums.length){
+    myTicketsCache = [];
+    renderMyTicketsList();
+    return;
+  }
+  $('myTicketsListBody').innerHTML = `<div class="loader">Загрузка…</div>`;
   try{
-    const [statsRes, usersRes] = await Promise.all([
-      fetch(`${API}/api/admin/stats?adminId=${currentUser.id}`),
-      fetch(`${API}/api/admin/users?adminId=${currentUser.id}`)
-    ]);
-    const stats = await statsRes.json();
-    const users = await usersRes.json();
-
-    if(stats.success){
-      $('adminStatsBody').innerHTML = `<div class="grid3">
-        <div class="stat-box"><div class="stat-label">Всего пользователей</div><div class="stat-value">${stats.total_users}</div></div>
-        <div class="stat-box"><div class="stat-label">Новых сегодня</div><div class="stat-value">${stats.new_today}</div></div>
-        <div class="stat-box"><div class="stat-label">С Telegram</div><div class="stat-value">${stats.tg_linked}</div></div>
-        <div class="stat-box"><div class="stat-label">Админов</div><div class="stat-value">${stats.admin_count}</div></div>
-        <div class="stat-box"><div class="stat-label">Сессий всего</div><div class="stat-value">${stats.total_sessions}</div></div>
-        <div class="stat-box"><div class="stat-label">Сессий сегодня</div><div class="stat-value">${stats.sessions_today}</div></div>
-      </div>`;
-    } else {
-      $('adminStatsBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${stats.error||''}</div></div>`;
-    }
-
-    if(users.success){
-      $('adminUsersBody').innerHTML = `<table class="admin-table"><thead><tr>
-        <th>Логин</th><th>Роль</th><th>Баланс</th><th>Telegram</th></tr></thead><tbody>` +
-        users.users.slice(0,50).map(u => `<tr>
-          <td>${escapeHtml(u.username)}</td>
-          <td>${u.role}</td>
-          <td>${u.balance ?? '—'}</td>
-          <td>${u.telegram_id ? icon('check') : '—'}</td>
-        </tr>`).join('') + `</tbody></table>`;
-    } else {
-      $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${users.error||''}</div></div>`;
-    }
+    const results = await Promise.all(nums.map(num =>
+      fetch(`${API}/api/tickets/${encodeURIComponent(num)}`).then(r => r.json()).catch(() => null)
+    ));
+    myTicketsCache = results
+      .map((d, i) => d && d.success ? d.ticket : null)
+      .filter(Boolean);
+    renderMyTicketsList();
   } catch(e){
-    $('adminStatsBody').innerHTML = $('adminUsersBody').innerHTML = `<div class="empty-box"><div class="title">Ошибка загрузки</div></div>`;
+    $('myTicketsListBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div></div>`;
   }
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderMyTicketsList(){
+  if(myTicketsCache === null) return;
+  const closed = myTicketsCache.filter(t => t.status === 'Закрыто');
+  const active = myTicketsCache.filter(t => t.status !== 'Закрыто');
+  const list = myTicketsTab === 'active' ? active : closed;
+
+  if(!list.length){
+    $('myTicketsListBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('list')}</div><div class="title">${myTicketsTab === 'active' ? 'Активных обращений нет' : 'Закрытых обращений нет'}</div><div class="desc">${myTicketsCache.length ? '' : 'Создай обращение в разделе «Обращения», и оно появится здесь.'}</div></div>`;
+    return;
+  }
+  $('myTicketsListBody').innerHTML = list.map(t => {
+    const pillClass = t.status === 'Закрыто' ? 'pill-green' : (t.status === 'В работе' ? 'pill-amber' : 'pill-red');
+    return `<div class="ticket-row" data-num="${escapeHtml(t.num)}">
+      <div class="ticket-row-ico">${icon('mail')}</div>
+      <div class="ticket-row-main">
+        <div class="ticket-row-title">${escapeHtml(t.num)} · ${escapeHtml(t.type)}</div>
+        <div class="ticket-row-meta">${escapeHtml(t.created)}</div>
+      </div>
+      <span class="pill ${pillClass}">${escapeHtml(t.status)}</span>
+    </div>`;
+  }).join('');
+  $('myTicketsListBody').querySelectorAll('.ticket-row').forEach(row => {
+    row.addEventListener('click', () => openMyTicketDetail(row.dataset.num));
+  });
+}
+
+function openMyTicketDetail(num){
+  const t = (myTicketsCache || []).find(x => x.num === num);
+  if(!t) return;
+  $('myTicketDetailPanel').style.display = '';
+  $('myTicketDetailBody').innerHTML = renderTicketDetailHtml(t);
+  $('myTicketDetailPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ══════════════════════════════════════════
+   API-КЛЮЧИ — полноценный функционал
+   ══════════════════════════════════════════ */
+let apiKeysCache = [];
+
+async function loadApiKeys(){
+  $('apiKeysBody').innerHTML = `<div class="loader">Загрузка…</div>`;
+  try{
+    const res = await fetch(`${API}/api/apikeys/${currentUser.id}`);
+    const data = await res.json();
+    if(!data.success){
+      $('apiKeysBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div></div>`;
+      return;
+    }
+    apiKeysCache = data.keys || [];
+    renderApiKeys();
+  } catch(e){
+    $('apiKeysBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Ошибка соединения</div></div>`;
+  }
+}
+
+function renderApiKeys(){
+  if(!apiKeysCache.length){
+    $('apiKeysBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('key')}</div><div class="title">Ключей пока нет</div><div class="desc">Создай первый API-ключ для интеграции сторонних сервисов с твоим аккаунтом.</div></div>`;
+    return;
+  }
+  $('apiKeysBody').innerHTML = apiKeysCache.map(k => {
+    const statusPill = k.status === 'active' ? `<span class="pill pill-green">Активен</span>` : `<span class="pill pill-red">Отключён</span>`;
+    const lastUsed = k.last_used_at ? new Date(k.last_used_at).toLocaleString('ru-RU', { timeZone:'Europe/Moscow' }) : 'ещё не использовался';
+    return `<div class="key-card" data-id="${k.id}">
+      <div class="key-card-top">
+        <div>
+          <div class="key-card-name">${escapeHtml(k.name)}</div>
+          <div class="key-card-app">${escapeHtml(k.app_name || 'Без привязанного приложения')} · ${escapeHtml(k.type || 'other')}</div>
+        </div>
+        ${statusPill}
+      </div>
+      <div class="key-value-box"><span id="keyval-${k.id}">${escapeHtml(k.key)}</span><button class="key-copy-btn" data-copy="${k.id}">Копировать</button></div>
+      <div class="key-stats">
+        <div class="key-stat">Запросов всего: <b>${k.requests_total ?? 0}</b></div>
+        <div class="key-stat">Сегодня: <b>${k.requests_today ?? 0}</b></div>
+        <div class="key-stat">Последний запрос: <b>${lastUsed}</b></div>
+      </div>
+      <div class="key-actions">
+        <button class="btn btn-outline btn-sm" data-edit="${k.id}">Редактировать</button>
+        <button class="btn btn-outline btn-sm" data-logs="${k.id}">Логи</button>
+        <button class="btn btn-danger btn-sm" data-delete="${k.id}">Удалить</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  $('apiKeysBody').querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.copy;
+      const val = $('keyval-'+id).textContent;
+      navigator.clipboard?.writeText(val).then(() => {
+        btn.textContent = 'Скопировано';
+        setTimeout(() => btn.textContent = 'Копировать', 1400);
+      }).catch(() => {});
+    });
+  });
+  $('apiKeysBody').querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => openEditKeyModal(btn.dataset.edit)));
+  $('apiKeysBody').querySelectorAll('[data-logs]').forEach(btn => btn.addEventListener('click', () => openKeyLogsModal(btn.dataset.logs)));
+  $('apiKeysBody').querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => deleteApiKey(btn.dataset.delete)));
+}
+
+$('createKeyBtn').onclick = () => {
+  openModal(`
+    <div class="modal-title">Новый API-ключ</div>
+    <div class="field"><label class="field-label">Название ключа</label><input class="field-input" id="newKeyName" placeholder="Например: Мой бот"></div>
+    <div class="field"><label class="field-label">Привязанное приложение</label><input class="field-input" id="newKeyApp" placeholder="Необязательно"></div>
+    <div class="field" style="margin-bottom:0;">
+      <label class="field-label">Тип</label>
+      <select class="field-input" id="newKeyType">
+        <option value="other">Другое</option>
+        <option value="bot">Бот</option>
+        <option value="website">Сайт</option>
+        <option value="app">Приложение</option>
+      </select>
+    </div>
+    <div class="form-msg" id="newKeyMsg"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-dark" id="newKeySubmit">Создать</button>
+    </div>
+  `);
+  $('newKeySubmit').onclick = async () => {
+    const name = $('newKeyName').value.trim();
+    const appName = $('newKeyApp').value.trim();
+    const type = $('newKeyType').value;
+    const msg = $('newKeyMsg');
+    if(!name){ msg.textContent = 'Укажи название ключа'; return; }
+    const btn = $('newKeySubmit'); setBtnLoading(btn, true, 'Создать');
+    try{
+      const res = await fetch(`${API}/api/apikeys/create`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, name, appName, type })
+      });
+      const data = await res.json();
+      if(data.success){
+        closeModal();
+        loadApiKeys();
+      } else { msg.textContent = data.error || 'Не удалось создать ключ'; }
+    } catch(e){ msg.textContent = 'Ошибка соединения'; }
+    finally{ setBtnLoading(btn, false, 'Создать'); }
+  };
+};
+
+function openEditKeyModal(keyId){
+  const k = apiKeysCache.find(x => String(x.id) === String(keyId));
+  if(!k) return;
+  openModal(`
+    <div class="modal-title">Редактировать ключ</div>
+    <div class="field"><label class="field-label">Название ключа</label><input class="field-input" id="editKeyName" value="${escapeHtml(k.name)}"></div>
+    <div class="field" style="margin-bottom:0;"><label class="field-label">Привязанное приложение</label><input class="field-input" id="editKeyApp" value="${escapeHtml(k.app_name || '')}"></div>
+    <div class="form-msg" id="editKeyMsg"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-dark" id="editKeySubmit">Сохранить</button>
+    </div>
+  `);
+  $('editKeySubmit').onclick = async () => {
+    const name = $('editKeyName').value.trim();
+    const appName = $('editKeyApp').value.trim();
+    const msg = $('editKeyMsg');
+    if(!name){ msg.textContent = 'Укажи название ключа'; return; }
+    const btn = $('editKeySubmit'); setBtnLoading(btn, true, 'Сохранить');
+    try{
+      const res = await fetch(`${API}/api/apikeys/${keyId}`, {
+        method:'PATCH', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, name, appName })
+      });
+      const data = await res.json();
+      if(data.success){ closeModal(); loadApiKeys(); }
+      else { msg.textContent = data.error || 'Не удалось сохранить'; }
+    } catch(e){ msg.textContent = 'Ошибка соединения'; }
+    finally{ setBtnLoading(btn, false, 'Сохранить'); }
+  };
+}
+
+async function openKeyLogsModal(keyId){
+  openModal(`<div class="modal-title">Логи запросов</div><div class="loader">Загрузка…</div>`);
+  try{
+    const res = await fetch(`${API}/api/apikeys/${keyId}/logs?userId=${currentUser.id}`);
+    const data = await res.json();
+    if(!data.success){
+      openModal(`<div class="modal-title">Логи запросов</div><div class="empty-box"><div class="desc">${escapeHtml(data.error||'Не удалось загрузить')}</div></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Закрыть</button></div>`);
+      return;
+    }
+    const logs = data.logs || [];
+    const rows = logs.length ? logs.map(l => `
+      <div class="row-line">
+        <div class="row-label">${escapeHtml(l.action || '—')}</div>
+        <div class="row-value" style="font-size:.76rem;">${l.created_at ? new Date(l.created_at).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'}) : '—'}</div>
+      </div>`).join('') : `<div class="empty-box" style="padding:1.2rem 0;"><div class="desc">Записей пока нет</div></div>`;
+    openModal(`<div class="modal-title">Логи запросов</div><div style="max-height:50vh;overflow-y:auto;">${rows}</div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Закрыть</button></div>`);
+  } catch(e){
+    openModal(`<div class="modal-title">Логи запросов</div><div class="empty-box"><div class="desc">Ошибка соединения</div></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Закрыть</button></div>`);
+  }
+}
+
+async function deleteApiKey(keyId){
+  if(!confirm('Удалить этот API-ключ? Действие необратимо.')) return;
+  try{
+    const res = await fetch(`${API}/api/apikeys/${keyId}`, {
+      method:'DELETE', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    const data = await res.json();
+    if(data.success) loadApiKeys();
+    else alert(data.error || 'Не удалось удалить ключ');
+  } catch(e){ alert('Ошибка соединения'); }
+}
+
+/* ══════════════════════════════════════════
+   АДМИН: ОБРАЩЕНИЯ — полноценное рассмотрение
+   ══════════════════════════════════════════ */
+let adminTicketsCache = [];
+let adminTicketsTab = 'active';
+
+document.querySelectorAll('#section-admintickets .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#section-admintickets .tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    adminTicketsTab = btn.dataset.admtab;
+    renderAdminTicketsList();
+  });
+});
+$('adminTicketDetailBack').addEventListener('click', () => {
+  $('adminTicketDetailPanel').style.display = 'none';
+  $('adminTicketsListPanel').style.display = '';
+});
+
+async function loadAdminTicketsList(){
+  $('adminTicketDetailPanel').style.display = 'none';
+  $('adminTicketsListPanel').style.display = '';
+  $('adminTicketsListBody').innerHTML = `<div class="loader">Загрузка…</div>`;
+  try{
+    const res = await fetch(`${API}/api/admin/tickets?adminId=${currentUser.id}`);
+    const data = await res.json();
+    if(!data.success){
+      $('adminTicketsListBody').innerHTML = `<div class="empty-box"><div class="title">Нет доступа</div><div class="desc">${escapeHtml(data.error||'')}</div></div>`;
+      return;
+    }
+    adminTicketsCache = data.tickets || [];
+    $('adminTicketsBadge').textContent = adminTicketsCache.filter(t => t.status !== 'closed').length;
+    renderAdminTicketsList();
+  } catch(e){
+    $('adminTicketsListBody').innerHTML = `<div class="empty-box"><div class="title">Ошибка соединения</div></div>`;
+  }
+}
+
+function renderAdminTicketsList(){
+  const closed = adminTicketsCache.filter(t => t.status === 'closed');
+  const active = adminTicketsCache.filter(t => t.status !== 'closed');
+  const list = adminTicketsTab === 'active' ? active : closed;
+  const statusLabels = { open: 'Открыто', in_progress: 'В работе', closed: 'Закрыто' };
+
+  if(!list.length){
+    $('adminTicketsListBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('mail')}</div><div class="title">${adminTicketsTab === 'active' ? 'Активных обращений нет' : 'Закрытых обращений нет'}</div></div>`;
+    return;
+  }
+  $('adminTicketsListBody').innerHTML = list.map(t => {
+    const pillClass = t.status === 'closed' ? 'pill-green' : (t.status === 'in_progress' ? 'pill-amber' : 'pill-red');
+    const dt = t.created_at ? new Date(t.created_at).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'}) : '';
+    return `<div class="ticket-row" data-num="${escapeHtml(t.ticket_num)}">
+      <div class="ticket-row-ico">${icon('mail')}</div>
+      <div class="ticket-row-main">
+        <div class="ticket-row-title">${escapeHtml(t.ticket_num)} · ${escapeHtml(t.type || '—')}</div>
+        <div class="ticket-row-meta">${escapeHtml(t.user_nick || '—')} · ${escapeHtml(dt)}</div>
+      </div>
+      <span class="pill ${pillClass}">${escapeHtml(statusLabels[t.status] || t.status)}</span>
+    </div>`;
+  }).join('');
+  $('adminTicketsListBody').querySelectorAll('.ticket-row').forEach(row => {
+    row.addEventListener('click', () => openAdminTicketDetail(row.dataset.num));
+  });
+}
+
+function openAdminTicketDetail(num){
+  const t = adminTicketsCache.find(x => x.ticket_num === num);
+  if(!t) return;
+  $('adminTicketsListPanel').style.display = 'none';
+  $('adminTicketDetailPanel').style.display = '';
+  renderAdminTicketDetail(t);
+  $('adminTicketDetailPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function renderAdminTicketDetail(t){
+  const statusLabels = { open: 'Открыто', in_progress: 'В работе', closed: 'Закрыто' };
+  const history = (typeof t.history === 'string' ? JSON.parse(t.history) : t.history) || [];
+  const historyHtml = history.map((h, i) => `
+    <div class="timeline-item">
+      <div class="timeline-date">${escapeHtml(h.date)}</div>
+      <div class="timeline-text">${escapeHtml(h.status)}</div>
+      <div class="timeline-actions">
+        <button class="timeline-mini-btn" data-edit-idx="${i}">Редактировать</button>
+        <button class="timeline-mini-btn danger" data-del-idx="${i}">Удалить</button>
+      </div>
+    </div>`).join('');
+
+  $('adminTicketDetailBody').innerHTML = `
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">${icon('mail','ic')}Обращение ${escapeHtml(t.ticket_num)}</div>
+        <div class="panel-sub">${escapeHtml(t.user_nick || '—')} · Telegram: ${escapeHtml(t.telegram_id || '—')}</div>
+      </div>
+    </div>
+    <div class="row-line"><div class="row-label">Тип</div><div class="row-value">${escapeHtml(t.type || '—')}</div></div>
+    <div class="row-line"><div class="row-label">Ведёт</div><div class="row-value">${escapeHtml(t.admin_nick || 'Не назначен')}</div></div>
+    <div class="row-line"><div class="row-label">Создано</div><div class="row-value">${t.created_at ? new Date(t.created_at).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'}) : '—'}</div></div>
+    ${t.description ? `<div class="row-line"><div class="row-label">Описание</div><div class="row-value" style="display:block;text-align:left;max-width:62%;font-weight:500;">${escapeHtml(t.description)}</div></div>` : ''}
+
+    <div class="status-btn-row">
+      <button class="status-btn st-open ${t.status==='open'?'is-active':''}" data-status="open">Открыто</button>
+      <button class="status-btn st-progress ${t.status==='in_progress'?'is-active':''}" data-status="in_progress">В работе</button>
+      <button class="status-btn st-closed ${t.status==='closed'?'is-active':''}" data-status="closed">Закрыть</button>
+    </div>
+
+    <button class="btn btn-outline" id="addLabelBtn" style="width:100%;margin-bottom:1rem;">+ Добавить запись в историю</button>
+
+    <div class="timeline">${historyHtml || '<div style="color:var(--muted);font-size:.83rem;">История пуста</div>'}</div>
+  `;
+
+  $('adminTicketDetailBody').querySelectorAll('[data-status]').forEach(btn => {
+    btn.addEventListener('click', () => changeTicketStatus(t.ticket_num, btn.dataset.status));
+  });
+  $('addLabelBtn').addEventListener('click', () => openAddLabelModal(t.ticket_num));
+  $('adminTicketDetailBody').querySelectorAll('[data-edit-idx]').forEach(btn => {
+    btn.addEventListener('click', () => openEditLabelModal(t.ticket_num, +btn.dataset.editIdx, history[+btn.dataset.editIdx].status));
+  });
+  $('adminTicketDetailBody').querySelectorAll('[data-del-idx]').forEach(btn => {
+    btn.addEventListener('click', () => deleteTicketLabel(t.ticket_num, +btn.dataset.delIdx));
+  });
+}
+
+async function changeTicketStatus(ticketNum, status){
+  try{
+    const res = await fetch(`${API}/api/admin/tickets/${encodeURIComponent(ticketNum)}/system-status`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ status, adminId: currentUser.id, adminNick: currentUser.username })
+    });
+    const data = await res.json();
+    if(data.success) refreshAdminTicketDetail(ticketNum);
+    else alert(data.error || 'Не удалось изменить статус');
+  } catch(e){ alert('Ошибка соединения'); }
+}
+
+async function refreshAdminTicketDetail(ticketNum){
+  try{
+    const res = await fetch(`${API}/api/admin/tickets?adminId=${currentUser.id}`);
+    const data = await res.json();
+    if(!data.success) return;
+    adminTicketsCache = data.tickets || [];
+    $('adminTicketsBadge').textContent = adminTicketsCache.filter(t => t.status !== 'closed').length;
+    const t = adminTicketsCache.find(x => x.ticket_num === ticketNum);
+    if(t) renderAdminTicketDetail(t);
+  } catch(e){}
+}
+
+function openAddLabelModal(ticketNum){
+  openModal(`
+    <div class="modal-title">Добавить запись</div>
+    <div class="field" style="margin-bottom:0;"><label class="field-label">Текст</label><textarea class="field-input" id="labelText" rows="3" style="resize:vertical;font-family:inherit;" placeholder="Например: Запросили доп. информацию у пользователя"></textarea></div>
+    <div class="form-msg" id="labelMsg"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-dark" id="labelSubmit">Добавить</button>
+    </div>
+  `);
+  $('labelSubmit').onclick = async () => {
+    const text = $('labelText').value.trim();
+    const msg = $('labelMsg');
+    if(!text){ msg.textContent = 'Введи текст записи'; return; }
+    const btn = $('labelSubmit'); setBtnLoading(btn, true, 'Добавить');
+    try{
+      const res = await fetch(`${API}/api/admin/tickets/${encodeURIComponent(ticketNum)}/add-status`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ text, adminId: currentUser.id, adminNick: currentUser.username })
+      });
+      const data = await res.json();
+      if(data.success){ closeModal(); refreshAdminTicketDetail(ticketNum); }
+      else { msg.textContent = data.error || 'Не удалось добавить'; }
+    } catch(e){ msg.textContent = 'Ошибка соединения'; }
+    finally{ setBtnLoading(btn, false, 'Добавить'); }
+  };
+}
+
+function openEditLabelModal(ticketNum, index, currentText){
+  openModal(`
+    <div class="modal-title">Редактировать запись</div>
+    <div class="field" style="margin-bottom:0;"><label class="field-label">Текст</label><textarea class="field-input" id="editLabelText" rows="3" style="resize:vertical;font-family:inherit;">${escapeHtml(currentText)}</textarea></div>
+    <div class="form-msg" id="editLabelMsg"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-dark" id="editLabelSubmit">Сохранить</button>
+    </div>
+  `);
+  $('editLabelSubmit').onclick = async () => {
+    const text = $('editLabelText').value.trim();
+    const msg = $('editLabelMsg');
+    if(!text){ msg.textContent = 'Введи текст записи'; return; }
+    const btn = $('editLabelSubmit'); setBtnLoading(btn, true, 'Сохранить');
+    try{
+      await fetch(`${API}/api/admin/tickets/${encodeURIComponent(ticketNum)}/history/${index}`, {
+        method:'DELETE', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ adminId: currentUser.id })
+      });
+      const res = await fetch(`${API}/api/admin/tickets/${encodeURIComponent(ticketNum)}/add-status`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ text, adminId: currentUser.id, adminNick: currentUser.username })
+      });
+      const data = await res.json();
+      if(data.success){ closeModal(); refreshAdminTicketDetail(ticketNum); }
+      else { msg.textContent = data.error || 'Не удалось сохранить'; }
+    } catch(e){ msg.textContent = 'Ошибка соединения'; }
+    finally{ setBtnLoading(btn, false, 'Сохранить'); }
+  };
+}
+
+async function deleteTicketLabel(ticketNum, index){
+  if(!confirm('Удалить эту запись из истории?')) return;
+  try{
+    const res = await fetch(`${API}/api/admin/tickets/${encodeURIComponent(ticketNum)}/history/${index}`, {
+      method:'DELETE', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ adminId: currentUser.id })
+    });
+    const data = await res.json();
+    if(data.success) refreshAdminTicketDetail(ticketNum);
+    else alert(data.error || 'Не удалось удалить');
+  } catch(e){ alert('Ошибка соединения'); }
+}
+
+/* ══════════════════════════════════════════
+   ЗАЯВКИ НА АДМИНИСТРАТОРА — подача (все пользователи)
+   ══════════════════════════════════════════ */
+const ALL_QUESTIONS = [
+  {q:'Какое наказание грозит за оскорбления и угрозы (первое нарушение)?',opts:['Немедленный бан','Предупреждение → Мут 1 час → Бан','Мут 3 часа','Выговор'],ans:1,exp:'Правило 1.1: Предупреждение → Мут 1 час → Бан.'},
+  {q:'Что запрещено по правилу «доксинг» (1.2)?',opts:['Спам командами бота','Публикация личных данных человека без его согласия','Реклама сторонних ресурсов','Использование мультиаккаунтов'],ans:1,exp:'Правило 1.2 запрещает публикацию личной информации (имя, адрес, телефон и т.д.) без согласия.'},
+  {q:'Какой контент влечёт немедленный бан без предупреждения?',opts:['Спам в голосовом чате','Нелегальный контент (экстремизм, призывы к насилию и т.д.)','Флуд командами','Ссылки на непроверенные источники'],ans:1,exp:'Правило 2.1: нелегальный контент — немедленный бан без предупреждения.'},
+  {q:'Как решаются споры с решениями модераторов согласно правилам?',opts:['В общем чате публично','Через голосование участников','В личных сообщениях администрации','Через анонимную жалобу'],ans:2,exp:'Правило 3.1: спорные вопросы решаются в ЛС, публичное обсуждение запрещено.'},
+  {q:'Что грозит за использование мультиаккаунта для нарушения правил?',opts:['Мут 3 часа','Предупреждение','Бан всех связанных аккаунтов','Обнуление баланса'],ans:2,exp:'Правило 6.1: бан всех связанных аккаунтов.'},
+  {q:'Какое наказание за намеренную перегрузку бота (правило 7.1)?',opts:['Предупреждение','Обнуление баланса → Мут 5 часов → Бан 3 дня','Мут 30 минут','Немедленный бан'],ans:1,exp:'Правило 7.1: обнуление баланса → мут 5 часов → бан 3 дня.'},
+  {q:'За что администратору полагается выговор по правилу 8.3?',opts:['За опоздание на дежурство','За превышение полномочий и наказание без оснований','За оскорбление в голосовом чате','За разглашение информации'],ans:1,exp:'Правило 8.3: превышение полномочий — выговор.'},
+  {q:'Какой мут получает нарушитель за первичную клевету/ложные обвинения (3.2)?',opts:['1 час','3 часа','30 минут','5 часов'],ans:2,exp:'Правило 3.2: мут 30 минут при первичном нарушении.'},
+  {q:'Что запрещено публиковать согласно правилу 5.1?',opts:['Мемы без источника','Ссылки на вредоносное ПО и запрещённые сайты','Контент 18+ вне отведённых каналов','Рекламу без разрешения'],ans:1,exp:'Правило 5.1: ссылки на вредоносное ПО, пиратский контент, запрещённые сайты — немедленный бан.'},
+  {q:'Что происходит при систематических нарушениях со стороны администратора?',opts:['Только выговор','Снятие с должности или исключение из администрации','Мут 5 часов','Обнуление баланса'],ans:1,exp:'Примечание к разделу 8: систематические нарушения → снятие или исключение из администрации.'},
+  {q:'Какое наказание за оскорбления родственников участников (1.3)?',opts:['Предупреждение','Немедленный бан','Мут 1–3 часа → Бан 3–7 дней','Выговор'],ans:2,exp:'Правило 1.3: мут 1–3 часа → бан 3–7 дней.'},
+  {q:'Спам функционалом бота без практической цели — это нарушение…',opts:['Правила 2.2','Правила 7.2','Правила 4.2','Правила 5.2'],ans:1,exp:'Правило 7.2 запрещает спам функционалом бота.'},
+  {q:'Что происходит в голосовом чате при первом нарушении (4.1)?',opts:['Бан без предупреждения','Предупреждение в тексте','Мут в голосе 30 минут','Выговор'],ans:2,exp:'Правило 4.1: сначала мут в голосовом чате 30 минут.'},
+  {q:'Ссылки на непроверенные источники (5.2) при повторном нарушении влекут…',opts:['Немедленный бан','Мут 1 час → Бан','Обнуление баланса','Снятие с должности'],ans:1,exp:'Правило 5.2: предупреждение → мут 1 час → бан.'},
+  {q:'Администратор разгласил внутреннюю информацию. Максимальное наказание?',opts:['Мут 5 часов','Выговор / снятие / ЧС','Бан аккаунта','Предупреждение'],ans:1,exp:'Правило 8.5: выговор / снятие / занесение в чёрный список.'},
+  {q:'Реклама без разрешения администрации — нарушение какого раздела?',opts:['Раздел 1 — Безопасность','Раздел 2 — Запрещённый контент (2.2)','Раздел 3 — Модерация','Раздел 5 — Ссылки'],ans:1,exp:'Правило 2.2: реклама без разрешения — несогласованная реклама/спам.'},
+  {q:'Использование ботов для нарушений в голосе (4.2) влечёт…',opts:['Мут 30 минут','Предупреждение','Немедленный бан с проверкой','Выговор'],ans:2,exp:'Правило 4.2: немедленный бан с проверкой действий администрацией.'},
+  {q:'Что администрация вправе делать при злостных нарушениях?',opts:['Только выносить предупреждения','Применять наказания по усмотрению и ужесточать их','Снимать баланс без причины','Ничего сверх установленного'],ans:1,exp:'Примечание: администрация вправе применять и ужесточать наказания по усмотрению.'},
+  {q:'Что из перечисленного НЕ является нарушением правил?',opts:['Публичное обсуждение решений модератора','Реклама без разрешения','Вежливый тематический вопрос в общем чате','Угрозы участникам'],ans:2,exp:'Вежливый тематический вопрос — нормальное поведение, не нарушающее правила.'},
+  {q:'Что обязан сделать участник, несогласный с решением модератора?',opts:['Публично оспорить в чате','Написать в ЛС администрации','Игнорировать решение','Пожаловаться другим участникам'],ans:1,exp:'Правило 3.1: все спорные вопросы решаются в личных сообщениях.'}
+];
+
+let SUPABASE_URL = '', SUPABASE_KEY = '', sbConfigLoaded = false;
+async function ensureSbConfig(){
+  if(sbConfigLoaded) return;
+  try{
+    const res = await fetch(`${API}/api/config`);
+    const cfg = await res.json();
+    SUPABASE_URL = cfg.supabaseUrl; SUPABASE_KEY = cfg.supabaseKey;
+    sbConfigLoaded = true;
+  } catch(e){}
+}
+async function sbFetch(path, opts={}){
+  await ensureSbConfig();
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type':'application/json', 'Prefer':'return=representation', ...(opts.headers||{}) }
+  });
+  const text = await res.text();
+  try{ return text ? JSON.parse(text) : []; } catch(e){ return []; }
+}
+
+let applyForm = {}, quizQuestions = [], quizCurrent = 0, quizScore = 0, quizAnswered = false;
+
+function loadAdminApplyPage(){
+  renderApplyForm();
+}
+
+function renderApplySection(html){
+  $('adminApplyContent').innerHTML = html;
+}
+
+function renderApplyForm(){
+  if(!currentUser.telegram_id){
+    renderApplySection(`<div class="empty-box" style="padding:1.4rem 0;">
+      <div class="emoji-ico">${icon('link')}</div>
+      <div class="title">Нужен привязанный Telegram</div>
+      <div class="desc">Привяжи Telegram в разделе «Безопасность», чтобы подать заявку и получать уведомления о её рассмотрении.</div>
+    </div>`);
+    return;
+  }
+  renderApplySection(`
+    <div class="panel-head"><div><div class="panel-title">${icon('doc','ic')}Заявка на Администратора</div><div class="panel-sub">Расскажи о себе, затем пройди небольшой тест на знание правил</div></div></div>
+    <div class="field"><label class="field-label">Имя</label><input class="field-input" id="af-name" placeholder="Как тебя зовут?" maxlength="60"></div>
+    <div class="field"><label class="field-label">Возраст</label><input class="field-input" id="af-age" type="number" placeholder="Твой возраст" min="10" max="99"></div>
+    <div class="field"><label class="field-label">Почему хочешь стать администратором?</label><textarea class="field-input" id="af-why" rows="3" style="resize:vertical;font-family:inherit;" placeholder="Опиши свою мотивацию..." maxlength="500"></textarea></div>
+    <div class="field"><label class="field-label">Почему именно ты?</label><textarea class="field-input" id="af-whyme" rows="3" style="resize:vertical;font-family:inherit;" placeholder="Чем ты лучше других кандидатов?" maxlength="500"></textarea></div>
+    <div class="field"><label class="field-label">Подробнее о себе</label><textarea class="field-input" id="af-about" rows="3" style="resize:vertical;font-family:inherit;" placeholder="Расскажи о себе..." maxlength="600"></textarea></div>
+    <div class="field"><label class="field-label">Чем занимаешься</label><input class="field-input" id="af-occupation" placeholder="Учёба, работа, хобби..." maxlength="200"></div>
+    <div class="field"><label class="field-label">Средний онлайн в Telegram</label><input class="field-input" id="af-online" placeholder="Например: 4–6 часов в день" maxlength="100"></div>
+    <div class="form-msg" id="af-msg"></div>
+    <button class="submit-btn" style="border-radius:100px;" id="af-submit">Далее — Тест на знание правил →</button>
+  `);
+  $('af-submit').onclick = submitApplyForm;
+}
+
+function submitApplyForm(){
+  const fields = ['af-name','af-age','af-why','af-whyme','af-about','af-occupation','af-online'];
+  const vals = fields.map(f => $(f)?.value?.trim() || '');
+  const msg = $('af-msg'); msg.style.color = 'var(--red)';
+  if(vals.some(v => !v)){ msg.textContent = 'Заполни все поля'; return; }
+  if(isNaN(vals[1]) || +vals[1] < 10 || +vals[1] > 99){ msg.textContent = 'Укажи корректный возраст'; return; }
+  applyForm = { name:vals[0], age:vals[1], why:vals[2], whyme:vals[3], about:vals[4], occupation:vals[5], online:vals[6] };
+  startQuiz();
+}
+
+function startQuiz(){
+  const shuffled = [...ALL_QUESTIONS].sort(() => Math.random() - 0.5);
+  quizQuestions = shuffled.slice(0, 5);
+  quizCurrent = 0; quizScore = 0;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion(){
+  const q = quizQuestions[quizCurrent];
+  const pct = Math.round((quizCurrent / quizQuestions.length) * 100);
+  quizAnswered = false;
+  renderApplySection(`
+    <div class="panel-head"><div><div class="panel-title">${icon('doc','ic')}Тест на знание правил</div><div class="panel-sub">Ответь на все вопросы. Минимум 4 из 5 для прохождения</div></div></div>
+    <div style="height:6px;border-radius:100px;background:var(--field);overflow:hidden;margin-bottom:1rem;"><div style="height:100%;width:${pct}%;background:var(--ink);border-radius:100px;"></div></div>
+    <div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem;">Вопрос ${quizCurrent+1} из ${quizQuestions.length}</div>
+    <div style="font-weight:700;font-size:1rem;margin-bottom:1rem;">${escapeHtml(q.q)}</div>
+    <div id="quizOpts" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem;">
+      ${q.opts.map((opt,i) => `<button class="btn btn-outline" data-opt="${i}" style="text-align:left;justify-content:flex-start;">${escapeHtml(opt)}</button>`).join('')}
+    </div>
+    <div class="form-msg" id="quizFeedback" style="color:var(--ink);"></div>
+    <button class="btn btn-dark" id="quizNextBtn" style="display:none;">${quizCurrent+1 < quizQuestions.length ? 'Следующий вопрос →' : 'Завершить тест'}</button>
+  `);
+  $('quizOpts').querySelectorAll('[data-opt]').forEach(btn => {
+    btn.addEventListener('click', () => selectQuizOpt(+btn.dataset.opt));
+  });
+  $('quizNextBtn').onclick = nextQuizQuestion;
+}
+
+function selectQuizOpt(idx){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[quizCurrent];
+  const isCorrect = idx === q.ans;
+  if(isCorrect) quizScore++;
+  $('quizOpts').querySelectorAll('[data-opt]').forEach((btn,i) => {
+    btn.disabled = true;
+    if(i === idx) btn.style.borderColor = isCorrect ? 'var(--green)' : 'var(--red)';
+    if(i === q.ans && !isCorrect) btn.style.borderColor = 'var(--green)';
+  });
+  const fb = $('quizFeedback');
+  fb.style.color = isCorrect ? 'var(--green)' : 'var(--red)';
+  fb.textContent = (isCorrect ? '✓ Верно! ' : '✗ Неверно. ') + q.exp;
+  $('quizNextBtn').style.display = '';
+}
+
+function nextQuizQuestion(){
+  quizCurrent++;
+  if(quizCurrent < quizQuestions.length) renderQuizQuestion();
+  else renderQuizResult();
+}
+
+async function renderQuizResult(){
+  const total = quizQuestions.length;
+  const passed = quizScore >= 4;
+  let saved = false;
+  try{
+    const payload = {
+      user_id: String(currentUser.id), username: currentUser.username,
+      telegram_id: String(currentUser.telegram_id || ''), form: applyForm,
+      questions: quizQuestions.map(q => ({ question:q.q, options:q.opts, correct:q.ans, correctText:q.opts[q.ans], exp:q.exp })),
+      score: quizScore, total, passed, status: 'new'
+    };
+    await sbFetch('admin_applications', { method:'POST', headers:{ Prefer:'return=minimal' }, body: JSON.stringify(payload) });
+    saved = true;
+    try{
+      const admins = await sbFetch('users?role=eq.admin&select=telegram_id,username');
+      for(const admin of (admins||[])){
+        if(!admin.telegram_id) continue;
+        await fetch(`${API}/api/telegram/send-message`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ telegram_id:String(admin.telegram_id),
+            text:`👑 <b>Новая заявка на Администратора!</b>\n\n<blockquote>👤 Пользователь: <b>${currentUser.username}</b>\n🆔 ID: <code>${currentUser.id}</code>\n✅ Результат теста: <b>${quizScore}/${total}</b></blockquote>` })
+        });
+      }
+    } catch(e){}
+  } catch(e){}
+
+  renderApplySection(`
+    <div class="panel-head"><div><div class="panel-title">${icon('doc','ic')}Результат заявки</div></div></div>
+    <div style="text-align:center;padding:1rem 0;">
+      <div style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:${passed?'var(--green)':'var(--red)'};">${quizScore}/${total}</div>
+      <div style="font-size:.86rem;color:var(--muted);margin-top:.6rem;line-height:1.6;">${passed
+        ? `Ты правильно ответил на <b>${quizScore} из ${total}</b> вопросов.<br>Заявка отправлена администрации на рассмотрение.<br>Ожидай ответа в Telegram.`
+        : `Ты правильно ответил на <b>${quizScore} из ${total}</b> вопросов.<br>Для прохождения нужно минимум 4 правильных ответа.`}</div>
+      ${saved ? '' : '<div class="form-msg" style="margin-top:.6rem;">Не удалось сохранить заявку, попробуй ещё раз</div>'}
+      <button class="btn btn-dark" style="margin-top:1.2rem;" onclick="${passed ? "switchSection('security')" : 'loadAdminApplyPage()'}">${passed ? 'Вернуться к безопасности' : 'Попробовать снова'}</button>
+    </div>
+  `);
+}
+
+/* ══════════════════════════════════════════
+   АДМИН: ЗАЯВКИ НА АДМИНИСТРАТОРА — рассмотрение
+   ══════════════════════════════════════════ */
+let adminAppliesCache = [];
+
+$('adminApplyDetailBack').addEventListener('click', () => {
+  $('adminApplyDetailPanel').style.display = 'none';
+  $('adminAppliesListPanel').style.display = '';
+});
+
+async function loadAdminAppliesList(){
+  $('adminApplyDetailPanel').style.display = 'none';
+  $('adminAppliesListPanel').style.display = '';
+  $('adminAppliesListBody').innerHTML = `<div class="loader">Загрузка…</div>`;
+  try{
+    const data = await sbFetch('admin_applications?order=created_at.desc&select=*');
+    adminAppliesCache = Array.isArray(data) ? data : [];
+    renderAdminAppliesList();
+  } catch(e){
+    $('adminAppliesListBody').innerHTML = `<div class="empty-box"><div class="title">Ошибка соединения</div></div>`;
+  }
+}
+
+function renderAdminAppliesList(){
+  if(!adminAppliesCache.length){
+    $('adminAppliesListBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('doc')}</div><div class="title">Заявок пока нет</div><div class="desc">Здесь появятся заявки пользователей на позицию администратора.</div></div>`;
+    return;
+  }
+  const statusMap = { new: ['pill-amber','Новая'], accepted: ['pill-green','Принята'], rejected: ['pill-red','Отклонена'] };
+  $('adminAppliesListBody').innerHTML = adminAppliesCache.map(a => {
+    const [cls, label] = statusMap[a.status] || statusMap.new;
+    const dt = a.created_at ? new Date(a.created_at).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'}) : '';
+    return `<div class="ticket-row" data-id="${a.id}">
+      <div class="ticket-row-ico">${icon('crown')}</div>
+      <div class="ticket-row-main">
+        <div class="ticket-row-title">${escapeHtml(a.username || '—')} · ${a.score}/${a.total}</div>
+        <div class="ticket-row-meta">${escapeHtml(dt)}</div>
+      </div>
+      <span class="pill ${cls}">${label}</span>
+    </div>`;
+  }).join('');
+  $('adminAppliesListBody').querySelectorAll('.ticket-row').forEach(row => {
+    row.addEventListener('click', () => openApplyDetail(row.dataset.id));
+  });
+}
+
+function openApplyDetail(id){
+  const a = adminAppliesCache.find(x => String(x.id) === String(id));
+  if(!a) return;
+  $('adminAppliesListPanel').style.display = 'none';
+  $('adminApplyDetailPanel').style.display = '';
+  const f = a.form || {};
+  const passed = a.passed;
+  const statusMap = { new: ['var(--amber)','Новая'], accepted: ['var(--green)','Принята'], rejected: ['var(--red)','Отклонена'] };
+  const [sc, sl] = statusMap[a.status] || statusMap.new;
+  $('adminApplyDetailBody').innerHTML = `
+    <div class="panel-head"><div><div class="panel-title">${icon('crown','ic')}Заявка ${escapeHtml(a.username||'')}</div><div class="panel-sub">${a.created_at ? new Date(a.created_at).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'}) : ''}</div></div></div>
+    <div class="grid2">
+      <div class="stat-box">
+        ${[['Имя',f.name],['Возраст',(f.age||'—')+' лет'],['Занятие',f.occupation],['Онлайн в TG',f.online],['Почему хочет',f.why],['Почему он',f.whyme],['О себе',f.about]]
+          .map(([l,v])=>`<div style="margin-bottom:.6rem;"><div class="stat-label">${l}</div><div style="font-size:.83rem;line-height:1.5;">${escapeHtml(v||'—')}</div></div>`).join('')}
+      </div>
+      <div>
+        <div class="stat-box" style="margin-bottom:1rem;text-align:center;">
+          <div class="stat-label" style="justify-content:center;">Результат теста</div>
+          <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:${passed?'var(--green)':'var(--red)'};">${a.score}/${a.total}</div>
+          <div style="font-size:.78rem;color:var(--muted);">${passed?'Тест пройден':'Тест не пройден'}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Текущий статус</div>
+          <div style="font-weight:700;color:${sc};">${sl}</div>
+        </div>
+      </div>
+    </div>
+    ${a.status === 'new' ? `
+      <div style="display:flex;gap:.7rem;margin-top:1.2rem;max-width:420px;">
+        <button class="btn btn-danger" id="rejectApplyBtn" style="flex:1;">✗ Отклонить</button>
+        <button class="btn btn-dark" id="acceptApplyBtn" style="flex:1;">✓ Принять</button>
+      </div>
+    ` : `<div class="empty-box" style="padding:1rem 0;"><div class="desc">Заявка уже рассмотрена администратором.</div></div>`}
+  `;
+  if(a.status === 'new'){
+    $('rejectApplyBtn').addEventListener('click', () => reviewApply(a.id, 'rejected'));
+    $('acceptApplyBtn').addEventListener('click', () => reviewApply(a.id, 'accepted'));
+  }
+}
+
+async function reviewApply(applyId, verdict){
+  try{
+    await sbFetch(`admin_applications?id=eq.${applyId}`, {
+      method:'PATCH', headers:{ Prefer:'return=minimal' },
+      body: JSON.stringify({ status: verdict, reviewed_by: currentUser.username })
+    });
+    const apps = await sbFetch(`admin_applications?id=eq.${applyId}&select=*`);
+    const app = apps[0];
+    if(app?.telegram_id){
+      const verdictText = verdict === 'accepted' ? '✅ Принята' : '❌ Отклонена';
+      await fetch(`${API}/api/telegram/send-message`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ telegram_id: app.telegram_id,
+          text:`👑 <b>Ваша заявка на администратора рассмотрена</b>\n\n<blockquote>Администратор: <b>${currentUser.username}</b>\nВердикт: <b>${verdictText}</b></blockquote>` })
+      });
+    }
+    loadAdminAppliesList();
+  } catch(e){ alert('Не удалось сохранить решение'); }
 }
 
 /* ---------- init ---------- */
