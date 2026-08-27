@@ -20,6 +20,7 @@
   --green:#3f9d5b;
   --amber:#c98a2b;
   --line:#efe6da;
+  --ink-contrast:#ffffff;
   --radius-card:28px;
   --radius-field:14px;
 }
@@ -63,7 +64,7 @@ body{
 .forgot-link{font-size:.78rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .18s;}
 .forgot-link:hover{color:var(--ink);text-decoration:underline;}
 .form-msg{font-size:.8rem;color:var(--red);min-height:1.1rem;margin:-.4rem 0 .8rem;}
-.submit-btn{width:100%;padding:15px;background:var(--ink);color:#fff;border:none;border-radius:999px;font-family:'Inter',sans-serif;font-size:.94rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s, opacity .15s, background .15s;}
+.submit-btn{width:100%;padding:15px;background:var(--ink);color:var(--ink-contrast);border:none;border-radius:999px;font-family:'Inter',sans-serif;font-size:.94rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s, opacity .15s, background .15s;}
 .submit-btn:hover{opacity:.92;}
 .submit-btn:active{transform:scale(.98);}
 .submit-btn:disabled{opacity:.55;cursor:default;transform:none;}
@@ -98,11 +99,11 @@ body{
 .nav-group-label{font-size:.65rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:0 .5rem;margin:.4rem 0 .1rem;}
 .nav-block{display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem;border-radius:16px;background:var(--card);border:1px solid var(--line);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--ink);transition:background .16s, border-color .16s, transform .38s cubic-bezier(.22,1,.36,1);will-change:transform;}
 .nav-block:hover{border-color:#e2d3bc;}
-.nav-block.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.nav-block.active{background:var(--ink);color:var(--ink-contrast);border-color:var(--ink);}
 .nav-block.sub{padding:.6rem .85rem .6rem 1.5rem;font-size:.8rem;}
 .nav-block .nav-ico{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .nav-block .nav-badge{margin-left:auto;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,0.06);color:var(--muted);}
-.nav-block.active .nav-badge{background:rgba(255,255,255,0.18);color:#fff;}
+.nav-block.active .nav-badge{background:color-mix(in srgb, var(--ink-contrast) 18%, transparent);color:var(--ink-contrast);}
 
 /* ---- CSS-иконки (без эмодзи) ---- */
 .cico{width:16px;height:16px;position:relative;flex-shrink:0;display:inline-block;color:inherit;}
@@ -152,6 +153,10 @@ body{
 .cico-list::before{left:0;top:2px;width:3px;height:3px;border-radius:50%;background:currentColor;box-shadow:0 5px 0 0 currentColor, 0 10px 0 0 currentColor;}
 .cico-list::after{left:6px;top:1px;width:10px;height:2px;background:currentColor;box-shadow:0 5px 0 0 currentColor, 0 10px 0 0 currentColor;}
 
+.cico-pencil{transform:rotate(45deg);}
+.cico-pencil::before{left:5px;top:-1px;width:6px;height:10px;border-radius:1.5px 1.5px 0 0;background:linear-gradient(to bottom, rgba(255,255,255,.5) 0 22%, currentColor 22% 100%);}
+.cico-pencil::after{left:5px;top:9px;width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:6px solid currentColor;}
+
 /* инлайн-иконка рядом с текстом (заголовки, статусы) */
 .ic{display:inline-block;vertical-align:-3px;margin-right:7px;}
 
@@ -188,7 +193,7 @@ body{
 
 .btn{padding:11px 18px;border-radius:100px;border:none;font-family:'Inter',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;transition:opacity .15s, transform .1s;}
 .btn:active{transform:scale(.98);}
-.btn-dark{background:var(--ink);color:#fff;}
+.btn-dark{background:var(--ink);color:var(--ink-contrast);}
 .btn-dark:hover{opacity:.9;}
 .btn-outline{background:none;border:1px solid var(--field-border);color:var(--ink);}
 .btn-outline:hover{border-color:#d8c3af;background:var(--field);}
@@ -241,7 +246,7 @@ body{
 .tabs{position:relative;display:flex;gap:.4rem;background:var(--field);border:1px solid var(--field-border);padding:4px;border-radius:100px;margin-bottom:1.1rem;width:fit-content;}
 .tabs-slider{position:absolute;top:4px;bottom:4px;left:4px;width:0;border-radius:100px;background:var(--ink);transition:transform .32s cubic-bezier(.65,0,.35,1), width .32s cubic-bezier(.65,0,.35,1);z-index:0;}
 .tab-btn{position:relative;z-index:1;padding:8px 16px;border-radius:100px;border:none;background:none;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;color:var(--muted);cursor:pointer;transition:color .2s .05s;}
-.tab-btn.active{background:none;color:#fff;}
+.tab-btn.active{background:none;color:var(--ink-contrast);}
 
 /* --- ticket list card --- */
 .ticket-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);cursor:pointer;transition:border-color .15s;margin-bottom:.6rem;}
@@ -620,7 +625,7 @@ body{
           <div class="profile-head-row">
             <div class="profile-big-avatar-wrap">
               <div class="profile-big-avatar" id="pfBigAvatar">F</div>
-              <div class="profile-avatar-edit" id="pfAvatarEditBtn" title="Изменить аватар">✏️</div>
+              <div class="profile-avatar-edit" id="pfAvatarEditBtn" title="Изменить аватар"><i class="cico cico-pencil"></i></div>
             </div>
             <div class="profile-head-name">
               <div class="nm" id="pfHeadName">—</div>
@@ -666,10 +671,10 @@ let currentUser = null; // {id, username, role, telegramLinked, telegram_id, ava
 /* ---------- цветовые темы интерфейса ---------- */
 const THEME_STORE_KEY = 'fid_theme';
 const THEME_PRESETS = {
-  cream: { label:'Кремовая', swatch:'#fbf1e8', bg:'#fbf1e8', card:'#ffffff', ink:'#181410', muted:'#948b83', field:'#f4ece2', fieldBorder:'#efe3d4', line:'#efe6da', blobPink:'#e9a49e', blobSage:'#cddac2' },
-  noir:  { label:'Чёрная',   swatch:'#181410', bg:'#141210', card:'#1e1b17', ink:'#f3ede3', muted:'#948b83', field:'#26221c', fieldBorder:'#332d24', line:'#2b271f', blobPink:'#4a3530', blobSage:'#334027' },
-  stone: { label:'Серая',    swatch:'#c7cbcb', bg:'#eef0f0', card:'#ffffff', ink:'#1c1f1f', muted:'#84898c', field:'#e4e7e7', fieldBorder:'#dadfdf', line:'#dfe3e3', blobPink:'#c8b6c9', blobSage:'#b9c9c2' },
-  sage:  { label:'Зелёная',  swatch:'#b9c79b', bg:'#eef2e8', card:'#ffffff', ink:'#1c2417', muted:'#82917a', field:'#e3ebda', fieldBorder:'#d5e0c8', line:'#dde6d2', blobPink:'#d9c9a0', blobSage:'#a9c79b' }
+  cream: { label:'Кремовая', swatch:'#fbf1e8', bg:'#fbf1e8', card:'#ffffff', ink:'#181410', inkContrast:'#ffffff', muted:'#948b83', field:'#f4ece2', fieldBorder:'#efe3d4', line:'#efe6da', blobPink:'#e9a49e', blobSage:'#cddac2' },
+  noir:  { label:'Чёрная',   swatch:'#181410', bg:'#141210', card:'#1e1b17', ink:'#f3ede3', inkContrast:'#181410', muted:'#948b83', field:'#26221c', fieldBorder:'#332d24', line:'#2b271f', blobPink:'#4a3530', blobSage:'#334027' },
+  stone: { label:'Серая',    swatch:'#c7cbcb', bg:'#eef0f0', card:'#ffffff', ink:'#1c1f1f', inkContrast:'#ffffff', muted:'#84898c', field:'#e4e7e7', fieldBorder:'#dadfdf', line:'#dfe3e3', blobPink:'#c8b6c9', blobSage:'#b9c9c2' },
+  sage:  { label:'Зелёная',  swatch:'#b9c79b', bg:'#eef2e8', card:'#ffffff', ink:'#1c2417', inkContrast:'#ffffff', muted:'#82917a', field:'#e3ebda', fieldBorder:'#d5e0c8', line:'#dde6d2', blobPink:'#d9c9a0', blobSage:'#a9c79b' }
 };
 function applyTheme(key){
   const t = THEME_PRESETS[key] || THEME_PRESETS.cream;
@@ -677,6 +682,7 @@ function applyTheme(key){
   r.setProperty('--bg', t.bg);
   r.setProperty('--card', t.card);
   r.setProperty('--ink', t.ink);
+  r.setProperty('--ink-contrast', t.inkContrast || '#ffffff');
   r.setProperty('--muted', t.muted);
   r.setProperty('--field', t.field);
   r.setProperty('--field-border', t.fieldBorder);
