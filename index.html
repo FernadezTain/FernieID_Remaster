@@ -514,6 +514,20 @@ body{
           <div class="panel-head"><div><div class="panel-title"><i class="cico cico-shield ic"></i>Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div></div><div class="pill" id="secTgPill">—</div></div>
           <div id="secTgBody" class="loader">Загрузка…</div>
         </div>
+
+        <div class="panel">
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-key ic"></i>Смена пароля</div><div class="panel-sub">Обновите пароль от аккаунта FernieID</div></div></div>
+          <div class="field" style="margin-bottom:.9rem;">
+            <label class="field-label">Текущий пароль</label>
+            <input class="field-input" id="pwCurrentInput" type="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="field" style="margin-bottom:.9rem;">
+            <label class="field-label">Новый пароль</label>
+            <input class="field-input" id="pwNewInput" type="password" placeholder="Минимум 6 символов" autocomplete="new-password">
+          </div>
+          <button class="btn btn-dark" id="pwChangeBtn">Сменить пароль</button>
+          <div class="form-msg" id="pwChangeMsg"></div>
+        </div>
       </div>
 
       <!-- ОБРАЩЕНИЯ (создание + проверка по номеру, для всех) -->
@@ -1217,27 +1231,177 @@ async function loadSecurity(){
       <div class="empty-box" style="padding:1rem 0;">
         <div class="emoji-ico">${icon('link')}</div>
         <div class="title">Telegram не привязан</div>
-        <div class="desc">Сгенерируй код и отправь его боту, чтобы включить 2FA и уведомления о входах.</div>
+        <div class="desc">Привяжи Telegram, чтобы включить 2FA и уведомления о входах.</div>
       </div>
-      <button class="btn btn-dark" id="genTokenBtn">Сгенерировать код привязки</button>
-      <div id="tokenResult" style="margin-top:1rem;"></div>`;
-    $('genTokenBtn').onclick = async () => {
-      const btn = $('genTokenBtn'); setBtnLoading(btn, true, 'Сгенерировать код привязки');
+      <button class="btn btn-dark" id="openTgLinkBtn">Привязать TelegramID</button>`;
+    $('openTgLinkBtn').onclick = () => openTgLinkModal();
+  }
+
+  // --- смена пароля ---
+  const pwBtn = $('pwChangeBtn');
+  if(pwBtn){
+    pwBtn.onclick = async () => {
+      const curPass = $('pwCurrentInput').value;
+      const newPass = $('pwNewInput').value;
+      const msg = $('pwChangeMsg'); msg.textContent = '';
+      if(!curPass || !newPass){ msg.textContent = 'Заполни оба поля'; return; }
+      if(newPass.length < 6){ msg.textContent = 'Новый пароль минимум 6 символов'; return; }
+      setBtnLoading(pwBtn, true, 'Сменить пароль');
       try{
-        const res = await fetch(`${API}/api/telegram/generate-token`, {
+        const res = await fetch(`${API}/api/password/change`, {
           method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ userId: currentUser.id })
+          body: JSON.stringify({ userId: currentUser.id, currentPassword: curPass, newPassword: newPass })
         });
         const data = await res.json();
         if(data.success){
-          $('tokenResult').innerHTML = `
-            <div class="token-box">${data.token}</div>
-            <p style="font-size:.8rem;color:var(--muted);margin-top:.7rem;">Отправь этот код нашему Telegram-боту командой привязки, чтобы завершить процесс.</p>`;
-        } else { alert(data.error || 'Не удалось получить код'); }
-      } catch(e){ alert('Ошибка соединения'); }
-      finally{ setBtnLoading(btn, false, 'Сгенерировать код привязки'); }
+          msg.style.color = 'var(--green)'; msg.textContent = 'Пароль успешно изменён';
+          $('pwCurrentInput').value = ''; $('pwNewInput').value = '';
+        } else {
+          msg.style.color = 'var(--red)'; msg.textContent = data.error || 'Не удалось сменить пароль';
+        }
+      } catch(e){ msg.style.color = 'var(--red)'; msg.textContent = 'Ошибка соединения'; }
+      finally{ setBtnLoading(pwBtn, false, 'Сменить пароль'); }
     };
   }
+}
+
+/* ===================== ПРИВЯЗКА TELEGRAM: модал с 3 вкладками ===================== */
+let tgFlowTimer = null, tgFlowPoll = null;
+
+function clearTgFlow(){
+  if(tgFlowTimer) clearInterval(tgFlowTimer);
+  if(tgFlowPoll) clearInterval(tgFlowPoll);
+  tgFlowTimer = null; tgFlowPoll = null;
+}
+
+function tgTabsHtml(active){
+  const tabs = [['code','Привязать кодом'],['link','Привязать ссылкой'],['confirm','Привязать подтверждением']];
+  return `<div class="modal-title">Привязка TelegramID</div>
+    <div style="display:flex;gap:.4rem;margin-bottom:1.1rem;flex-wrap:wrap;">
+      ${tabs.map(([k,l])=>`<button class="btn ${k===active?'btn-dark':'btn-outline'}" style="flex:1;padding:9px 6px;font-size:.72rem;min-width:100px;" onclick="renderTgTab('${k}')">${l}</button>`).join('')}
+    </div>
+    <div id="tgTabBody"></div>`;
+}
+
+function openTgLinkModal(){
+  clearTgFlow();
+  openModal(tgTabsHtml('code'));
+  startTgCodeFlow();
+}
+
+function renderTgTab(tab){
+  clearTgFlow();
+  $('genericModalBox').innerHTML = tgTabsHtml(tab);
+  if(tab === 'code') startTgCodeFlow();
+  else if(tab === 'link') startTgLinkFlow();
+  else startTgConfirmFlow();
+}
+
+function startTgTimerAndPoll(deadline, endpoint){
+  tgFlowTimer = setInterval(()=>{
+    const left = Math.max(0, deadline - Date.now());
+    const m = Math.floor(left/60000), s = Math.floor((left%60000)/1000);
+    const el = $('tgTimerLine');
+    if(el) el.textContent = left>0 ? `Осталось: ${m}:${String(s).padStart(2,'0')}` : 'Время истекло';
+  }, 1000);
+
+  tgFlowPoll = setInterval(async ()=>{
+    try{
+      const r = await fetch(`${API}/api/telegram/${endpoint}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id })
+      });
+      const d = await r.json();
+      if(d.status === 'linked'){
+        clearTgFlow();
+        currentUser.telegramLinked = true; currentUser.telegram_id = d.telegram_id;
+        localStorage.setItem('fernieid_session', JSON.stringify(currentUser));
+        showTgLinkResult(true, d.telegram_id);
+      } else if(d.status === 'expired' || d.status === 'declined'){
+        clearTgFlow();
+        showTgLinkResult(false);
+      }
+    }catch(e){}
+  }, 3000);
+}
+
+function showTgLinkResult(success, telegramId){
+  if(success){
+    $('genericModalBox').innerHTML = `
+      <div class="modal-title">Telegram привязан!</div>
+      <div class="row-line"><div class="row-label">ID</div><div class="row-value">${escapeHtml(String(telegramId))}</div></div>
+      <div class="modal-actions"><button class="btn btn-dark" onclick="closeModal();loadSecurity();renderProfile();">Отлично!</button></div>`;
+  } else {
+    $('genericModalBox').innerHTML = `
+      <div class="modal-title">Привязка отклонена!</div>
+      <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal();">Понятно</button></div>`;
+  }
+}
+
+async function startTgCodeFlow(){
+  $('tgTabBody').innerHTML = `<div class="loader">Генерируем код…</div>`;
+  try{
+    const res = await fetch(`${API}/api/telegram/generate-token`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    const data = await res.json();
+    if(!data.success){ $('tgTabBody').innerHTML = `<div class="empty-box"><div class="desc">${escapeHtml(data.error || 'Не удалось получить код')}</div></div>`; return; }
+    const deadline = Date.now() + 5*60*1000;
+    $('tgTabBody').innerHTML = `
+      <div class="desc" style="margin-bottom:.7rem;">Добавь в боте команду:</div>
+      <div class="token-box" style="font-family:monospace;font-size:1.05rem;text-align:center;padding:12px;background:var(--field);border:1px solid var(--field-border);border-radius:12px;margin-bottom:.6rem;">/idconnect ${escapeHtml(data.token)}</div>
+      <div class="desc" style="font-size:.78rem;">Бот ответит подтверждением привязки, а здесь появится результат автоматически.</div>
+      <div id="tgTimerLine" style="margin-top:.9rem;font-size:.78rem;color:var(--muted);"></div>`;
+    startTgTimerAndPoll(deadline, 'link-status');
+  }catch(e){ $('tgTabBody').innerHTML = `<div class="empty-box"><div class="desc">Ошибка соединения</div></div>`; }
+}
+
+async function startTgLinkFlow(){
+  $('tgTabBody').innerHTML = `<div class="loader">Генерируем ссылку…</div>`;
+  try{
+    const res = await fetch(`${API}/api/telegram/generate-token`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    const data = await res.json();
+    if(!data.success){ $('tgTabBody').innerHTML = `<div class="empty-box"><div class="desc">${escapeHtml(data.error || 'Не удалось получить ссылку')}</div></div>`; return; }
+    const deadline = Date.now() + 5*60*1000;
+    $('tgTabBody').innerHTML = `
+      <div class="desc" style="margin-bottom:1rem;">Для привязки перейдите по кнопке — бот всё сделает сам.</div>
+      <button class="btn btn-dark" style="width:100%;" onclick="window.open('https://t.me/FernieXBot?start=link_${encodeURIComponent(data.token)}','_blank')">Привязать</button>
+      <div id="tgTimerLine" style="margin-top:.9rem;font-size:.78rem;color:var(--muted);"></div>`;
+    startTgTimerAndPoll(deadline, 'link-status');
+  }catch(e){ $('tgTabBody').innerHTML = `<div class="empty-box"><div class="desc">Ошибка соединения</div></div>`; }
+}
+
+function startTgConfirmFlow(){
+  $('tgTabBody').innerHTML = `
+    <div class="field" style="margin-bottom:.9rem;">
+      <label class="field-label">Твой Telegram ID</label>
+      <input class="field-input" id="tgConfirmIdInput" type="text" inputmode="numeric" placeholder="Например: 123456789">
+    </div>
+    <button class="btn btn-dark" style="width:100%;" id="tgConfirmSendBtn">Привязать</button>
+    <div class="form-msg" id="tgConfirmMsg"></div>`;
+  $('tgConfirmSendBtn').onclick = async () => {
+    const idVal = $('tgConfirmIdInput').value.trim();
+    const msg = $('tgConfirmMsg'); msg.textContent = '';
+    if(!/^\d{5,15}$/.test(idVal)){ msg.textContent = 'Введи корректный Telegram ID'; return; }
+    const btn = $('tgConfirmSendBtn'); setBtnLoading(btn, true, 'Привязать');
+    try{
+      const res = await fetch(`${API}/api/telegram/request-confirm`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, telegramId: idVal })
+      });
+      const data = await res.json();
+      if(!data.success){ msg.textContent = data.error || 'Не удалось отправить запрос'; setBtnLoading(btn, false, 'Привязать'); return; }
+      const deadline = Date.now() + 5*60*1000;
+      $('tgTabBody').innerHTML = `
+        <div class="desc">Мы отправили сообщение в Telegram — подтверди привязку там.</div>
+        <div id="tgTimerLine" style="margin-top:.9rem;font-size:.78rem;color:var(--muted);"></div>`;
+      startTgTimerAndPoll(deadline, 'confirm-status');
+    }catch(e){ msg.textContent = 'Ошибка соединения'; setBtnLoading(btn, false, 'Привязать'); }
+  };
 }
 
 async function loadAdmin(){
