@@ -641,7 +641,7 @@ body{
 
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Управление профилем</div></div>
-          <div class="row-line"><div class="row-label">Логин</div><div class="row-value" id="pfUsername">—</div></div>
+          <div class="row-line"><div class="row-label">Логин</div><div class="row-value" style="gap:.6rem;"><span id="pfUsername">—</span><button class="btn btn-outline btn-sm" id="pfChangeUsernameBtn">Изменить</button></div></div>
           <div class="row-line"><div class="row-label">ID аккаунта</div><div class="row-value" id="pfId">—</div></div>
           <div class="row-line"><div class="row-label">Роль</div><div class="row-value" id="pfRole">—</div></div>
           <div class="row-line"><div class="row-label">Telegram</div><div class="row-value" id="pfTg">—</div></div>
@@ -829,6 +829,58 @@ function logout(){
   showSection('login');
 }
 $('pfLogoutBtn').onclick = logout;
+
+/* ---------- смена ника ---------- */
+$('pfChangeUsernameBtn').onclick = () => {
+  openModal(`
+    <div class="modal-title">Сменить никнейм</div>
+    <div class="field" style="margin-bottom:0;">
+      <label class="field-label" for="newUsernameInput">Новый логин</label>
+      <input class="field-input" id="newUsernameInput" placeholder="Новый логин" maxlength="20" value="${escapeHtml(currentUser.username)}" autocomplete="off">
+    </div>
+    <div class="form-msg" id="newUsernameMsg"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-dark" id="newUsernameSubmit">Сохранить</button>
+    </div>
+  `);
+  $('newUsernameInput').focus();
+  $('newUsernameInput').select();
+  const submit = async () => {
+    const newUsername = $('newUsernameInput').value.trim();
+    const msg = $('newUsernameMsg');
+    msg.style.color = 'var(--red)'; msg.textContent = '';
+    if(!newUsername){ msg.textContent = 'Введите логин'; return; }
+    if(newUsername === currentUser.username){ closeModal(); return; }
+    if(!/^[A-Za-zА-Яа-яЁё0-9_]{3,20}$/.test(newUsername)){
+      msg.textContent = 'От 3 до 20 символов: буквы, цифры, подчёркивание';
+      return;
+    }
+    const btn = $('newUsernameSubmit');
+    setBtnLoading(btn, true, 'Сохранить');
+    try{
+      const res = await fetch(`${API}/api/profile/username`, {
+        method:'PATCH', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, newUsername })
+      });
+      const data = await res.json();
+      if(data.success){
+        currentUser.username = data.username || newUsername;
+        localStorage.setItem(STORE_KEY, JSON.stringify({ userId: currentUser.id, username: currentUser.username }));
+        renderProfile();
+        closeModal();
+      } else {
+        msg.textContent = data.error || 'Не удалось сменить никнейм';
+      }
+    } catch(e){
+      msg.textContent = 'Ошибка соединения с сервером';
+    } finally {
+      setBtnLoading(btn, false, 'Сохранить');
+    }
+  };
+  $('newUsernameSubmit').onclick = submit;
+  $('newUsernameInput').addEventListener('keydown', e => { if(e.key === 'Enter') submit(); });
+};
 
 /* ---------- dashboard nav ---------- */
 document.querySelectorAll('.nav-block[data-section]').forEach(el=>{
