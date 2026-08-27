@@ -181,6 +181,23 @@ body{
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
 @media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr;}}
 
+/* --- hero-блок «Главная» --- */
+.hero-panel{position:relative;overflow:hidden;background:linear-gradient(160deg,#ffffff 0%,var(--field) 130%);}
+.hero-accent{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.hero-accent::before{content:'';position:absolute;width:230px;height:230px;border-radius:50%;background:var(--blob-pink);opacity:.22;top:-110px;right:-70px;filter:blur(10px);}
+.hero-accent::after{content:'';position:absolute;width:190px;height:190px;border-radius:50%;background:var(--blob-sage);opacity:.22;bottom:-110px;left:-60px;filter:blur(10px);}
+.hero-panel>*{position:relative;z-index:1;}
+.hero-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#e9a49e,#e4bfa0);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1.25rem;flex-shrink:0;background-size:cover;background-position:center;}
+.hero-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1.3rem;}
+.hero-greet{color:var(--muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:.15rem;}
+.hero-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.4px;}
+
+/* --- красивая CTA-кнопка на переход по внешней ссылке --- */
+.link-cta{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;background:var(--ink);color:var(--ink-contrast);font-weight:700;font-size:.9rem;text-decoration:none;transition:opacity .15s, transform .15s;}
+.link-cta:hover{opacity:.9;}
+.link-cta:active{transform:scale(.98);}
+.link-cta svg{flex-shrink:0;}
+
 .stat-box{background:var(--field);border:1px solid var(--field-border);border-radius:16px;padding:1rem 1.1rem;}
 .stat-box .stat-label{display:flex;align-items:center;}
 .stat-label{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:.35rem;}
@@ -448,14 +465,18 @@ body{
 
       <!-- ГЛАВНАЯ -->
       <div class="dash-section active" id="section-overview">
-        <div class="panel">
-          <div class="panel-head">
-            <div><div class="panel-title"><i class="cico cico-home ic"></i>С возвращением, <span id="ovUsername">—</span></div><div class="panel-sub">Обзор твоего аккаунта FernieID</div></div>
-            <div class="pill" id="ovRolePill">Пользователь</div>
+        <div class="panel hero-panel">
+          <div class="hero-accent"></div>
+          <div class="hero-top">
+            <div class="hero-avatar" id="ovAvatar">—</div>
+            <div>
+              <div class="hero-greet">С возвращением</div>
+              <div class="hero-name" id="ovUsername">—</div>
+            </div>
+            <div class="pill" id="ovRolePill" style="margin-left:auto;">Пользователь</div>
           </div>
-          <div class="grid3">
+          <div class="grid2">
             <div class="stat-box"><div class="stat-label">ID аккаунта</div><div class="stat-value" id="ovId" style="font-size:1rem;">—</div></div>
-            <div class="stat-box"><div class="stat-label">Баланс</div><div class="stat-value" id="ovBalance">—</div></div>
             <div class="stat-box"><div class="stat-label">Telegram</div><div class="stat-value" id="ovTgStatus" style="font-size:1rem;">—</div></div>
           </div>
         </div>
@@ -594,10 +615,14 @@ body{
       <div class="dash-section" id="section-apikeysdev">
         <div class="panel">
           <div class="panel-head"><div class="panel-title"><i class="cico cico-bars ic"></i>Руководство по API</div></div>
-          <div class="empty-box">
+          <div class="empty-box" style="padding:2.4rem 1rem 2rem;">
             <div class="emoji-ico"><i class="cico cico-bars"></i></div>
             <div class="title">Раздел в разработке</div>
-            <div class="desc">Руководство API-КЛЮЧей в разработке, пока что можете воспользоваться некрасивой ссылкой: https://fernieai-developers.vercel.app/</div>
+            <div class="desc" style="margin-bottom:1.5rem;">Полное руководство по API-ключам ещё готовится. А пока загляни в документацию для разработчиков — там уже можно всё изучить.</div>
+            <a class="link-cta" href="https://fernieai-developers.vercel.app/" target="_blank" rel="noopener noreferrer">
+              Открыть документацию API
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+            </a>
           </div>
         </div>
       </div>
@@ -1023,6 +1048,9 @@ function renderProfile(){
   $('ovId').textContent = currentUser.id;
   $('ovRolePill').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
   $('ovTgStatus').innerHTML = currentUser.telegramLinked ? icon('check','ic')+'Привязан' : '— Нет';
+  $('ovAvatar').textContent = initial;
+  $('ovAvatar').style.backgroundImage = currentUser.avatar_url ? `url('${currentUser.avatar_url}')` : '';
+  if(currentUser.avatar_url) $('ovAvatar').textContent = '';
   $('pfUsername').textContent = currentUser.username;
   $('pfId').textContent = currentUser.id;
   $('pfRole').textContent = currentUser.role === 'admin' ? 'Администратор' : 'Пользователь';
@@ -1113,7 +1141,6 @@ function showToastSafe(msg){
 const loaded = {};
 async function loadSectionData(name){
   if(!currentUser) return;
-  if(name === 'overview') return loadBalance();
   if(name === 'subscription') return loadSubscription();
   if(name === 'thirdparty') return loadThirdParty();
   if(name === 'collection') return loadInventory();
@@ -1125,14 +1152,6 @@ async function loadSectionData(name){
   if(name === 'admin' && currentUser.role === 'admin') return loadAdmin();
   if(name === 'admintickets' && currentUser.role === 'admin') return loadAdminTicketsList();
   if(name === 'adminapplies' && currentUser.role === 'admin') return loadAdminAppliesList();
-}
-
-async function loadBalance(){
-  try{
-    const res = await fetch(`${API}/api/balance/${currentUser.id}`);
-    const data = await res.json();
-    $('ovBalance').textContent = (data.balance ?? '—');
-  } catch(e){ $('ovBalance').textContent = '—'; }
 }
 
 async function loadSubscription(){
