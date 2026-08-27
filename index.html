@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FernieID</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf1e8;
+  --card:#ffffff;
+  --ink:#181410;
+  --muted:#948b83;
+  --field:#f4ece2;
+  --field-border:#efe3d4;
+  --blob-pink:#e9a49e;
+  --blob-sage:#cddac2;
+  --red:#e2564f;
+  --radius-card:28px;
+  --radius-field:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;}
+body{
+  min-height:100%;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem 1.25rem;
+  position:relative;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* декоративные пятна фона, как на референсе */
+.blob{position:fixed;border-radius:50%;filter:blur(2px);opacity:.9;z-index:0;pointer-events:none;}
+.blob-pink{width:340px;height:340px;background:var(--blob-pink);top:-140px;right:-110px;}
+.blob-sage{width:260px;height:260px;background:var(--blob-sage);bottom:-120px;left:-90px;}
+
+.auth-wrap{
+  position:relative;z-index:1;
+  width:100%;max-width:420px;
+}
+
+.auth-card{
+  background:var(--card);
+  border-radius:var(--radius-card);
+  padding:2.75rem 2.5rem;
+  box-shadow:0 30px 60px -20px rgba(60,40,20,0.18);
+  animation:fadeUp .45s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+.auth-title{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:1.9rem;
+  letter-spacing:-.5px;
+  margin-bottom:.6rem;
+}
+
+.auth-subtitle{
+  color:var(--muted);
+  font-size:.94rem;
+  line-height:1.5;
+  margin-bottom:1.9rem;
+}
+
+.field{margin-bottom:1.15rem;}
+.field-label{
+  display:block;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:1.1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:.45rem;
+}
+.field-input-wrap{position:relative;}
+.field-input{
+  width:100%;
+  padding:13px 16px;
+  background:var(--field);
+  border:1px solid var(--field-border);
+  border-radius:var(--radius-field);
+  font-family:'Inter',sans-serif;
+  font-size:.92rem;
+  color:var(--ink);
+  outline:none;
+  transition:border-color .18s, box-shadow .18s, background .18s;
+}
+.field-input::placeholder{color:#b6ac9f;}
+.field-input:focus{
+  border-color:#d8c3af;
+  background:#fbf6ef;
+  box-shadow:0 0 0 3px rgba(216,195,175,0.28);
+}
+.field-input[type="password"]{padding-right:44px;}
+
+.eye-btn{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  border-radius:8px;transition:color .15s, background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.eye-btn:hover{color:var(--ink);background:rgba(0,0,0,0.04);}
+
+.forgot-row{
+  display:flex;justify-content:flex-end;
+  margin-top:-.55rem;margin-bottom:1.35rem;
+}
+.forgot-link{
+  font-size:.78rem;
+  color:var(--muted);
+  text-decoration:none;
+  font-weight:500;
+  transition:color .18s;
+}
+.forgot-link:hover{color:var(--ink);text-decoration:underline;}
+
+.form-msg{
+  font-size:.8rem;
+  color:var(--red);
+  min-height:1.1rem;
+  margin:-.4rem 0 .8rem;
+}
+
+.submit-btn{
+  width:100%;
+  padding:15px;
+  background:var(--ink);
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  font-family:'Inter',sans-serif;
+  font-size:.94rem;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .15s, opacity .15s, background .15s;
+}
+.submit-btn:hover{opacity:.92;}
+.submit-btn:active{transform:scale(.98);}
+.submit-btn:disabled{opacity:.55;cursor:default;transform:none;}
+
+.switch-row{
+  text-align:center;
+  margin-top:1.6rem;
+  font-size:.86rem;
+  color:var(--muted);
+}
+.switch-link{
+  color:var(--ink);
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+}
+.switch-link:hover{text-decoration:underline;}
+
+.form-section{display:none;flex-direction:column;animation:fadeUp .3s ease both;}
+.form-section.active{display:flex;}
+
+@media(max-width:420px){
+  .auth-card{padding:2.1rem 1.5rem;border-radius:22px;}
+  .auth-title{font-size:1.6rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob-pink"></div>
+<div class="blob blob-sage"></div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+
+    <!-- ВХОД -->
+    <div class="form-section active" id="section-login">
+      <h1 class="auth-title">С возвращением</h1>
+      <p class="auth-subtitle">Рады снова вас видеть. Войдите, чтобы продолжить.</p>
+
+      <div class="field">
+        <label class="field-label" for="loginUsername">Логин</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="text" id="loginUsername" placeholder="Введите логин" autocomplete="username">
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:.5rem;">
+        <label class="field-label" for="loginPassword">Пароль</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="password" id="loginPassword" placeholder="Введите пароль" autocomplete="current-password">
+          <button type="button" class="eye-btn" onclick="toggleVis('loginPassword', this)" tabindex="-1">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="forgot-row">
+        <a href="password.html" class="forgot-link">Забыли пароль?</a>
+      </div>
+
+      <div class="form-msg" id="loginMsg"></div>
+
+      <button class="submit-btn" id="loginSubmit">Войти в аккаунт →</button>
+
+      <div class="switch-row">Ещё нет аккаунта? <a class="switch-link" id="go-register">Создать его</a></div>
+    </div>
+
+    <!-- РЕГИСТРАЦИЯ -->
+    <div class="form-section" id="section-register">
+      <h1 class="auth-title">Создать аккаунт</h1>
+      <p class="auth-subtitle">Зарегистрируйтесь, чтобы получить доступ к личному кабинету.</p>
+
+      <div class="field">
+        <label class="field-label" for="regUsername">Логин</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="text" id="regUsername" placeholder="Придумайте логин" autocomplete="username">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="regPassword">Пароль</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="password" id="regPassword" placeholder="Придумайте пароль" autocomplete="new-password">
+          <button type="button" class="eye-btn" onclick="toggleVis('regPassword', this)" tabindex="-1">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="regPassword2">Повторите пароль</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="password" id="regPassword2" placeholder="Повторите пароль" autocomplete="new-password">
+          <button type="button" class="eye-btn" onclick="toggleVis('regPassword2', this)" tabindex="-1">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-msg" id="regMsg"></div>
+
+      <button class="submit-btn" id="regSubmit">Создать аккаунт →</button>
+
+      <div class="switch-row">Уже есть аккаунт? <a class="switch-link" id="go-login">Войти</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = 'https://ferniex-id.vercel.app';
+const $ = id => document.getElementById(id);
+
+function toggleVis(inputId, btn){
+  const inp = $(inputId);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+}
+
+function showSection(name){
+  $('section-login').classList.toggle('active', name==='login');
+  $('section-register').classList.toggle('active', name==='register');
+  $('loginMsg').textContent=''; $('regMsg').textContent='';
+}
+$('go-register').onclick = () => showSection('register');
+$('go-login').onclick = () => showSection('login');
+
+function setBtnLoading(btn, loading, defaultText){
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Подождите…' : defaultText;
+}
+
+$('loginSubmit').onclick = async () => {
+  const username = $('loginUsername').value.trim();
+  const password = $('loginPassword').value;
+  const msg = $('loginMsg');
+  msg.textContent = '';
+  if(!username || !password){ msg.textContent = 'Введите логин и пароль'; return; }
+
+  setBtnLoading($('loginSubmit'), true, 'Войти в аккаунт →');
+  try{
+    const res = await fetch(`${API}/api/login`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if(data.success){
+      msg.style.color = '#3f9d5b';
+      msg.textContent = '✓ Вход выполнен';
+      // тут позже будет редирект в личный кабинет
+    } else {
+      msg.style.color = 'var(--red)';
+      msg.textContent = data.error || 'Неверный логин или пароль';
+    }
+  } catch(e){
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Ошибка соединения с сервером';
+  } finally {
+    setBtnLoading($('loginSubmit'), false, 'Войти в аккаунт →');
+  }
+};
+$('loginPassword').addEventListener('keydown', e => { if(e.key==='Enter') $('loginSubmit').click(); });
+$('loginUsername').addEventListener('keydown', e => { if(e.key==='Enter') $('loginPassword').focus(); });
+
+$('regSubmit').onclick = async () => {
+  const username = $('regUsername').value.trim();
+  const password = $('regPassword').value;
+  const password2 = $('regPassword2').value;
+  const msg = $('regMsg');
+  msg.style.color = 'var(--red)';
+  msg.textContent = '';
+
+  if(!username || !password || !password2){ msg.textContent = 'Заполните все поля'; return; }
+  if(password !== password2){ msg.textContent = 'Пароли не совпадают'; return; }
+  if(password.length < 6){ msg.textContent = 'Пароль должен быть не короче 6 символов'; return; }
+
+  setBtnLoading($('regSubmit'), true, 'Создать аккаунт →');
+  try{
+    const res = await fetch(`${API}/api/register`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if(data.success){
+      msg.style.color = '#3f9d5b';
+      msg.textContent = '✓ Аккаунт создан, теперь войдите';
+      setTimeout(() => { showSection('login'); $('loginUsername').value = username; }, 900);
+    } else {
+      msg.style.color = 'var(--red)';
+      msg.textContent = data.error || 'Ошибка регистрации';
+    }
+  } catch(e){
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Ошибка соединения с сервером';
+  } finally {
+    setBtnLoading($('regSubmit'), false, 'Создать аккаунт →');
+  }
+};
+$('regPassword2').addEventListener('keydown', e => { if(e.key==='Enter') $('regSubmit').click(); });
+</script>
+</body>
+</html>
