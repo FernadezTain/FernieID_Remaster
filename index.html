@@ -121,6 +121,21 @@ body{
 .cico-joystick::before{left:2px;bottom:0;width:12px;height:5px;background:currentColor;border-radius:3px;}
 .cico-joystick::after{left:6px;top:1px;width:4px;height:9px;background:currentColor;border-radius:2px 2px 0 0;box-shadow:0 -3px 0 -1px currentColor;}
 
+.cico-globe{border:2px solid currentColor;border-radius:50%;background:transparent;}
+.cico-globe::before{left:6px;top:0;width:2px;height:16px;background:currentColor;border-radius:2px;}
+.cico-globe::after{left:0;top:6px;width:16px;height:2px;background:currentColor;border-radius:2px;}
+
+.cico-mobile{border:2px solid currentColor;border-radius:4px;left:3px;top:0;width:10px;height:16px;background:transparent;}
+.cico-mobile::before{left:7px;top:12.5px;width:2px;height:2px;border-radius:50%;background:currentColor;}
+
+.cico-bot::before{left:2px;top:4px;width:12px;height:10px;border:2px solid currentColor;border-radius:4px;background:transparent;}
+.cico-bot::after{left:6px;top:0;width:4px;height:4px;background:currentColor;box-shadow:-5px 8px 0 -2.5px currentColor,5px 8px 0 -2.5px currentColor;border-radius:50%;}
+
+.cico-gear{border:2px solid currentColor;border-radius:50%;background:transparent;}
+.cico-gear::before{left:4px;top:4px;width:4px;height:4px;border-radius:50%;background:currentColor;}
+.cico-gear::after{left:6.5px;top:-2.5px;width:3px;height:3px;background:currentColor;border-radius:1px;
+  box-shadow:0 17px 0 0 currentColor, 9.5px 6.5px 0 0 currentColor, -9.5px 6.5px 0 0 currentColor;}
+
 .cico-cards::before{left:0;top:2px;width:11px;height:13px;border:2px solid currentColor;border-radius:3px;background:var(--card);}
 .cico-cards::after{left:5px;top:0;width:11px;height:13px;border:2px solid currentColor;border-radius:3px;background:var(--card);}
 
@@ -219,8 +234,29 @@ body{
 .btn-outline:hover{border-color:color-mix(in srgb, var(--ink) 35%, var(--field-border));background:var(--field);}
 .btn-danger{background:none;border:1px solid #f3d3d1;color:var(--red);}
 .btn-danger:hover{background:#fbeceb;}
+.btn-danger-solid{background:var(--red);color:#fff;}
+.btn-danger-solid:hover{opacity:.9;}
 .btn-sm{padding:8px 14px;font-size:.76rem;}
 .btn:disabled{opacity:.5;cursor:default;}
+
+/* --- красивый пикер типа приложения (вместо select) --- */
+.type-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;}
+@media(max-width:420px){.type-picker{grid-template-columns:repeat(3,1fr);}}
+.type-option{display:flex;flex-direction:column;align-items:center;gap:.45rem;padding:.75rem .3rem;border-radius:14px;border:1px solid var(--field-border);background:var(--field);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, background .18s;}
+.type-option .cico{color:var(--muted);transition:color .18s;}
+.type-option-label{font-size:.66rem;font-weight:700;color:var(--muted);transition:color .18s;}
+.type-option:hover{border-color:#d8c3af;transform:translateY(-1px);}
+.type-option.active{background:var(--ink);border-color:var(--ink);transform:translateY(-2px) scale(1.03);}
+.type-option.active .cico,.type-option.active .type-option-label{color:var(--ink-contrast);}
+
+/* --- модалка подтверждения (замена window.confirm) --- */
+.confirm-ico{width:46px;height:46px;border-radius:14px;background:#fbeceb;color:var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;}
+.confirm-ico .cico{width:20px;height:20px;}
+.confirm-desc{text-align:center;color:var(--muted);font-size:.86rem;line-height:1.55;margin:.4rem 0 1.4rem;}
+
+/* --- анимация появления строк лога --- */
+@keyframes logRowIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.log-row{opacity:0;animation:logRowIn .38s cubic-bezier(.22,1,.36,1) forwards;}
 
 .empty-box{text-align:center;padding:2.4rem 1rem;color:var(--muted);}
 .empty-box .title{font-weight:700;color:var(--ink);margin-bottom:.3rem;font-size:.95rem;}
@@ -258,9 +294,42 @@ body{
 .timeline-mini-btn.danger:hover{background:#fbeceb;}
 
 .admin-table{width:100%;border-collapse:collapse;font-size:.84rem;}
+.section-divider{height:1px;background:var(--line);margin:1.5rem 0;}
 .admin-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:.6rem .5rem;border-bottom:1px solid var(--line);}
 .admin-table td{padding:.65rem .5rem;border-bottom:1px solid var(--line);}
 .admin-table tr:last-child td{border-bottom:none;}
+
+/* --- красивый тонкий скроллбар вместо системного --- */
+.scroll-area{overflow-y:auto;overflow-x:hidden;}
+.scroll-area,
+.modal-box,
+body{
+  scrollbar-width:thin;
+  scrollbar-color:var(--muted) transparent;
+}
+.scroll-area::-webkit-scrollbar,
+.modal-box::-webkit-scrollbar,
+body::-webkit-scrollbar{
+  width:7px;height:7px;
+}
+.scroll-area::-webkit-scrollbar-track,
+.modal-box::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track{
+  background:transparent;
+}
+.scroll-area::-webkit-scrollbar-thumb,
+.modal-box::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb{
+  background-color:var(--field-border);
+  border-radius:100px;
+  border:1px solid transparent;
+  background-clip:padding-box;
+}
+.scroll-area:hover::-webkit-scrollbar-thumb,
+.modal-box:hover::-webkit-scrollbar-thumb,
+body:hover::-webkit-scrollbar-thumb{
+  background-color:var(--muted);
+}
 
 /* --- tabs --- */
 .tabs{position:relative;display:flex;gap:.4rem;background:var(--field);border:1px solid var(--field-border);padding:4px;border-radius:100px;margin-bottom:1.1rem;width:fit-content;}
@@ -282,7 +351,7 @@ body{
 .key-card:last-child{margin-bottom:0;}
 .key-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.7rem;}
 .key-card-name{font-weight:700;font-size:.92rem;}
-.key-card-app{font-size:.76rem;color:var(--muted);margin-top:1px;}
+.key-card-app{font-size:.76rem;color:var(--muted);margin-top:1px;display:flex;align-items:center;gap:5px;}
 .key-value-box{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:var(--card);border:1px solid var(--field-border);border-radius:10px;font-family:monospace;font-size:.78rem;color:var(--ink);margin-bottom:.7rem;overflow:hidden;}
 .key-value-box span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .key-copy-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;font-size:.7rem;font-weight:700;}
@@ -573,22 +642,16 @@ body{
       <!-- БЕЗОПАСНОСТЬ -->
       <div class="dash-section" id="section-security">
         <div class="panel">
-          <div><div class="panel-title"><i class="cico cico-shield ic"></i>Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div><div class="pill" id="secTgPill">—</div></div>
+          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-shield ic"></i>Telegram</div><div class="panel-sub">Двухфакторная защита и уведомления о входах</div></div><div class="pill" id="secTgPill">—</div></div>
           <div id="secTgBody" class="loader">Загрузка…</div>
-        </div>
 
-        <div class="panel">
-          <div class="panel-head"><div><div class="panel-title"><i class="cico cico-key ic"></i>Смена пароля</div><div class="panel-sub">Обновите пароль от аккаунта FernieID</div></div></div>
-          <div class="field" style="margin-bottom:.9rem;">
-            <label class="field-label">Текущий пароль</label>
-            <input class="field-input" id="pwCurrentInput" type="password" placeholder="••••••••" autocomplete="current-password">
-          </div>
-          <div class="field" style="margin-bottom:.9rem;">
-            <label class="field-label">Новый пароль</label>
-            <input class="field-input" id="pwNewInput" type="password" placeholder="Минимум 6 символов" autocomplete="new-password">
-          </div>
-          <button class="btn btn-dark" id="pwChangeBtn">Сменить пароль</button>
-          <div class="form-msg" id="pwChangeMsg"></div>
+          <div class="section-divider"></div>
+
+          <div class="panel-head" style="margin-bottom:.9rem;"><div><div class="panel-title"><i class="cico cico-key ic"></i>Пароль</div><div class="panel-sub">Смена пароля от аккаунта FernieID</div></div></div>
+          <a class="link-cta" href="/password.html">
+            Сменить пароль
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+          </a>
         </div>
       </div>
 
@@ -830,6 +893,23 @@ function openModal(html){
   $('genericModal').classList.add('active');
 }
 $('genericModal').addEventListener('click', e => { if(e.target === $('genericModal')) closeModal(); });
+
+function confirmModal(message, opts){
+  opts = opts || {};
+  return new Promise(resolve => {
+    openModal(`
+      <div class="confirm-ico">${icon(opts.icon || 'warn')}</div>
+      <div class="modal-title" style="text-align:center;">${escapeHtml(opts.title || 'Подтвердите действие')}</div>
+      <div class="confirm-desc">${escapeHtml(message)}</div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="confirmNoBtn">${escapeHtml(opts.cancelLabel || 'Отмена')}</button>
+        <button class="btn ${opts.danger ? 'btn-danger-solid' : 'btn-dark'}" id="confirmYesBtn">${escapeHtml(opts.okLabel || 'Да')}</button>
+      </div>`);
+    const cleanup = (result) => { closeModal(); resolve(result); };
+    $('confirmNoBtn').onclick = () => cleanup(false);
+    $('confirmYesBtn').onclick = () => cleanup(true);
+  });
+}
 
 /* ---------- auth: login / register ---------- */
 $('go-register').onclick = () => showSection('register');
@@ -1345,7 +1425,7 @@ async function loadSecurity(){
       <div class="row-line"><div class="row-label">Telegram ID</div><div class="row-value">${currentUser.telegram_id}</div></div>
       <div style="margin-top:1rem;"><button class="btn btn-danger" id="unlinkTgBtn">Отвязать Telegram</button></div>`;
     $('unlinkTgBtn').onclick = async () => {
-      if(!confirm('Точно отвязать Telegram от аккаунта?')) return;
+      if(!(await confirmModal('Точно отвязать Telegram от аккаунта? 2FA и уведомления о входах перестанут работать.', { title:'Отвязать Telegram?', okLabel:'Отвязать', danger:true, icon:'link' }))) return;
       const btn = $('unlinkTgBtn'); setBtnLoading(btn, true, 'Отвязать Telegram');
       try{
         const res = await fetch(`${API}/api/telegram/unlink`, {
@@ -1371,32 +1451,6 @@ async function loadSecurity(){
     $('openTgLinkBtn').onclick = () => openTgLinkModal();
   }
 
-  // --- смена пароля ---
-  const pwBtn = $('pwChangeBtn');
-  if(pwBtn){
-    pwBtn.onclick = async () => {
-      const curPass = $('pwCurrentInput').value;
-      const newPass = $('pwNewInput').value;
-      const msg = $('pwChangeMsg'); msg.textContent = '';
-      if(!curPass || !newPass){ msg.textContent = 'Заполни оба поля'; return; }
-      if(newPass.length < 6){ msg.textContent = 'Новый пароль минимум 6 символов'; return; }
-      setBtnLoading(pwBtn, true, 'Сменить пароль');
-      try{
-        const res = await fetch(`${API}/api/password/change`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ userId: currentUser.id, currentPassword: curPass, newPassword: newPass })
-        });
-        const data = await res.json();
-        if(data.success){
-          msg.style.color = 'var(--green)'; msg.textContent = 'Пароль успешно изменён';
-          $('pwCurrentInput').value = ''; $('pwNewInput').value = '';
-        } else {
-          msg.style.color = 'var(--red)'; msg.textContent = data.error || 'Не удалось сменить пароль';
-        }
-      } catch(e){ msg.style.color = 'var(--red)'; msg.textContent = 'Ошибка соединения'; }
-      finally{ setBtnLoading(pwBtn, false, 'Сменить пароль'); }
-    };
-  }
 }
 
 /* ===================== ПРИВЯЗКА TELEGRAM: модал с 3 вкладками ===================== */
@@ -1563,7 +1617,7 @@ async function loadAdmin(){
 
     if(users.success){
       $('adminUsersBody').innerHTML = `<div class="panel-sub" style="margin-bottom:.6rem;">Всего: ${users.users.length}</div>
-        <div style="max-height:520px;overflow-y:auto;"><table class="admin-table"><thead><tr>
+        <div class="scroll-area" style="max-height:520px;"><table class="admin-table"><thead><tr>
         <th>Логин</th><th>Роль</th><th>Баланс</th><th>Telegram</th></tr></thead><tbody>` +
         users.users.map(u => `<tr>
           <td>${escapeHtml(u.username)}</td>
@@ -1834,11 +1888,12 @@ function renderApiKeys(){
   }
   $('apiKeysBody').innerHTML = apiKeysCache.map(k => {
     const statusPill = k.status === 'active' ? `<span class="pill pill-green">Активен</span>` : `<span class="pill pill-red">Отключён</span>`;
+    const tm = typeMeta(k.type);
     return `<div class="key-list-card" data-open="${k.id}">
       <div class="key-card-top">
         <div>
           <div class="key-card-name">${escapeHtml(k.name)}</div>
-          <div class="key-card-app">${escapeHtml(k.app_name || 'Без привязанного приложения')} · ${escapeHtml(k.type || 'other')}</div>
+          <div class="key-card-app"><i class="cico cico-${tm.icon} ic"></i>${escapeHtml(k.app_name || 'Без привязанного приложения')} · ${escapeHtml(tm.label)}</div>
         </div>
         ${statusPill}
       </div>
@@ -1880,14 +1935,41 @@ function openApiKeyDetail(keyId){
   $('apiKeyDetailPanel').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
+const TYPE_DEFS = {
+  web:    { icon:'globe',    label:'Веб' },
+  mobile: { icon:'mobile',   label:'Мобайл' },
+  bot:    { icon:'bot',      label:'Бот' },
+  game:   { icon:'joystick', label:'Игра' },
+  other:  { icon:'gear',     label:'Другое' }
+};
+function typeMeta(type){ return TYPE_DEFS[type] || { icon:'gear', label: type || 'Другое' }; }
+function typePickerHtml(selected){
+  return Object.entries(TYPE_DEFS).map(([key,t]) => `
+    <div class="type-option${key===selected?' active':''}" data-type="${key}">
+      <i class="cico cico-${t.icon}"></i>
+      <span class="type-option-label">${t.label}</span>
+    </div>`).join('');
+}
+function wireTypePicker(container, initial){
+  let current = TYPE_DEFS[initial] ? initial : 'other';
+  container.querySelectorAll('.type-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      current = opt.dataset.type;
+      container.querySelectorAll('.type-option').forEach(o => o.classList.toggle('active', o===opt));
+    });
+  });
+  return () => current;
+}
+
 function renderApiKeyDetailBody(k){
   const statusPill = k.status === 'active' ? `<span class="pill pill-green">Активен</span>` : `<span class="pill pill-red">Отключён</span>`;
   const lastUsed = k.last_used_at ? new Date(k.last_used_at).toLocaleString('ru-RU', { timeZone:'Europe/Moscow' }) : 'ещё не использовался';
+  const tm = typeMeta(k.type);
   $('apiKeyDetailBody').innerHTML = `
     <div class="key-card-top" style="margin-bottom:1rem;">
       <div>
         <div class="key-card-name" style="font-size:1.05rem;">${escapeHtml(k.name)}</div>
-        <div class="key-card-app">${escapeHtml(k.app_name || 'Без привязанного приложения')} · ${escapeHtml(k.type || 'other')}</div>
+        <div class="key-card-app"><i class="cico cico-${tm.icon} ic"></i>${escapeHtml(k.app_name || 'Без привязанного приложения')} · ${escapeHtml(tm.label)}</div>
       </div>
       ${statusPill}
     </div>
@@ -1899,9 +1981,11 @@ function renderApiKeyDetailBody(k){
     </div>
     <div class="key-actions">
       <button class="btn btn-outline btn-sm" id="keyDetailEditBtn">Редактировать</button>
-      <button class="btn btn-outline btn-sm" id="keyDetailLogsBtn">Логи</button>
       <button class="btn btn-danger btn-sm" id="keyDetailDeleteBtn">Удалить</button>
-    </div>`;
+    </div>
+    <div class="section-divider"></div>
+    <div class="panel-sub" style="margin-bottom:.8rem;font-weight:700;color:var(--ink);font-size:.85rem;">История запросов</div>
+    <div id="keyLogsBody"><div class="loader">Загрузка…</div></div>`;
 
   $('keyDetailShowBtn').onclick = () => {
     apiKeyDetailShown = !apiKeyDetailShown;
@@ -1910,36 +1994,34 @@ function renderApiKeyDetailBody(k){
   };
   $('keyDetailCopyBtn').onclick = () => copyApiKeyValue(k.id, $('keyDetailCopyBtn'));
   $('keyDetailEditBtn').onclick = () => openEditKeyModal(k.id);
-  $('keyDetailLogsBtn').onclick = () => openKeyLogsModal(k.id);
   $('keyDetailDeleteBtn').onclick = () => deleteApiKey(k.id);
+
+  loadKeyLogsInline(k.id);
 }
 
 $('apiKeyDetailBack').onclick = () => { loadApiKeys(); };
 
 $('createKeyBtn').onclick = () => {
   openModal(`
-    <div class="modal-title">Новый API-ключ</div>
-    <div class="field"><label class="field-label">Название ключа</label><input class="field-input" id="newKeyName" placeholder="Например: Мой бот"></div>
-    <div class="field"><label class="field-label">Привязанное приложение</label><input class="field-input" id="newKeyApp" placeholder="Необязательно"></div>
-    <div class="field" style="margin-bottom:0;">
-      <label class="field-label">Тип</label>
-      <select class="field-input" id="newKeyType">
-        <option value="other">Другое</option>
-        <option value="bot">Бот</option>
-        <option value="website">Сайт</option>
-        <option value="app">Приложение</option>
-      </select>
+    <div class="modal-title">Создать API-ключ</div>
+    <div class="panel-sub" style="margin:-.5rem 0 1.2rem;">FernieID Developer</div>
+    <div class="field"><label class="field-label">Название ключа</label><input class="field-input" id="newKeyName" placeholder="Например: Мой сайт"></div>
+    <div class="field">
+      <label class="field-label">Тип приложения</label>
+      <div class="type-picker" id="newKeyTypePicker">${typePickerHtml('web')}</div>
     </div>
+    <div class="field" style="margin-bottom:0;"><label class="field-label">Название приложения</label><input class="field-input" id="newKeyApp" placeholder="Например: MyApp"></div>
     <div class="form-msg" id="newKeyMsg"></div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
       <button class="btn btn-dark" id="newKeySubmit">Создать</button>
     </div>
   `);
+  const getType = wireTypePicker($('newKeyTypePicker'), 'web');
   $('newKeySubmit').onclick = async () => {
     const name = $('newKeyName').value.trim();
     const appName = $('newKeyApp').value.trim();
-    const type = $('newKeyType').value;
+    const type = getType();
     const msg = $('newKeyMsg');
     if(!name){ msg.textContent = 'Укажи название ключа'; return; }
     const btn = $('newKeySubmit'); setBtnLoading(btn, true, 'Создать');
@@ -1961,26 +2043,34 @@ $('createKeyBtn').onclick = () => {
 function openEditKeyModal(keyId){
   const k = apiKeysCache.find(x => String(x.id) === String(keyId));
   if(!k) return;
+  const initialType = TYPE_DEFS[k.type] ? k.type : 'other';
   openModal(`
     <div class="modal-title">Редактировать ключ</div>
+    <div class="panel-sub" style="margin:-.5rem 0 1.2rem;">FernieID Developer</div>
     <div class="field"><label class="field-label">Название ключа</label><input class="field-input" id="editKeyName" value="${escapeHtml(k.name)}"></div>
-    <div class="field" style="margin-bottom:0;"><label class="field-label">Привязанное приложение</label><input class="field-input" id="editKeyApp" value="${escapeHtml(k.app_name || '')}"></div>
+    <div class="field">
+      <label class="field-label">Тип приложения</label>
+      <div class="type-picker" id="editKeyTypePicker">${typePickerHtml(initialType)}</div>
+    </div>
+    <div class="field" style="margin-bottom:0;"><label class="field-label">Название приложения</label><input class="field-input" id="editKeyApp" value="${escapeHtml(k.app_name || '')}"></div>
     <div class="form-msg" id="editKeyMsg"></div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
       <button class="btn btn-dark" id="editKeySubmit">Сохранить</button>
     </div>
   `);
+  const getType = wireTypePicker($('editKeyTypePicker'), initialType);
   $('editKeySubmit').onclick = async () => {
     const name = $('editKeyName').value.trim();
     const appName = $('editKeyApp').value.trim();
+    const type = getType();
     const msg = $('editKeyMsg');
     if(!name){ msg.textContent = 'Укажи название ключа'; return; }
     const btn = $('editKeySubmit'); setBtnLoading(btn, true, 'Сохранить');
     try{
       const res = await fetch(`${API}/api/apikeys/${keyId}`, {
         method:'PATCH', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ userId: currentUser.id, name, appName })
+        body: JSON.stringify({ userId: currentUser.id, name, appName, type })
       });
       const data = await res.json();
       if(data.success){ closeModal(); loadApiKeys(); }
@@ -1990,29 +2080,34 @@ function openEditKeyModal(keyId){
   };
 }
 
-async function openKeyLogsModal(keyId){
-  openModal(`<div class="modal-title">Логи запросов</div><div class="loader">Загрузка…</div>`);
+// логи запроса — грузятся сразу при открытии страницы ключа, прямо в блоке (без модалки), со ступенчатой анимацией строк
+async function loadKeyLogsInline(keyId){
+  const box = $('keyLogsBody');
+  if(!box) return;
   try{
     const res = await fetch(`${API}/api/apikeys/${keyId}/logs?userId=${currentUser.id}`);
     const data = await res.json();
     if(!data.success){
-      openModal(`<div class="modal-title">Логи запросов</div><div class="empty-box"><div class="desc">${escapeHtml(data.error||'Не удалось загрузить')}</div></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Закрыть</button></div>`);
+      box.innerHTML = `<div class="empty-box" style="padding:1.2rem 0;"><div class="desc">${escapeHtml(data.error||'Не удалось загрузить')}</div></div>`;
       return;
     }
     const logs = data.logs || [];
-    const rows = logs.length ? logs.map(l => `
-      <div class="row-line">
+    if(!logs.length){
+      box.innerHTML = `<div class="empty-box" style="padding:1.2rem 0;"><div class="desc">Запросов по этому ключу пока не было</div></div>`;
+      return;
+    }
+    box.innerHTML = `<div class="scroll-area" style="max-height:320px;">` + logs.map((l, i) => `
+      <div class="row-line log-row" style="animation-delay:${Math.min(i*40, 480)}ms;">
         <div class="row-label">${escapeHtml(l.action || '—')}</div>
         <div class="row-value" style="font-size:.76rem;">${l.created_at ? new Date(l.created_at).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'}) : '—'}</div>
-      </div>`).join('') : `<div class="empty-box" style="padding:1.2rem 0;"><div class="desc">Записей пока нет</div></div>`;
-    openModal(`<div class="modal-title">Логи запросов</div><div style="max-height:50vh;overflow-y:auto;">${rows}</div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Закрыть</button></div>`);
+      </div>`).join('') + `</div>`;
   } catch(e){
-    openModal(`<div class="modal-title">Логи запросов</div><div class="empty-box"><div class="desc">Ошибка соединения</div></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Закрыть</button></div>`);
+    box.innerHTML = `<div class="empty-box" style="padding:1.2rem 0;"><div class="desc">Ошибка соединения</div></div>`;
   }
 }
 
 async function deleteApiKey(keyId){
-  if(!confirm('Удалить этот API-ключ? Действие необратимо.')) return;
+  if(!(await confirmModal('Действие необратимо. Все интеграции, использующие этот ключ, перестанут работать.', { title:'Удалить API-ключ?', okLabel:'Удалить', danger:true, icon:'key' }))) return;
   try{
     const res = await fetch(`${API}/api/apikeys/${keyId}`, {
       method:'DELETE', headers:{'Content-Type':'application/json'},
@@ -2023,6 +2118,7 @@ async function deleteApiKey(keyId){
     else alert(data.error || 'Не удалось удалить ключ');
   } catch(e){ alert('Ошибка соединения'); }
 }
+
 
 /* ══════════════════════════════════════════
    АДМИН: ОБРАЩЕНИЯ — полноценное рассмотрение
@@ -2230,7 +2326,7 @@ function openEditLabelModal(ticketNum, index, currentText){
 }
 
 async function deleteTicketLabel(ticketNum, index){
-  if(!confirm('Удалить эту запись из истории?')) return;
+  if(!(await confirmModal('Эта запись из истории обращения будет удалена без возможности восстановления.', { title:'Удалить запись?', okLabel:'Удалить', danger:true }))) return;
   try{
     const res = await fetch(`${API}/api/admin/tickets/${encodeURIComponent(ticketNum)}/history/${index}`, {
       method:'DELETE', headers:{'Content-Type':'application/json'},
