@@ -336,6 +336,8 @@ body:hover::-webkit-scrollbar-thumb{
 .tabs-slider{position:absolute;top:4px;bottom:4px;left:4px;width:0;border-radius:100px;background:var(--ink);transition:transform .32s cubic-bezier(.65,0,.35,1), width .32s cubic-bezier(.65,0,.35,1);z-index:0;}
 .tab-btn{position:relative;z-index:1;padding:8px 16px;border-radius:100px;border:none;background:none;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;color:var(--muted);cursor:pointer;transition:color .2s .05s;}
 .tab-btn.active{background:none;color:var(--ink-contrast);}
+.gstab-panel{display:none;}
+.gstab-panel.active{display:block;}
 
 /* --- ticket list card --- */
 .ticket-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:14px;background:var(--field);border:1px solid var(--field-border);cursor:pointer;transition:border-color .15s;margin-bottom:.6rem;}
@@ -560,8 +562,7 @@ body:hover::-webkit-scrollbar-thumb{
         <div class="nav-group-label">Меню</div>
         <div class="nav-block active" data-section="overview"><span class="nav-ico"><i class="cico cico-home"></i></span>Главная</div>
         <div class="nav-block" data-section="subscription"><span class="nav-ico"><i class="cico cico-spark"></i></span>Подписка<span class="nav-badge" id="subBadge">Fernie+</span></div>
-        <div class="nav-block" data-section="stats"><span class="nav-ico"><i class="cico cico-bars"></i></span>Статистика</div>
-        <div class="nav-block" data-section="thirdparty"><span class="nav-ico"><i class="cico cico-joystick"></i></span>Сторонние игры</div>
+        <div class="nav-block" data-section="gamestats"><span class="nav-ico"><i class="cico cico-bars"></i></span>Игровая Статистика</div>
         <div class="nav-block" data-section="collection"><span class="nav-ico"><i class="cico cico-cards"></i></span>Коллекция</div>
         <div class="nav-block" data-section="security"><span class="nav-ico"><i class="cico cico-shield"></i></span>Безопасность</div>
         <div class="nav-block" data-section="tickets"><span class="nav-ico"><i class="cico cico-mail"></i></span>Обращения</div>
@@ -620,23 +621,29 @@ body:hover::-webkit-scrollbar-thumb{
         </div>
       </div>
 
-      <!-- СТАТИСТИКА -->
-      <div class="dash-section" id="section-stats">
+      <!-- ИГРОВАЯ СТАТИСТИКА (Основная статистика / Социализация) -->
+      <div class="dash-section" id="section-gamestats">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="cico cico-bars ic"></i>Игровая статистика</div></div>
-          <div class="empty-box">
-            <div class="emoji-ico"><i class="cico cico-bars"></i></div>
-            <div class="title">Раздел в разработке</div>
-            <div class="desc">История сессий и детальная статистика появится здесь на новом сайте чуть позже.</div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-bars ic"></i>Игровая Статистика</div></div>
+          <div class="tabs">
+            <div class="tabs-slider"></div>
+            <button class="tab-btn active" data-gstab="main">Основная статистика</button>
+            <button class="tab-btn" data-gstab="social">Социализация</button>
           </div>
-        </div>
-      </div>
-
-      <!-- СТОРОННИЕ ИГРЫ -->
-      <div class="dash-section" id="section-thirdparty">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="cico cico-joystick ic"></i>Сторонние игры</div><div class="panel-sub" id="tpSub">Аккаунты, привязанные к FernieID</div></div>
-          <div id="tpBody" class="loader">Загрузка…</div>
+          <div class="gstab-panel active" data-gstab-panel="main">
+            <div class="empty-box">
+              <div class="emoji-ico"><i class="cico cico-bars"></i></div>
+              <div class="title">Раздел в разработке</div>
+              <div class="desc">История сессий и детальная статистика появится здесь на новом сайте чуть позже.</div>
+            </div>
+          </div>
+          <div class="gstab-panel" data-gstab-panel="social">
+            <div class="empty-box">
+              <div class="emoji-ico"><i class="cico cico-globe"></i></div>
+              <div class="title">Раздел в разработке</div>
+              <div class="desc">Социальные функции появятся здесь чуть позже.</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1100,6 +1107,14 @@ document.querySelectorAll('.tabs').forEach(tabsEl => {
   window.addEventListener('resize', () => positionTabSlider(tabsEl));
 });
 
+/* ---------- переключатель ИГРОВАЯ СТАТИСТИКА: Основная статистика / Социализация ---------- */
+document.querySelectorAll('#section-gamestats .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#section-gamestats .tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('#section-gamestats .gstab-panel').forEach(p => p.classList.toggle('active', p.dataset.gstabPanel === btn.dataset.gstab));
+  });
+});
+
 function switchSection(name){
   document.querySelectorAll('.nav-block[data-section]').forEach(n=>n.classList.toggle('active', n.dataset.section===name));
   document.querySelectorAll('.dash-section').forEach(s=>s.classList.remove('active'));
@@ -1278,7 +1293,6 @@ const loaded = {};
 async function loadSectionData(name){
   if(!currentUser) return;
   if(name === 'subscription') return loadSubscription();
-  if(name === 'thirdparty') return loadThirdParty();
   if(name === 'security') return loadSecurity();
   if(name === 'tickets') return loadTickets();
   if(name === 'mytickets') return loadMyTickets();
@@ -1386,29 +1400,6 @@ async function loadSubscription(){
     });
   } catch(e){
     body.innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div><div class="desc">Попробуй обновить страницу.</div></div>`;
-  }
-}
-
-async function loadThirdParty(){
-  if(loaded.thirdparty) return; loaded.thirdparty = true;
-  try{
-    const res = await fetch(`${API}/api/third-party-games/${currentUser.id}`);
-    const data = await res.json();
-    const games = data.games || [];
-    if(!games.length){
-      $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('joystick')}</div><div class="title">Пока ничего не привязано</div><div class="desc">Здесь появятся игровые аккаунты, связанные с твоим FernieID.</div></div>`;
-      return;
-    }
-    $('tpBody').innerHTML = games.map(g => `
-      <div class="game-card" style="margin-bottom:.7rem;">
-        <div class="game-ico">${icon('joystick')}</div>
-        <div>
-          <div class="game-name">${escapeHtml(g.name)}</div>
-          <div class="game-profiles">${(g.profiles||[]).map(escapeHtml).join(', ') || 'Без профилей'}</div>
-        </div>
-      </div>`).join('');
-  } catch(e){
-    $('tpBody').innerHTML = `<div class="empty-box"><div class="emoji-ico">${icon('warn')}</div><div class="title">Не удалось загрузить</div></div>`;
   }
 }
 
