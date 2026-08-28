@@ -372,6 +372,7 @@ body:hover::-webkit-scrollbar-thumb{
 .soctab-panel{display:none;}
 .soctab-panel.active{display:block;}
 
+.soctab-panel[data-soctab-panel="main"]{max-width:470px;margin:0 auto;}
 .feed-header{display:flex;align-items:center;justify-content:center;position:relative;padding:.2rem 0 1.3rem;}
 .feed-header-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.3px;}
 .feed-icon-btn{position:absolute;width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:border-color .15s, transform .15s;flex-shrink:0;}
@@ -770,7 +771,7 @@ body:hover::-webkit-scrollbar-thumb{
         </div>
 
         <!-- профиль другого пользователя (открывается из ленты / поиска) -->
-        <div class="panel" id="socialProfilePanel" style="display:none;">
+        <div class="panel" id="socialProfilePanel" style="display:none;overflow:hidden;">
           <div class="detail-back" id="socialProfileBack">← Назад к ленте</div>
           <div id="socialProfileBody"></div>
         </div>
@@ -1764,23 +1765,64 @@ async function openSocialProfile(userId){
     $('socialProfileBody').innerHTML = `<div class="empty-box"><div class="title">Не удалось загрузить профиль</div></div>`;
   }
 }
-function renderSocialProfile(user, isFriend, posts){
-  const isMe = String(user.id) === String(currentUser.id);
-  const avatarStyle = user.avatar_url ? `background-image:url('${user.avatar_url}')` : '';
-  $('socialProfileBody').innerHTML = `
-    <div class="social-profile-head">
-      <div class="social-profile-avatar" style="${avatarStyle}">${user.avatar_url ? '' : escapeHtml((user.username||'?')[0].toUpperCase())}</div>
-      <div>
-        <div class="social-profile-name">${escapeHtml(user.username)}</div>
-        <div class="social-profile-actions">
-          ${isMe ? '' : `<button class="btn btn-sm ${isFriend ? 'btn-outline' : 'btn-dark'}" id="spFriendBtn">${isFriend ? 'В друзьях' : 'Добавить в друзья'}</button>`}
-          ${isMe ? '' : `<button class="btn btn-sm btn-outline" id="spMsgBtn">Написать</button>`}
+
+// Карточка публикации на странице чужого/своего профиля — без шапки автора
+// (он и так известен из контекста страницы), только дата + лайк + просмотр
+function renderProfilePostCard(p){
+  const media = p.images.map(url => `<img src="${url}" loading="lazy" alt="">`).join('');
+  const dots = p.images.length > 1 ? `<div class="post-media-dots">${p.images.map(()=>'<div class="post-media-dot"></div>').join('')}</div>` : '';
+  return `
+    <div class="post-card" data-post-id="${p.id}">
+      <div class="post-card-head" style="cursor:default;justify-content:flex-end;">
+        <div class="post-time">${timeAgo(p.createdAt)}</div>
+      </div>
+      <div class="post-media">${media}${dots}</div>
+      <div class="post-body">
+        ${p.description ? `<div class="post-desc">${escapeHtml(p.description)}</div>` : ''}
+        <div class="post-actions">
+          <div class="post-action ${p.likedByMe ? 'liked' : ''}" data-like-btn><i class="cico cico-heart"></i><span>${p.likes}</span></div>
+          <div class="post-action static"><i class="cico cico-eye"></i><span>${p.views}</span></div>
         </div>
       </div>
+    </div>`;
+}
+function attachProfileFeedHandlers(){
+  document.querySelectorAll('#socialProfileBody .post-card').forEach(card => {
+    const postId = card.dataset.postId;
+    if(!card.dataset.observed){ card.dataset.observed = '1'; socialViewObserver.observe(card); }
+    const likeBtn = card.querySelector('[data-like-btn]');
+    if(likeBtn && !likeBtn.dataset.bound){ likeBtn.dataset.bound = '1'; likeBtn.addEventListener('click', () => toggleLike(postId, likeBtn)); }
+  });
+}
+
+function renderSocialProfile(user, isFriend, posts){
+  const isMe = String(user.id) === String(currentUser.id);
+  const initial = escapeHtml((user.username||'?')[0].toUpperCase());
+  const avatarStyle = user.avatar_url ? `background-image:url('${user.avatar_url}')` : '';
+  const bannerStyle = user.banner_url ? `background-image:url('${user.banner_url}')` : '';
+  $('socialProfileBody').innerHTML = `
+    <div class="profile-banner-wrap${user.banner_url ? ' has-img' : ''}" style="${bannerStyle};margin-top:0;"></div>
+    <div class="profile-head-row" style="padding:0;">
+      <div class="profile-big-avatar-wrap">
+        <div class="profile-big-avatar" style="${avatarStyle}">${user.avatar_url ? '' : initial}</div>
+      </div>
+      <div class="profile-head-name">
+        <div class="nm">${escapeHtml(user.username)}</div>
+        <div class="sub">FernieID аккаунт</div>
+      </div>
     </div>
-    ${posts.length ? `<div class="social-posts-grid">${posts.map(p => `<div class="grid-photo"><img src="${(p.images&&p.images[0])||''}" loading="lazy" alt=""></div>`).join('')}</div>`
+    ${isMe ? '' : `
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem;">
+        <button class="btn btn-sm ${isFriend ? 'btn-outline' : 'btn-dark'}" id="spFriendBtn">${isFriend ? 'В друзьях' : 'Добавить в друзья'}</button>
+        <button class="btn btn-sm btn-outline" id="spMsgBtn">Написать</button>
+      </div>
+    `}
+    <div class="section-divider"></div>
+    <div class="panel-head" style="margin-bottom:1rem;"><div class="panel-title" style="font-size:.95rem;">${icon('cards','ic')}Публикации</div></div>
+    ${posts.length ? `<div style="display:flex;flex-direction:column;gap:1.1rem;">${posts.map(renderProfilePostCard).join('')}</div>`
       : `<div class="empty-box"><div class="emoji-ico">${icon('cards')}</div><div class="title">Пока нет постов</div></div>`}
   `;
+  attachProfileFeedHandlers();
   const friendBtn = $('spFriendBtn');
   if(friendBtn) friendBtn.onclick = async () => {
     friendBtn.disabled = true;
