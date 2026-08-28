@@ -204,6 +204,8 @@ body{
 .cico-user::before{left:5px;top:0;width:6px;height:6px;border-radius:50%;background:currentColor;}
 .cico-user::after{left:2px;top:7px;width:12px;height:9px;background:currentColor;border-radius:8px 8px 0 0;}
 
+.cico-dots::before{left:1px;top:7px;width:3px;height:3px;border-radius:50%;background:currentColor;box-shadow:6px 0 0 0 currentColor, 12px 0 0 0 currentColor;}
+
 /* инлайн-иконка рядом с текстом (заголовки, статусы) */
 .ic{display:inline-block;vertical-align:-3px;margin-right:7px;}
 
@@ -373,6 +375,7 @@ body:hover::-webkit-scrollbar-thumb{
 .soctab-panel.active{display:block;}
 
 .soctab-panel[data-soctab-panel="main"]{max-width:470px;margin:0 auto;}
+.soctab-panel[data-soctab-panel="myprofile"]{max-width:470px;margin:0 auto;}
 .feed-header{display:flex;align-items:center;justify-content:center;position:relative;padding:.2rem 0 1.3rem;}
 .feed-header-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.3px;}
 .feed-icon-btn{position:absolute;width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:border-color .15s, transform .15s;flex-shrink:0;}
@@ -401,6 +404,17 @@ body:hover::-webkit-scrollbar-thumb{
 .post-action .cico{width:17px;height:17px;}
 
 .feed-loadmore{display:flex;justify-content:center;margin-top:.3rem;}
+
+/* --- меню управления постом (троеточие) --- */
+.post-menu-wrap{position:relative;}
+.post-menu-btn{width:28px;height:28px;border-radius:50%;background:var(--field);border:1px solid var(--field-border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);flex-shrink:0;transition:background .15s, border-color .15s;}
+.post-menu-btn:hover{background:#eee0cf;border-color:#e2d3bc;}
+.post-menu-dropdown{display:none;position:absolute;top:34px;right:0;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 32px -14px rgba(60,40,20,.32);padding:6px;min-width:150px;z-index:5;}
+.post-menu-dropdown.open{display:block;}
+.post-menu-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);white-space:nowrap;}
+.post-menu-item:hover{background:var(--field);}
+.post-menu-item.danger{color:var(--red);}
+.post-menu-item.danger:hover{background:#fbeceb;}
 
 /* карточка автора / поиска */
 .author-modal{text-align:center;}
@@ -745,6 +759,7 @@ body:hover::-webkit-scrollbar-thumb{
             <div class="tabs-slider"></div>
             <button class="tab-btn active" data-soctab="main">Главная</button>
             <button class="tab-btn" data-soctab="chat">Общение</button>
+            <button class="tab-btn" data-soctab="myprofile">Мой профиль</button>
           </div>
 
           <!-- ГЛАВНАЯ: лента постов -->
@@ -767,6 +782,11 @@ body:hover::-webkit-scrollbar-thumb{
               <div class="title">Разрабатывается</div>
               <div class="desc">Сообщения и чаты появятся здесь чуть позже.</div>
             </div>
+          </div>
+
+          <!-- МОЙ ПРОФИЛЬ -->
+          <div class="soctab-panel" data-soctab-panel="myprofile">
+            <div id="myProfileBody" class="loader">Загрузка…</div>
           </div>
         </div>
 
@@ -1246,11 +1266,12 @@ document.querySelectorAll('#section-gamestats .tab-btn').forEach(btn => {
   });
 });
 
-/* ---------- переключатель СОЦИАЛИЗАЦИЯ: Главная / Общение ---------- */
+/* ---------- переключатель СОЦИАЛИЗАЦИЯ: Главная / Общение / Мой профиль ---------- */
 document.querySelectorAll('#section-social .tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('#section-social .tab-btn').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('#section-social .soctab-panel').forEach(p => p.classList.toggle('active', p.dataset.soctabPanel === btn.dataset.soctab));
+    if(btn.dataset.soctab === 'myprofile' && !loaded.myprofile){ loaded.myprofile = true; loadMyProfileTab(); }
   });
 });
 function goToSocialChatTab(){
@@ -1841,6 +1862,135 @@ function renderSocialProfile(user, isFriend, posts){
 }
 $('socialProfileBack').addEventListener('click', showSocialListPanel);
 
+/* ══════════════════════════════════════════
+   СОЦИАЛИЗАЦИЯ — Мой профиль: свои посты + управление (троеточие → Удалить)
+   ══════════════════════════════════════════ */
+let myProfilePostsCache = [];
+
+function closeAllPostMenus(){
+  document.querySelectorAll('.post-menu-dropdown.open').forEach(d => d.classList.remove('open'));
+}
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.post-menu-wrap')) closeAllPostMenus();
+});
+
+async function loadMyProfileTab(){
+  $('myProfileBody').innerHTML = `<div class="loader">Загрузка…</div>`;
+  try{
+    const [profileRes, postsRes] = await Promise.all([
+      fetch(`${API}/api/social/profile/${currentUser.id}?viewerId=${currentUser.id}`),
+      fetch(`${API}/api/social/feed/${currentUser.id}?authorId=${currentUser.id}&limit=50`)
+    ]);
+    const profileData = await profileRes.json();
+    const postsData = await postsRes.json();
+    if(!profileData.success){ $('myProfileBody').innerHTML = `<div class="empty-box"><div class="title">Не удалось загрузить профиль</div></div>`; return; }
+    myProfilePostsCache = postsData.posts || [];
+    renderMyProfileTab(profileData.user, myProfilePostsCache);
+  } catch(e){
+    $('myProfileBody').innerHTML = `<div class="empty-box"><div class="title">Не удалось загрузить профиль</div></div>`;
+  }
+}
+
+function renderMyProfileEmptyHtml(){
+  return `<div class="empty-box"><div class="emoji-ico">${icon('cards')}</div><div class="title">Пока нет постов</div><div class="desc">Опубликуй фото на «Главной», и оно появится здесь.</div></div>`;
+}
+
+function renderMyPostCard(p){
+  const media = p.images.map(url => `<img src="${url}" loading="lazy" alt="">`).join('');
+  const dotsHtml = p.images.length > 1 ? `<div class="post-media-dots">${p.images.map(()=>'<div class="post-media-dot"></div>').join('')}</div>` : '';
+  return `
+    <div class="post-card" data-post-id="${p.id}">
+      <div class="post-card-head" style="cursor:default;justify-content:space-between;">
+        <div class="post-time">${timeAgo(p.createdAt)}</div>
+        <div class="post-menu-wrap">
+          <div class="post-menu-btn" data-menu-btn="${p.id}" title="Управление">${icon('dots')}</div>
+          <div class="post-menu-dropdown" id="postMenu-${p.id}">
+            <div class="post-menu-item danger" data-delete-post="${p.id}">${icon('cross')}Удалить</div>
+          </div>
+        </div>
+      </div>
+      <div class="post-media">${media}${dotsHtml}</div>
+      <div class="post-body">
+        ${p.description ? `<div class="post-desc">${escapeHtml(p.description)}</div>` : ''}
+        <div class="post-actions">
+          <div class="post-action ${p.likedByMe ? 'liked' : ''}" data-like-btn><i class="cico cico-heart"></i><span>${p.likes}</span></div>
+          <div class="post-action static"><i class="cico cico-eye"></i><span>${p.views}</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderMyProfileTab(user, posts){
+  const initial = escapeHtml((user.username||'?')[0].toUpperCase());
+  const avatarStyle = user.avatar_url ? `background-image:url('${user.avatar_url}')` : '';
+  const bannerStyle = user.banner_url ? `background-image:url('${user.banner_url}')` : '';
+  $('myProfileBody').innerHTML = `
+    <div class="profile-banner-wrap${user.banner_url ? ' has-img' : ''}" style="${bannerStyle};margin:0;height:110px;border-radius:20px;"></div>
+    <div class="profile-head-row" style="padding:0;margin-top:-34px;">
+      <div class="profile-big-avatar-wrap">
+        <div class="profile-big-avatar" style="${avatarStyle};width:72px;height:72px;font-size:1.6rem;">${user.avatar_url ? '' : initial}</div>
+      </div>
+      <div class="profile-head-name">
+        <div class="nm">${escapeHtml(user.username)}</div>
+        <div class="sub">Мой профиль</div>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="panel-head" style="margin-bottom:1rem;"><div class="panel-title" style="font-size:.95rem;">${icon('cards','ic')}Мои публикации</div></div>
+    <div id="myProfilePostsList">
+      ${posts.length ? posts.map(renderMyPostCard).join('') : renderMyProfileEmptyHtml()}
+    </div>
+  `;
+  attachMyProfileFeedHandlers();
+}
+
+function attachMyProfileFeedHandlers(){
+  document.querySelectorAll('#myProfileBody .post-card').forEach(card => {
+    const postId = card.dataset.postId;
+    if(!card.dataset.observed){ card.dataset.observed = '1'; socialViewObserver.observe(card); }
+    const likeBtn = card.querySelector('[data-like-btn]');
+    if(likeBtn && !likeBtn.dataset.bound){ likeBtn.dataset.bound = '1'; likeBtn.addEventListener('click', () => toggleLike(postId, likeBtn)); }
+    const menuBtn = card.querySelector('[data-menu-btn]');
+    if(menuBtn && !menuBtn.dataset.bound){
+      menuBtn.dataset.bound = '1';
+      menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdown = $('postMenu-'+postId);
+        const isOpen = dropdown.classList.contains('open');
+        closeAllPostMenus();
+        if(!isOpen) dropdown.classList.add('open');
+      });
+    }
+    const delBtn = card.querySelector('[data-delete-post]');
+    if(delBtn && !delBtn.dataset.bound){
+      delBtn.dataset.bound = '1';
+      delBtn.addEventListener('click', (e) => { e.stopPropagation(); closeAllPostMenus(); deleteMyPost(postId, card); });
+    }
+  });
+}
+
+async function deleteMyPost(postId, cardEl){
+  const ok = await confirmModal('Пост будет удалён без возможности восстановления.', { title:'Удалить публикацию?', okLabel:'Удалить', cancelLabel:'Нет', danger:true, icon:'cross' });
+  if(!ok) return;
+  try{
+    const res = await fetch(`${API}/api/social/posts/${postId}`, {
+      method:'DELETE', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId: currentUser.id })
+    });
+    const data = await res.json();
+    if(data.success){
+      cardEl.remove();
+      myProfilePostsCache = myProfilePostsCache.filter(p => String(p.id) !== String(postId));
+      if(!myProfilePostsCache.length){
+        const list = $('myProfilePostsList');
+        if(list) list.innerHTML = renderMyProfileEmptyHtml();
+      }
+    } else {
+      showToastSafe(data.error || 'Не удалось удалить публикацию');
+    }
+  } catch(e){ showToastSafe('Ошибка соединения'); }
+}
+
 /* ---------- поиск людей по логину ---------- */
 let socialSearchTimer = null;
 function openSearchModal(){
@@ -1935,7 +2085,11 @@ async function publishPost(){
       body: JSON.stringify({ userId: currentUser.id, description: $('postDescInput').value.trim(), images: newPostFiles })
     });
     const data = await res.json();
-    if(data.success){ closeModal(); loadSocialFeed(true); }
+    if(data.success){
+      closeModal();
+      loadSocialFeed(true);
+      loaded.myprofile = false;
+    }
     else { msg.textContent = data.error || 'Не удалось опубликовать пост'; setBtnLoading(btn, false, 'Опубликовать'); }
   } catch(e){
     msg.textContent = 'Ошибка соединения'; setBtnLoading(btn, false, 'Опубликовать');
