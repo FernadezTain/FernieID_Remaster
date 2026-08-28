@@ -576,15 +576,25 @@ body:hover::-webkit-scrollbar-thumb{
   gap:2px;
   box-shadow:0 16px 34px -14px rgba(0,0,0,.45);
 }
+.mtab-slider{
+  position:absolute;
+  top:7px;bottom:7px;left:7px;
+  width:0;
+  border-radius:999px;
+  background:var(--red);
+  box-shadow:0 10px 20px -8px rgba(226,86,79,.55);
+  transition:transform .32s cubic-bezier(.65,0,.35,1), width .32s cubic-bezier(.65,0,.35,1);
+  z-index:0;
+}
 .mtab{
+  position:relative;z-index:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   min-width:74px;padding:8px 12px;border:none;background:transparent;border-radius:999px;
   color:rgba(255,255,255,.5);font-family:'Inter',sans-serif;font-size:.64rem;font-weight:700;
-  cursor:pointer;transition:background .2s,color .2s;-webkit-tap-highlight-color:transparent;
+  cursor:pointer;transition:color .2s;-webkit-tap-highlight-color:transparent;
 }
 .mtab .cico{transform:scale(1.3);}
-.mtab.active{background:var(--red);color:#fff;box-shadow:0 10px 20px -8px rgba(226,86,79,.55);}
-
+.mtab.active{color:#fff;}
 /* кнопка закрытия мобильного меню — по умолчанию (в т.ч. на ПК) всегда скрыта */
 .mobile-menu-close-btn{display:none;}
 
@@ -621,14 +631,20 @@ body:hover::-webkit-scrollbar-thumb{
 
   /* место под нижнюю панель, чтобы контент не перекрывался */
   .content{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
-  .mobile-content-back{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer;padding:.9rem 0 .3rem;}
-  .mobile-content-back:hover{color:var(--ink);}
+  .mobile-content-back{display:flex;align-items:center;gap:6px;width:fit-content;font-size:.78rem;font-weight:700;color:var(--ink);cursor:pointer;padding:8px 14px 8px 10px;margin:.9rem 1rem .2rem;background:var(--field);border:1px solid var(--field-border);border-radius:100px;transition:border-color .15s, transform .15s;}
+  .mobile-content-back:active{transform:scale(.97);}
   body.mobile-menu-open .content{display:none;}
 
   .mobile-tabbar{display:flex;}
 
   /* на телефоне инпуты минимум 16px — иначе iOS Safari зумит страницу при фокусе */
   input,textarea,select{font-size:16px !important;}
+
+  /* декоративные пятна фона на мобилке выглядят как обрезанные куски — убираем */
+  .blob{display:none;}
+
+  /* фон страницы = цвет карточек, чтобы блоки заполняли весь экран одним цветом */
+  body{background:var(--card);}
 }
 
 @keyframes mobileMenuIn{ from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
@@ -1056,6 +1072,7 @@ html,body{touch-action:manipulation;}
 
     <!-- ===== МОБИЛЬНАЯ НИЖНЯЯ ПАНЕЛЬ: Главная / Меню / Профиль ===== -->
     <nav class="mobile-tabbar" id="mobileTabbar">
+      <div class="mtab-slider" id="mtabSlider"></div>
       <button type="button" class="mtab active" id="mtabHome" data-mtab="home"><i class="cico cico-home"></i><span>Главная</span></button>
       <button type="button" class="mtab" id="mtabMenu" data-mtab="menu"><i class="cico cico-list"></i><span>Меню</span></button>
       <button type="button" class="mtab" id="mtabProfile" data-mtab="profile"><i class="cico cico-user"></i><span>Профиль</span></button>
@@ -1382,6 +1399,8 @@ function switchSection(name){
   if(tabsEl) requestAnimationFrame(() => positionTabSlider(tabsEl));
   closeMobileMenu();
   syncMobileTabbar(name);
+  const backBtn = $('mobileContentBack');
+  if(backBtn) backBtn.style.display = (name === 'overview') ? 'none' : '';
   window.scrollTo(0, 0);
 }
 
@@ -1422,17 +1441,31 @@ attachNavHoverCascade();
 /* ---------- мобильная нижняя панель: Главная / Меню / Профиль ---------- */
 function openMobileMenu(){ document.body.classList.add('mobile-menu-open'); }
 function closeMobileMenu(){ document.body.classList.remove('mobile-menu-open'); }
+function positionMobileTabSlider(){
+  const slider = $('mtabSlider');
+  const active = document.querySelector('.mtab.active');
+  const bar = $('mobileTabbar');
+  if(!slider || !active || !bar) return;
+  const barRect = bar.getBoundingClientRect();
+  const btnRect = active.getBoundingClientRect();
+  if(!btnRect.width) return;
+  slider.style.width = btnRect.width + 'px';
+  slider.style.transform = `translateX(${btnRect.left - barRect.left - 7}px)`;
+}
 function syncMobileTabbar(section){
   const primary = { overview:'home', profile:'profile' };
   const activeTab = primary[section] || 'menu';
   document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === activeTab));
+  requestAnimationFrame(positionMobileTabSlider);
 }
 $('mtabHome').addEventListener('click', () => switchSection('overview'));
 $('mtabProfile').addEventListener('click', () => switchSection('profile'));
 $('mobileContentBack').addEventListener('click', () => {
   openMobileMenu();
   document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === 'menu'));
+  requestAnimationFrame(positionMobileTabSlider);
 });
+window.addEventListener('resize', () => requestAnimationFrame(positionMobileTabSlider));
 $('mtabMenu').addEventListener('click', () => {
   openMobileMenu();
   document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === 'menu'));
