@@ -561,47 +561,7 @@ body:hover::-webkit-scrollbar-thumb{
   .plan-pay-chip:hover{transform:translateY(-2px);border-color:#d8c3af;color:var(--ink);}
 }
 
-@media(max-width:900px){
-  .dash-shell{flex-direction:column;}
-
-  /* обычный сайдбар на телефоне не показываем — вместо него нижняя панель + полноэкранное меню */
-  .sidebar{display:none;}
-  body.mobile-menu-open .sidebar{
-    display:flex;
-    position:fixed;
-    inset:0;
-    width:100%;
-    z-index:45;
-    background:var(--bg);
-    padding:1.4rem 1.1rem calc(104px + env(safe-area-inset-bottom));
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    animation:mobileMenuIn .22s ease both;
-  }
-  body.mobile-menu-open .sidebar .profile-card{display:none;}
-
-  .mobile-menu-close-btn{display:none;}
-  body.mobile-menu-open .mobile-menu-close-btn{
-    display:flex;align-items:center;justify-content:center;
-    position:absolute;top:1.3rem;right:1.1rem;
-    width:34px;height:34px;border-radius:50%;
-    background:var(--field);border:1px solid var(--field-border);
-    color:var(--ink);cursor:pointer;
-  }
-
-  /* место под нижнюю панель, чтобы контент не перекрывался */
-  .content{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
-  body.mobile-menu-open .content{display:none;}
-
-  .mobile-tabbar{display:flex;}
-
-  /* на телефоне инпуты минимум 16px — иначе iOS Safari зумит страницу при фокусе */
-  input,textarea,select{font-size:16px !important;}
-}
-
-@keyframes mobileMenuIn{ from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
-
-/* ===== мобильная нижняя панель (Главная / Меню / Профиль) ===== */
+/* ===== мобильная нижняя панель (Главная / Меню / Профиль) — базовые стили ДО медиа-запроса, чтобы медиа-override гарантированно выигрывал каскад ===== */
 .mobile-tabbar{
   display:none;
   position:fixed;
@@ -623,6 +583,52 @@ body:hover::-webkit-scrollbar-thumb{
 }
 .mtab .cico{transform:scale(1.3);}
 .mtab.active{background:var(--red);color:#fff;box-shadow:0 10px 20px -8px rgba(226,86,79,.55);}
+
+/* кнопка закрытия мобильного меню — по умолчанию (в т.ч. на ПК) всегда скрыта */
+.mobile-menu-close-btn{display:none;}
+
+@media(max-width:900px){
+  .dash-shell{flex-direction:column;}
+
+  /* обычный сайдбар на телефоне не показываем — вместо него нижняя панель + полноэкранное меню */
+  .sidebar{display:none;}
+  body.mobile-menu-open .sidebar{
+    display:flex;
+    position:fixed;
+    inset:0;
+    width:100%;
+    z-index:45;
+    background:var(--bg);
+    padding:1.4rem 1.1rem calc(104px + env(safe-area-inset-bottom));
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    animation:mobileMenuIn .22s ease both;
+  }
+  body.mobile-menu-open .sidebar .profile-card{display:none;}
+
+  body.mobile-menu-open .mobile-menu-close-btn{
+    display:flex;align-items:center;justify-content:center;
+    position:absolute;top:1.3rem;right:1.1rem;
+    width:34px;height:34px;border-radius:50%;
+    background:var(--field);border:1px solid var(--field-border);
+    color:var(--ink);cursor:pointer;
+  }
+
+  /* разделы — на весь экран, без "плавающей карточки": убираем внешние отступы страницы и скругления панелей */
+  #dash-page{padding:max(.75rem, env(safe-area-inset-top)) 0 0 0;gap:0;}
+  .panel{border-radius:0;}
+
+  /* место под нижнюю панель, чтобы контент не перекрывался */
+  .content{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+  body.mobile-menu-open .content{display:none;}
+
+  .mobile-tabbar{display:flex;}
+
+  /* на телефоне инпуты минимум 16px — иначе iOS Safari зумит страницу при фокусе */
+  input,textarea,select{font-size:16px !important;}
+}
+
+@keyframes mobileMenuIn{ from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
 
 /* ===== запрет масштабирования сайта (пинч-зум / двойной тап) ===== */
 html,body{touch-action:manipulation;}
