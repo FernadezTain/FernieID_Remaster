@@ -563,8 +563,69 @@ body:hover::-webkit-scrollbar-thumb{
 
 @media(max-width:900px){
   .dash-shell{flex-direction:column;}
-  .sidebar{width:100%;position:relative;top:0;}
+
+  /* обычный сайдбар на телефоне не показываем — вместо него нижняя панель + полноэкранное меню */
+  .sidebar{display:none;}
+  body.mobile-menu-open .sidebar{
+    display:flex;
+    position:fixed;
+    inset:0;
+    width:100%;
+    z-index:45;
+    background:var(--bg);
+    padding:1.4rem 1.1rem calc(104px + env(safe-area-inset-bottom));
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    animation:mobileMenuIn .22s ease both;
+  }
+  body.mobile-menu-open .sidebar .profile-card{display:none;}
+
+  .mobile-menu-close-btn{display:none;}
+  body.mobile-menu-open .mobile-menu-close-btn{
+    display:flex;align-items:center;justify-content:center;
+    position:absolute;top:1.3rem;right:1.1rem;
+    width:34px;height:34px;border-radius:50%;
+    background:var(--field);border:1px solid var(--field-border);
+    color:var(--ink);cursor:pointer;
+  }
+
+  /* место под нижнюю панель, чтобы контент не перекрывался */
+  .content{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+  body.mobile-menu-open .content{display:none;}
+
+  .mobile-tabbar{display:flex;}
+
+  /* на телефоне инпуты минимум 16px — иначе iOS Safari зумит страницу при фокусе */
+  input,textarea,select{font-size:16px !important;}
 }
+
+@keyframes mobileMenuIn{ from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
+
+/* ===== мобильная нижняя панель (Главная / Меню / Профиль) ===== */
+.mobile-tabbar{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:calc(14px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:40;
+  background:var(--ink);
+  border-radius:999px;
+  padding:7px;
+  gap:2px;
+  box-shadow:0 16px 34px -14px rgba(0,0,0,.45);
+}
+.mtab{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-width:74px;padding:8px 12px;border:none;background:transparent;border-radius:999px;
+  color:rgba(255,255,255,.5);font-family:'Inter',sans-serif;font-size:.64rem;font-weight:700;
+  cursor:pointer;transition:background .2s,color .2s;-webkit-tap-highlight-color:transparent;
+}
+.mtab .cico{transform:scale(1.3);}
+.mtab.active{background:var(--red);color:#fff;box-shadow:0 10px 20px -8px rgba(226,86,79,.55);}
+
+/* ===== запрет масштабирования сайта (пинч-зум / двойной тап) ===== */
+html,body{touch-action:manipulation;}
 </style>
 </head>
 <body>
@@ -655,6 +716,7 @@ body:hover::-webkit-scrollbar-thumb{
 
     <aside class="sidebar">
       <div class="brand"><span class="brand-dot"></span>FernieID</div>
+      <button type="button" class="mobile-menu-close-btn" id="mobileMenuCloseBtn" aria-label="Закрыть меню"><i class="cico cico-cross"></i></button>
 
       <div class="profile-card" id="profileCardBtn">
         <div class="profile-avatar" id="profileAvatar">F</div>
@@ -981,6 +1043,13 @@ body:hover::-webkit-scrollbar-thumb{
       </div>
 
     </main>
+
+    <!-- ===== МОБИЛЬНАЯ НИЖНЯЯ ПАНЕЛЬ: Главная / Меню / Профиль ===== -->
+    <nav class="mobile-tabbar" id="mobileTabbar">
+      <button type="button" class="mtab active" id="mtabHome" data-mtab="home"><i class="cico cico-home"></i><span>Главная</span></button>
+      <button type="button" class="mtab" id="mtabMenu" data-mtab="menu"><i class="cico cico-list"></i><span>Меню</span></button>
+      <button type="button" class="mtab" id="mtabProfile" data-mtab="profile"><i class="cico cico-user"></i><span>Профиль</span></button>
+    </nav>
   </div>
 </div>
 
@@ -990,6 +1059,18 @@ body:hover::-webkit-scrollbar-thumb{
 </div>
 
 <script>
+/* ---------- полный запрет зума страницы (пинч + двойной тап) ---------- */
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+document.addEventListener('touchmove', e => { if(e.touches && e.touches.length > 1) e.preventDefault(); }, { passive:false });
+let __lastTouchEndTs = 0;
+document.addEventListener('touchend', e => {
+  const now = Date.now();
+  if(now - __lastTouchEndTs <= 300) e.preventDefault();
+  __lastTouchEndTs = now;
+}, { passive:false });
+
 const API = 'https://ferniex-id.vercel.app';
 const $ = id => document.getElementById(id);
 const STORE_KEY = 'fid_session';
@@ -1289,10 +1370,17 @@ function switchSection(name){
   loadSectionData(name);
   const tabsEl = target?.querySelector('.tabs');
   if(tabsEl) requestAnimationFrame(() => positionTabSlider(tabsEl));
+  closeMobileMenu();
+  syncMobileTabbar(name);
+  window.scrollTo(0, 0);
 }
 
 /* ---------- цепочка: боковые блоки сдвигаются "стрелкой" к активному/наведённому пункту ---------- */
 function updateNavCascade(focusSection){
+  if(window.matchMedia('(max-width:900px)').matches){
+    document.querySelectorAll('.sidebar .nav-block').forEach(b => b.style.transform = '');
+    return;
+  }
   const all = Array.from(document.querySelectorAll('.sidebar .nav-block'));
   const visible = all.filter(b => getComputedStyle(b).display !== 'none');
   const focusIndex = visible.findIndex(b => b.dataset.section === focusSection);
@@ -1320,6 +1408,22 @@ function attachNavHoverCascade(){
   });
 }
 attachNavHoverCascade();
+
+/* ---------- мобильная нижняя панель: Главная / Меню / Профиль ---------- */
+function openMobileMenu(){ document.body.classList.add('mobile-menu-open'); }
+function closeMobileMenu(){ document.body.classList.remove('mobile-menu-open'); }
+function syncMobileTabbar(section){
+  const primary = { overview:'home', profile:'profile' };
+  const activeTab = primary[section] || 'menu';
+  document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === activeTab));
+}
+$('mtabHome').addEventListener('click', () => switchSection('overview'));
+$('mtabProfile').addEventListener('click', () => switchSection('profile'));
+$('mtabMenu').addEventListener('click', () => {
+  openMobileMenu();
+  document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === 'menu'));
+});
+$('mobileMenuCloseBtn').addEventListener('click', () => { closeMobileMenu(); syncMobileTabbar(activeNavSection); });
 
 /* ---------- boot / verify session ---------- */
 async function bootDashboard(){
