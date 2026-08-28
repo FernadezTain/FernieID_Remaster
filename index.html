@@ -214,6 +214,7 @@ body{
 
 /* --- content --- */
 .content{flex:1;min-width:0;}
+.mobile-content-back{display:none;}
 .dash-section{display:none;flex-direction:column;gap:1.1rem;animation:fadeUp .25s ease both;}
 .dash-section.active{display:flex;}
 
@@ -561,9 +562,6 @@ body:hover::-webkit-scrollbar-thumb{
   .plan-pay-chip:hover{transform:translateY(-2px);border-color:#d8c3af;color:var(--ink);}
 }
 
-/* ===== мобильная шапка раздела (кнопка Назад + заголовок) ===== */
-.mobile-topbar{display:none;}
-
 /* ===== мобильная нижняя панель (Главная / Меню / Профиль) — базовые стили ДО медиа-запроса, чтобы медиа-override гарантированно выигрывал каскад ===== */
 .mobile-tabbar{
   display:none;
@@ -571,7 +569,7 @@ body:hover::-webkit-scrollbar-thumb{
   left:50%;
   bottom:calc(14px + env(safe-area-inset-bottom));
   transform:translateX(-50%);
-  z-index:40;
+  z-index:46;
   background:#181410;
   border-radius:999px;
   padding:7px;
@@ -591,12 +589,7 @@ body:hover::-webkit-scrollbar-thumb{
 .mobile-menu-close-btn{display:none;}
 
 @media(max-width:900px){
-  .dash-shell{flex-direction:column;}
-
-  /* декоративные пятна фона на мобилке прячем: панели идут "от края до края"
-     без внешних отступов, из-за чего blur-круги видны только узкими обрубленными
-     кусками в щелях сверху/снизу экрана — выглядит как случайные цветные квадраты */
-  .blob{display:none;}
+  .dash-shell{flex-direction:column;align-items:stretch;}
 
   /* обычный сайдбар на телефоне не показываем — вместо него нижняя панель + полноэкранное меню */
   .sidebar{display:none;}
@@ -626,29 +619,10 @@ body:hover::-webkit-scrollbar-thumb{
   #dash-page{padding:max(.75rem, env(safe-area-inset-top)) 0 0 0;gap:0;}
   .panel{border-radius:0;}
 
-  /* мобильная шапка раздела: кнопка "Назад" + название открытого раздела.
-     Позволяет вернуться в полноэкранное меню без перезагрузки страницы. */
-  .mobile-topbar{
-    display:flex;align-items:center;gap:.7rem;
-    position:sticky;top:0;z-index:20;
-    padding:.85rem 1.1rem;
-    background:var(--bg);
-    border-bottom:1px solid var(--line);
-  }
-  .mobile-back-btn{
-    width:34px;height:34px;border-radius:50%;flex-shrink:0;
-    background:var(--field);border:1px solid var(--field-border);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--ink);cursor:pointer;
-  }
-  .mobile-topbar-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;}
-  /* на "Главной" шапка не нужна — там уже есть нижний таб "Главная" */
-  body[data-mobile-section="overview"] .mobile-topbar{display:none;}
-  body.mobile-menu-open .mobile-topbar{display:none;}
-
-  /* место под нижнюю панель, чтобы контент не перекрывался (запас увеличен —
-     раньше 96px было впритык и нижние кнопки/контент подлезали под панель) */
-  .content{padding-bottom:calc(140px + env(safe-area-inset-bottom));}
+  /* место под нижнюю панель, чтобы контент не перекрывался */
+  .content{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+  .mobile-content-back{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer;padding:.9rem 0 .3rem;}
+  .mobile-content-back:hover{color:var(--ink);}
   body.mobile-menu-open .content{display:none;}
 
   .mobile-tabbar{display:flex;}
@@ -789,14 +763,7 @@ html,body{touch-action:manipulation;}
     </aside>
 
     <main class="content">
-
-      <!-- Мобильная шапка раздела: кнопка Назад + название текущего раздела -->
-      <div class="mobile-topbar" id="mobileTopbar">
-        <button type="button" class="mobile-back-btn" id="mobileBackBtn" aria-label="Назад">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <span class="mobile-topbar-title" id="mobileTopbarTitle"></span>
-      </div>
+      <div class="mobile-content-back" id="mobileContentBack">← Назад в меню</div>
 
       <!-- ГЛАВНАЯ -->
       <div class="dash-section active" id="section-overview">
@@ -1362,15 +1329,6 @@ $('profileCardBtn').onclick = () => switchSection('profile');
 
 let activeNavSection = null;
 
-/* ---------- названия разделов для мобильной шапки ---------- */
-const SECTION_TITLES = {
-  overview:'Главная', subscription:'Подписка', gamestats:'Игровая статистика',
-  social:'Социализация', collection:'Коллекция', security:'Безопасность',
-  tickets:'Обращения', mytickets:'Мои обращения', adminapply:'Заявка на администратора',
-  apikeys:'API-ключи', apikeysdev:'Руководство API', admin:'Админ-панель',
-  admintickets:'Обращения (админ)', adminapplies:'Заявки (админ)', profile:'Профиль'
-};
-
 /* ---------- плавный "слайдер" фона для .tabs (Активные/Закрытые) ---------- */
 function positionTabSlider(tabsEl){
   if(!tabsEl) return;
@@ -1424,12 +1382,6 @@ function switchSection(name){
   if(tabsEl) requestAnimationFrame(() => positionTabSlider(tabsEl));
   closeMobileMenu();
   syncMobileTabbar(name);
-
-  // синхронизируем мобильную шапку (кнопка "Назад" + заголовок раздела)
-  document.body.dataset.mobileSection = name;
-  const topbarTitle = $('mobileTopbarTitle');
-  if(topbarTitle) topbarTitle.textContent = SECTION_TITLES[name] || '';
-
   window.scrollTo(0, 0);
 }
 
@@ -1477,18 +1429,15 @@ function syncMobileTabbar(section){
 }
 $('mtabHome').addEventListener('click', () => switchSection('overview'));
 $('mtabProfile').addEventListener('click', () => switchSection('profile'));
+$('mobileContentBack').addEventListener('click', () => {
+  openMobileMenu();
+  document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === 'menu'));
+});
 $('mtabMenu').addEventListener('click', () => {
   openMobileMenu();
   document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === 'menu'));
 });
 $('mobileMenuCloseBtn').addEventListener('click', () => { closeMobileMenu(); syncMobileTabbar(activeNavSection); });
-
-/* кнопка "Назад" в мобильной шапке раздела — открывает полноэкранное меню,
-   чтобы не приходилось перезагружать страницу для перехода в другой раздел */
-$('mobileBackBtn').addEventListener('click', () => {
-  openMobileMenu();
-  document.querySelectorAll('.mtab').forEach(b => b.classList.toggle('active', b.dataset.mtab === 'menu'));
-});
 
 /* ---------- boot / verify session ---------- */
 async function bootDashboard(){
