@@ -309,7 +309,7 @@ body{
 .theme-swatch{width:44px;height:44px;border-radius:50%;border:3px solid transparent;cursor:pointer;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:border-color .2s, transform .15s;}
 .theme-swatch:hover{transform:scale(1.06);}
 .theme-swatch.active{border-color:var(--ink);}
-.theme-swatch.active::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;text-shadow:0 1px 2px rgba(0,0,0,.4);}
+.theme-swatch.active::after{content:'';position:absolute;width:10px;height:5px;left:50%;top:47%;margin:-3px 0 0 -5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);filter:drop-shadow(0 1px 1px rgba(0,0,0,.4));}
 .theme-swatch-label{font-size:.66rem;color:var(--muted);text-align:center;margin-top:.4rem;}
 .theme-swatch-item{display:flex;flex-direction:column;align-items:center;}
 .key-stats{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:.7rem;}
@@ -557,8 +557,16 @@ body{
       <!-- КОЛЛЕКЦИЯ -->
       <div class="dash-section" id="section-collection">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="cico cico-cards ic"></i>Коллекция</div><div class="panel-sub">Предметы и карты в твоём инвентаре</div></div>
-          <div id="invBody" class="loader">Загрузка…</div>
+          <div class="panel-head"><div class="panel-title"><i class="cico cico-cards ic"></i>Коллекционные карты</div></div>
+          <div class="empty-box" style="padding:2.4rem 1rem 2rem;">
+            <div class="emoji-ico"><i class="cico cico-cards"></i></div>
+            <div class="title">Коллекционные карты</div>
+            <div class="desc" style="margin-bottom:1.5rem;">Все твои карты, редкости и обмены теперь живут в отдельном разделе — там удобнее их листать и собирать коллекцию.</div>
+            <a class="link-cta" href="https://www.ferniex.ru/CollectionCard.html" target="_blank" rel="noopener noreferrer">
+              Открыть коллекцию карт
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -1174,7 +1182,6 @@ async function loadSectionData(name){
   if(!currentUser) return;
   if(name === 'subscription') return loadSubscription();
   if(name === 'thirdparty') return loadThirdParty();
-  if(name === 'collection') return loadInventory();
   if(name === 'security') return loadSecurity();
   if(name === 'tickets') return loadTickets();
   if(name === 'mytickets') return loadMyTickets();
